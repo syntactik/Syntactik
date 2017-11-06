@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Syntactik")]
-[assembly: AssemblyDescription("Syntactik compiler library.")]
+[assembly: AssemblyDescription("Syntactik. Proprocessor for XML and JSON.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Syntactik llc")]
 [assembly: AssemblyProduct("Syntactik")]

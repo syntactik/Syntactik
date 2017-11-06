@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Syntactik.Compiler")]
-[assembly: AssemblyDescription("Complier console application for Syntactik formats.")]
+[assembly: AssemblyTitle("Syntactik")]
+[assembly: AssemblyDescription("Syntactik. Proprocessor for XML and JSON.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Syntactik")]
-[assembly: AssemblyProduct("Syntactik.Compiler")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
+[assembly: AssemblyCompany("Syntactik llc")]
+[assembly: AssemblyProduct("Syntactik")]
+[assembly: AssemblyCopyright("Copyright © Maxim Trushin, Syntactik llc,  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -30,4 +30,4 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("0.1.*")]
+[assembly: AssemblyVersion("0.0.1.*")]
