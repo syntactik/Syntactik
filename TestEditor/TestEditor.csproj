@@ -84,10 +84,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Syntactik.Tests\Syntactik.Tests.csproj">
-      <Project>{a628e8b6-489d-44b4-8b34-8c8cfe3d5858}</Project>
-      <Name>Syntactik.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Syntactik\Syntactik.csproj">
       <Project>{b36ec10c-824d-4023-a32e-8bc9369869ae}</Project>
       <Name>Syntactik</Name>

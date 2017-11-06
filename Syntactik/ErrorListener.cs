@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Syntactik.DOM;
 
-namespace Syntactik.Tests
+namespace Syntactik
 {
     public class ErrorListener: IErrorListener
     {

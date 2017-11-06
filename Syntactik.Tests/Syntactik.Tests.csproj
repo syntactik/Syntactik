@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DomPrinter.cs" />
-    <Compile Include="ErrorListener.cs" />
     <Compile Include="PairParserTests.cs" />
     <Compile Include="ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

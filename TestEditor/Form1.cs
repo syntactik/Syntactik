@@ -9,8 +9,7 @@ using Syntactik.Compiler.IO;
 using Syntactik.Compiler.Pipelines;
 using Syntactik.DOM;
 using Syntactik.IO;
-using Syntactik.Tests;
-using ErrorListener = Syntactik.Tests.ErrorListener;
+using ErrorListener = Syntactik.ErrorListener;
 using Module = Syntactik.DOM.Mapped.Module;
 
 namespace TestEditor
