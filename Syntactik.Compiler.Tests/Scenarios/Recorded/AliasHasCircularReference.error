@@ -1,6 +1,6 @@
-MCE0005 ModuleWithAlias1.s4x(2,1,2): Alias Definition 'Address1' has circular reference.
-MCE0005 ModuleWithAlias1.s4x(9,1,110): Alias Definition 'Address3' has circular reference.
-MCE0005 ModuleWithAlias1.s4x(16,1,218): Alias Definition 'Address4' has circular reference.
-MCE0005 ModuleWithAlias2.s4x(2,1,2): Alias Definition 'Address2' has circular reference.
-MCE0005 ModuleWithAlias2.s4x(9,1,110): Alias Definition 'Address5' has circular reference.
-MCE0005 ModuleWithAlias2.s4x(17,1,220): Alias Definition 'Address6' has circular reference.
+MCE0005 ModuleWithAlias1.s4x(2,1,1): Alias Definition 'Address1' has circular reference.
+MCE0005 ModuleWithAlias1.s4x(9,1,102): Alias Definition 'Address3' has circular reference.
+MCE0005 ModuleWithAlias1.s4x(16,1,203): Alias Definition 'Address4' has circular reference.
+MCE0005 ModuleWithAlias2.s4x(2,1,1): Alias Definition 'Address2' has circular reference.
+MCE0005 ModuleWithAlias2.s4x(9,1,102): Alias Definition 'Address5' has circular reference.
+MCE0005 ModuleWithAlias2.s4x(17,1,204): Alias Definition 'Address6' has circular reference.

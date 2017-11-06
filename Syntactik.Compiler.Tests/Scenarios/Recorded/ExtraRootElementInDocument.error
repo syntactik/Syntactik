@@ -1,8 +1,8 @@
-MCE0009 ModuleWithDocument1.s4x(2,1,2): Document 'PurchaseOrder' must have only one root element.
-MCE0009 ModuleWithDocument1.s4x(12,1,131): Document 'PurchaseOrder2' must have only one root element.
-MCE0005 ModuleWithDocument1.s4x(22,1,259): Alias Definition 'Address1' has circular reference.
-MCE0005 ModuleWithDocument1.s4x(26,1,305): Alias Definition 'Address2' has circular reference.
-MCE0009 ModuleWithDocument1.s4x(30,1,351): Document 'PurchaseOrder3' must have at least one root element.
-MCE0009 ModuleWithDocument1.s4x(34,1,385): Document 'PurchaseOrder4' must have at least one root element.
-MCE0009 ModuleWithDocument1.s4x(40,1,437): Document 'ipo' must have only one root element.
-MCE0009 ModuleWithDocument1.s4x(47,1,499): Document 'ipo3' must have only one root element.
+MCE0009 ModuleWithDocument1.s4x(2,1,1): Document 'PurchaseOrder' must have only one root element.
+MCE0009 ModuleWithDocument1.s4x(12,1,120): Document 'PurchaseOrder2' must have only one root element.
+MCE0005 ModuleWithDocument1.s4x(22,1,238): Alias Definition 'Address1' has circular reference.
+MCE0005 ModuleWithDocument1.s4x(26,1,280): Alias Definition 'Address2' has circular reference.
+MCE0009 ModuleWithDocument1.s4x(30,1,322): Document 'PurchaseOrder3' must have at least one root element.
+MCE0009 ModuleWithDocument1.s4x(34,1,352): Document 'PurchaseOrder4' must have at least one root element.
+MCE0009 ModuleWithDocument1.s4x(40,1,398): Document 'ipo' must have only one root element.
+MCE0009 ModuleWithDocument1.s4x(47,1,453): Document 'ipo3' must have only one root element.

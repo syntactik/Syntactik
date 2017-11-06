@@ -24,7 +24,7 @@ using Syntactik.Compiler.Pipelines;
 using System;
 using System.Text;
 using System.Collections.Generic;
-using Syntactik.Compiler.IO;
+using Syntactik.DOM;
 
 namespace Syntactik.Compiler.Tests
 {
@@ -261,6 +261,34 @@ namespace Syntactik.Compiler.Tests
             return TestHasAttribute<RecordTestAttribute>() || TestHasAttribute<RecordedTestAttribute>() && TestFixtureHasAttribute<RecordTestAttribute>();
         }
 
+        public class FileInput : ICompilerInput
+        {
+            private readonly string _fname;
 
+            public FileInput(string fname)
+            {
+                if (null == fname)
+                    throw new ArgumentNullException(nameof(fname));
+                _fname = fname;
+            }
+
+            public string Name => _fname;
+
+            public TextReader Open()
+            {
+                try
+                {
+                    return new StringReader(File.ReadAllText(_fname).Replace("\r\n", "\n"));
+                }
+                catch (System.IO.FileNotFoundException)
+                {
+                    throw new CompilerError("MCE0002", new LexicalInfo(_fname), false, "");
+                }
+                catch (Exception e)
+                {
+                    throw CompilerErrorFactory.InputError(_fname, e);
+                }
+            }
+        }
     }
 }

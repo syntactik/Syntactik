@@ -1,4 +1,4 @@
-MCE0019 JsonArray.s4j(6,3,55): Array item is expected.
-MCE0019 JsonArray.s4j(7,3,65): Array item is expected.
-MCE0019 JsonArray.s4j(11,3,115): Array item is expected.
-MCE0019 JsonArray.s4j(15,2,141): Array item is expected.
+MCE0019 JsonArray.s4j(6,3,50): Array item is expected.
+MCE0019 JsonArray.s4j(7,3,59): Array item is expected.
+MCE0019 JsonArray.s4j(11,3,105): Array item is expected.
+MCE0019 JsonArray.s4j(15,2,127): Array item is expected.

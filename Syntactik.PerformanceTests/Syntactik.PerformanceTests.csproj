@@ -69,10 +69,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Syntactik.Tests\Syntactik.Tests.csproj">
-      <Project>{A628E8B6-489D-44B4-8B34-8C8CFE3D5858}</Project>
-      <Name>Syntactik.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Syntactik\Syntactik.csproj">
       <Project>{B36EC10C-824D-4023-A32E-8BC9369869AE}</Project>
       <Name>Syntactik</Name>

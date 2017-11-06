@@ -1,6 +1,6 @@
-MCE0032 JsonDoc.s4j(3,2,16): Namespaces must be defined first.
-MCE0032 JsonDoc.s4j(4,1,35): Namespaces must be defined first.
-MCE0032 JsonDoc.s4j(7,2,73): Namespaces must be defined first.
-MCE0032 XmlDoc.s4x(3,2,16): Namespaces must be defined first.
-MCE0032 XmlDoc.s4x(4,1,35): Namespaces must be defined first.
-MCE0032 XmlDoc.s4x(7,2,72): Namespaces must be defined first.
+MCE0032 JsonDoc.s4j(3,2,14): Namespaces must be defined first.
+MCE0032 JsonDoc.s4j(4,1,32): Namespaces must be defined first.
+MCE0032 JsonDoc.s4j(7,2,67): Namespaces must be defined first.
+MCE0032 XmlDoc.s4x(3,2,14): Namespaces must be defined first.
+MCE0032 XmlDoc.s4x(4,1,32): Namespaces must be defined first.
+MCE0032 XmlDoc.s4x(7,2,66): Namespaces must be defined first.

@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using Syntactik.IO;
-using Syntactik.Tests;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
