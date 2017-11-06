@@ -1,0 +1,4 @@
+!#ipo = http://www.example.com/myipo
+!$Templates.PurchaseOrder:
+	ipo.purchaseOrder:
+		@orderDate := %orderDate

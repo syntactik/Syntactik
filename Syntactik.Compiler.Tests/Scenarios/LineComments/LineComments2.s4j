@@ -1,0 +1,13 @@
+'''Testing how line comments are processed in the context of stmt
+!MyRequest2:
+'''comment3
+	request: '''
+		@name == "name1"
+			'''comment3
+		tag1 = "text"
+	'''text line2
+		tag2 == "tag2"
+			'''line comment
+		element1: '''end comment
+		text = "this is open string"
+		'''comment for openstring

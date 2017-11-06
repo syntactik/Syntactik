@@ -1,0 +1,23 @@
+!doc:
+	root:
+		value = free open string
+		value = free open string
+
+			with second line
+		value = "double quoted free openstring"
+		value = 'single quoted free openstring'
+		value = 'single quoted free openstring'
+
+			with second line
+		value =
+			first line
+
+				second line
+		value =
+			first line
+
+			second line
+
+		==
+
+

@@ -1,0 +1,3 @@
+﻿!#xsi = http://www.w3.org/2001/XMLSchema-instance
+shipTo:
+	@xsi.type == 'ipo:EU-Address'

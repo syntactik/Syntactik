@@ -1,0 +1,5 @@
+﻿el := e2:
+	el3 == text1, el4 = text2
+	:= el5 = el6
+_el := _e2:	_el3 == text1, _el4 = text2
+el7 :=

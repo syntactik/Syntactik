@@ -1,0 +1,38 @@
+﻿!#ipo = http://www.example.com/myipo
+!#xsi = http://www.w3.org/2001/XMLSchema-instance
+
+!PurchaseOrder:
+	ipo.purchaseOrder:
+		@orderDate = 2001-12-12
+		shipTo:
+			$Address.UK.Cambridge
+		billTo:
+			$Address.US.NJ
+		Items:
+			$Items.Jewelry.Necklaces.Lapis: %quantity = 2
+			$Items.Jewelry.Diamonds.Heart
+			$Items.Jewelry.Diamonds.Uncut:
+				%quantity = 7
+			$Items.Jewelry.Rings.Amber: %quantity = 3
+			$Items.Jewelry.Necklaces.Pearl
+			$Items.Jewelry.Earings.Jade: %quantity = 5
+
+
+!PurchaseOrder123:
+	$Templates.PurchaseOrder:
+		%orderDate = 2001-12-12
+		%shipTo:
+			$Address.UK.Cambridge
+		%billTo:
+			$Address.US.NJ
+		%items:
+			$Items.Jewelry.Necklaces.Lapis: %quantity = 2
+			$Items.Jewelry.Diamonds.Heart
+			$Items.Jewelry.Diamonds.Uncut:
+				%quantity = 7
+			$Items.Jewelry.Rings.Amber: %quantity = 3
+			$Items.Jewelry.Necklaces.Pearl
+			$Items.Jewelry.Earings.Jade: %quantity = 5
+
+
+

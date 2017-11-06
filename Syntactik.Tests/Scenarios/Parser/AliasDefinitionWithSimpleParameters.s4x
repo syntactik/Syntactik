@@ -1,0 +1,7 @@
+
+!$Customer:
+	Customer:
+		Account:
+			!%AccountType
+		!%ServiceAddress
+		!%BillingAddress

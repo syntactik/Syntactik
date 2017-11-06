@@ -1,0 +1,16 @@
+﻿!#ipo = http://www.example.com/myipo
+!#xsi = http://www.w3.org/2001/XMLSchema-instance
+!$Templates.PurchaseOrder:
+	ipo.purchaseOrder:
+		@orderDate := !%orderDate
+		shipTo: !%shipTo
+		billTo: !%billTo
+		ipo.comment := !%comment = 
+		Items: !%items
+!$Address.UK.Cambridge:
+	@xsi.type = ipo:EU-Address
+	@export-code = 1
+	ipo.name = Helen Zoe
+	ipo.street = 47 Eden Street
+	ipo.city = Cambridge
+	ipo.postcode = 126

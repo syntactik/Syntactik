@@ -1,0 +1,5 @@
+﻿!PurchaseOrder:
+	ipo.purchaseOrder
+
+!$Templates.PurchaseOrder:
+	ipo2.purchaseOrder

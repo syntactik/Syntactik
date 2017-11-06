@@ -1,0 +1,4 @@
+00:00	Module `Module`:
+02:01		Document `MyRequest`:
+03:02			NamespaceDefinition `ns1`= `http://myNs1.com`
+05:02			Element `ns1.request`

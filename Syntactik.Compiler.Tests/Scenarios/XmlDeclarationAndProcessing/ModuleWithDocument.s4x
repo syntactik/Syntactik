@@ -1,0 +1,4 @@
+﻿'''XmlDeclaration: version="1.0" encoding="UTF-16"
+'''ProcessingInstruction xml-stylesheet: type="text/xsl" href="style.xsl"
+purchaseOrder:
+	shipTo:

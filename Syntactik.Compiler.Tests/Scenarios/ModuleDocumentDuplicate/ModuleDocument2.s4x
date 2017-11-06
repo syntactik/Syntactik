@@ -1,0 +1,9 @@
+﻿!#ipo = http://www.example.com/myipo
+!#ipo2 = http://www.example.com/myipo
+
+!ModuleDocument2:
+	ipo.purchaseOrder:
+		@ipo.orderDate = 2001-12-12
+		ipo2.shipTo:
+			$Address.UK.Cambridge
+

@@ -1,0 +1,7 @@
+!super.doc:
+	root..element:
+		@awesome.attribute = cool
+		@ns.spaced.attribute = cool
+		another..element = test
+		ns.spaced.element = test
+			

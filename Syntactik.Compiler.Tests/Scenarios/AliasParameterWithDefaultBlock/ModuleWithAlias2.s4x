@@ -1,0 +1,15 @@
+﻿!#ipo2 = http://www.example.com/myipo
+!#xsi = http://www.w3.org/2001/XMLSchema-instance
+
+!$Templates.USAddress:
+	@xsi.type = ipo2:US-Address
+	ipo2.name := !%name
+	ipo2.street := !%street
+	ipo2.city := !%city
+	ipo2.state := !%state
+	ipo2.zip := !%zip
+
+!$Templates.UKAddress:
+	@xsi.type = ipo2:EU-Address
+	@export-code = 1
+	!%address

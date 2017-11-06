@@ -1,0 +1,7 @@
+00:00	Module `Module`:
+01:01		Document `MyRequest`:
+02:02			Element `request`:
+03:03				Element `e1`== "bla bla bla"
+05:03				Element `e2`== "bla \t bla bla"
+07:03				Element `e3`== "bla\nbla bla"
+10:03				Element `e4`== "bla\nbla bla"

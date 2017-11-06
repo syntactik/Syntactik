@@ -1,0 +1,15 @@
+﻿!#ipo = http://www.altova.com/IPO
+!#xsi = http://www.w3.org/2001/XMLSchema-instance
+
+!PurchaseOrder:
+	$Templates.PurchaseOrderByState.NJ:
+		%OrderDate = 2014-10-3
+		%Items:
+			$Items.Jewelry.Diamond.Heart
+			$Items.Jewelry.Necklaces.Lapis: 
+				%Comment == Need this for the holidays!
+				%Quantity = 100
+			$Items.Jewelry.Diamond.Heart
+			$Items.Jewelry.Diamond.Uncut
+
+

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<purchaseOrder orderDate="2001-12-12">
+  <shipTo>
+    <name>Helen</name>
+  </shipTo>
+</purchaseOrder>

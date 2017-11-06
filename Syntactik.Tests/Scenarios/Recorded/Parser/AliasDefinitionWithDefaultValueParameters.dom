@@ -1,0 +1,7 @@
+00:00	Module `Module`:
+01:01		NamespaceDefinition `ipo`= `http://www.example.com/myipo`
+03:01		AliasDefinition `Address`:
+04:02			Element `ipo.name`:= 	Parameter `name`= `Helen Zoe`
+05:02			Element `ipo.street`:= 	Parameter `street`= `47 Eden Street`
+06:02			Element `ipo.city`:= 	Parameter `city`= `Cambridge`
+07:02			Element `ipo.postcode`:= 	Parameter `postcode`= `126`

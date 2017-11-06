@@ -1,0 +1,8 @@
+﻿bl1:
+	el1 = text1
+'''comment1
+
+	el2 ''' Comment
+	el3 = line1
+		'''line2
+	el4

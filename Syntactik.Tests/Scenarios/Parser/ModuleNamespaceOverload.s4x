@@ -1,0 +1,15 @@
+!#ns01 = http://myNs01.com
+!#nsModule = http://myNsModule.com
+		
+!MyRequest:
+	!#ns11 = http://myNs11.com
+	!#nsModule = http://myNsDoc1.com
+	
+	request
+	
+!MyRequest2:
+	!#ns21 = http://myNs21.com
+	!#nsModule = http://myNsDoc2.com
+	
+	request
+	

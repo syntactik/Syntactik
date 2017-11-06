@@ -1,0 +1,5 @@
+﻿el:( 
+	@el1 = text1)
+address = 'multiline
+	single quoted
+	string'

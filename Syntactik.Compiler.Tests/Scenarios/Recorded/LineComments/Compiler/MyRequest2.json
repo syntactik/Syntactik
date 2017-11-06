@@ -1,0 +1,9 @@
+{
+  "request": {
+    "name": "name1",
+    "tag1": "\"text\"",
+    "tag2": "tag2",
+    "element1": {},
+    "text": "\"this is open string\""
+  }
+}

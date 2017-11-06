@@ -1,0 +1,22 @@
+!doc1:
+	root:
+		url1 := $url: 
+			%domain = google.com
+			%path = search
+			%params = q = foo
+		url2 := $url: 
+			%domain = google.com
+			%path = search
+		url3 := $url: 
+			%domain = google.com
+			
+!doc2:
+	root := $emptyChoice
+
+!$url =::
+	==	"www.\!%(domain)/\!%(path)?\!%params"
+	==	"www.\!%(domain)/\!%(path)"
+	=:	
+		= www.
+		:= !%domain = example.com
+	=	localhost

@@ -1,0 +1,8 @@
+﻿(
+!MyRequest.json:
+root:
+	el1 = 2, 
+	el2: 
+		el3 = 'blablabla',
+	el4 = "blablabla
+	)

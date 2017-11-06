@@ -1,0 +1,9 @@
+﻿!#ipo = http://www.example.com/myipo
+!$Templates.PurchaseOrder:
+	ipo.purchaseOrder:
+		@orderDate := !%orderDate
+		shipTo:
+			!%shipTo
+		billTo:
+			!%billTo
+		ipo.comment := !%comment = 

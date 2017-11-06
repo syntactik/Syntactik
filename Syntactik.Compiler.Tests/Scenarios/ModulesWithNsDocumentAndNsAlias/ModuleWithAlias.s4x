@@ -1,0 +1,9 @@
+﻿!#ipo3 = http://www.example.com/myipo
+
+!$Address.UK.Cambridge:
+	!#ipo4 = http://www.example.com/myipo
+	@export-code = 1
+	ipo3.name = Helen Zoe
+	ipo3.street = 47 Eden Street
+	ipo4.city = Cambridge
+	ipo4.postcode = 126

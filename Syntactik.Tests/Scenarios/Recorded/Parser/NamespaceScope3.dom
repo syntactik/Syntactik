@@ -1,0 +1,22 @@
+00:00	Module `Module`:
+01:01		NamespaceDefinition `ns1`= `syntactik.com`
+02:01		NamespaceDefinition `ns2`= `syntactik.com/malina`
+04:01		Document `MyRequest`:
+05:02			Element `request`:
+06:03				Scope `ns1.`:
+06:08					Element `e1`:
+07:04						Element `e2`
+08:04						Scope `ns2.`:
+08:09							Element `e3`:
+09:05								Scope ``:
+09:07									Element `e4`:
+10:06										Element `e5`
+11:05								Element `e6`
+12:04						Scope ``:
+13:05							Element `e7`
+14:04						Scope `ns1.`:
+14:10							Element `e5`:
+14:14								Element `e6`
+14:19							Scope `ns1.`:
+14:24								Element `e7`:
+14:28									Element `e8`

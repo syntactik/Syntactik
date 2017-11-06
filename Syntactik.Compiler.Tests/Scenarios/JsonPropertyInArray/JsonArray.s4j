@@ -1,0 +1,15 @@
+!json:
+	item:
+		:
+			prop1 = "a"
+			prop2 = "b"
+		$Alias
+		prop1 = "a"
+		:
+			@prop1 = a
+			@prop2 = b
+		prop2 = b
+
+
+!$Alias:
+	prop3 = c

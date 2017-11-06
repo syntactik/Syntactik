@@ -1,0 +1,8 @@
+﻿!#ipo = http://www.example.com/myipo
+
+!$Address:
+	ipo.name := !%name =  Helen Zoe
+	ipo.street := !%street = 47 Eden Street
+	ipo.city := !%city = Cambridge
+	ipo.postcode := !%postcode = 126
+

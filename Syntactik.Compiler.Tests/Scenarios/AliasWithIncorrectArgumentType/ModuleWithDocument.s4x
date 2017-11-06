@@ -1,0 +1,12 @@
+﻿!PurchaseOrder:
+	purchaseOrder:
+		shipTo:
+			$Address:
+				%name:
+					firstName = Helen
+				%street = 47 Eden Street
+
+
+!$Address:
+	name := !%name =  Helen Zoe
+	street: !%street

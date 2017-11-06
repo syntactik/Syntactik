@@ -1,0 +1,11 @@
+00:00	Module `Module`:
+01:01		Document `Module`
+01:01			Element `block`:
+02:02				Element `element1`:
+02:11					Element `element2`== `text`
+03:02				Element `element3`:
+03:14					Element `element4`== `text`
+03:31					Element `element 5`
+04:02				Element `element6`:
+04:13					Element `element7`= `text`
+04:29					Element `element 8`

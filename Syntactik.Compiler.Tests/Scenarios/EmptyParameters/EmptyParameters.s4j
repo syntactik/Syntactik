@@ -1,0 +1,13 @@
+!Document2:
+	root:
+		$Alias2: (%param4: argument4 = "4"), (%param2: element1 = text1, element2 = text2), (%param: startElement:), %param3: endElement:,
+
+!$Alias2:
+	!%param:
+	item: 
+		!%param1:, !%param4:, !%param5:
+	item:
+	!%param2: ()
+	item:
+	!%param3:
+		

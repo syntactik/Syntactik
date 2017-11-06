@@ -1,0 +1,7 @@
+﻿!#ipo = http://www.example.com/myipo
+
+!PurchaseOrder:
+	ipo.purchaseOrder
+
+!$Templates.PurchaseOrder:
+	ipo.purchaseOrder

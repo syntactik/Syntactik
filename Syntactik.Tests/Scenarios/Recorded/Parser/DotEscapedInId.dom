@@ -1,0 +1,7 @@
+00:00	Module `Module`:
+01:01		Document `super.doc`:
+02:02			Element `root..element`:
+03:03				Attribute `awesome.attribute`= `cool`
+04:03				Attribute `ns.spaced.attribute`= `cool`
+05:03				Element `another..element`= `test`
+06:03				Element `ns.spaced.element`= `test`

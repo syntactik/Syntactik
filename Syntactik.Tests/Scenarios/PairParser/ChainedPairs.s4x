@@ -1,0 +1,7 @@
+﻿bl:
+	el1 := $al1 = txt1
+	el3 := $al2 := := txt2
+	el4 := "el5" := el6 = txt3
+	el7 := 'el8' == el9 = txt4
+	el10 := el11
+				

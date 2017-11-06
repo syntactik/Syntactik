@@ -1,0 +1,69 @@
+﻿
+!PurchaseOrder:
+
+	purchaseOrder:
+		orderDate = 2001-12-12
+		shipTo
+
+	purchaseOrder:
+		orderDate = 2001-12-12
+		shipTo
+
+!PurchaseOrder2:
+	$Address
+
+
+!$Address:
+	name = Helen Zoe
+	street = 47 Eden Street
+	city = Cambridge
+	postcode = 126
+
+!$Address1:
+	name = Helen Zoe
+	$Address2
+
+!$Address2:
+	name = Helen Zoe
+	$Address1
+
+!PurchaseOrder3:
+	$Address1
+
+
+!PurchaseOrder4:
+	$Alias1
+
+!$Alias1:
+	@param
+
+!ipo:
+	name = Helen Zoe
+	$Address4
+
+!ipo2:
+	$Address5
+
+!ipo3:
+	$Address5: %name = John Brown
+
+!$Address4::
+	:
+		name := !%name
+		street = 47 Eden Street
+		city = Cambridge
+		postcode = 126		
+	:
+		name = Helen Zoe
+		street = 47 Eden Street
+		city = Cambridge
+		postcode = 126
+
+!$Address5::
+	:
+		name := !%name
+		street = 47 Eden Street
+		city = Cambridge
+		postcode = 126		
+	:
+		name = Helen Zoe

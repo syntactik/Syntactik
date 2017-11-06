@@ -1,0 +1,68 @@
+{
+  "ipo.purchaseOrder": {
+    "orderDate": "2001-12-12",
+    "shipTo": {
+      "xsi.type": "ipo:EU-Address",
+      "export-code": 1,
+      "ipo.name": "Helen Zoe",
+      "ipo.street": "47 Eden Street",
+      "ipo.city": "Cambridge",
+      "ipo.postcode": 126
+    },
+    "billTo": {
+      "xsi.type": "ipo:US-Address",
+      "ipo.name": "Robert Smith",
+      "ipo.street": "8 Oak Avenue",
+      "ipo.city": "Old Town",
+      "ipo.state": "NJ",
+      "ipo.zip": 95819
+    },
+    "Items": {
+      "item": {
+        "partNum": "833-AA",
+        "productName": "Lapis necklace",
+        "quantity": 2,
+        "price": 99.95,
+        "ipo.comment": "Need this for the holidays!",
+        "shipDate": "2016-12-12"
+      },
+      "item": {
+        "partNum": "748-OT",
+        "productName": "Diamond heart",
+        "quantity": 1,
+        "price": 248.90,
+        "ipo.comment": "Valentine's day packaging.",
+        "shipDate": "2000-02-14"
+      },
+      "item": {
+        "partNum": "783-KL",
+        "productName": "Uncut diamond",
+        "quantity": 7,
+        "price": 79.90,
+        "shipDate": "2000-01-07"
+      },
+      "item": {
+        "partNum": "238-KK",
+        "productName": "Amber ring",
+        "quantity": 3,
+        "price": 89.90,
+        "ipo.comment": "With no inclusions, please.",
+        "shipDate": "2000-01-07"
+      },
+      "item": {
+        "partNum": "229-OB",
+        "productName": "Pearl necklace",
+        "quantity": 1,
+        "price": 4879,
+        "shipDate": "1999-12-05"
+      },
+      "item": {
+        "partNum": "128-UL",
+        "productName": "Jade earring",
+        "quantity": 5,
+        "price": 179.90,
+        "shipDate": "2000-02-14"
+      }
+    }
+  }
+}

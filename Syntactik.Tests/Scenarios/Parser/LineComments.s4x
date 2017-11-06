@@ -1,0 +1,13 @@
+'''Start comment
+!MyRequest:
+	ns1.request: '''
+		@name == "name1" '''comment2
+		@ns1.name2 = name2
+'''comment3
+		tag1 = text
+			'''text line2
+		ns1.tag2 = tag2
+	'''line comment
+		element1 '''end comment
+		text = this is open string
+	'''comment

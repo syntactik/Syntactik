@@ -1,0 +1,6 @@
+00:00	Module `Module`:
+01:01		Document `Module`
+01:01			Element `el1`= `line1\nline2`
+04:01			Element `el2`= `line1\nline2`
+07:01			Element `el3`= ` line1\nline2`
+11:01			Element `el4`= `line1\nline2`

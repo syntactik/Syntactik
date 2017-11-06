@@ -1,0 +1,5 @@
+﻿!doc:
+	root:
+		$test2
+		bla
+!$test2 = text

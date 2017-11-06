@@ -1,0 +1,21 @@
+﻿
+!$Address1:
+	name = Helen Zoe
+	street = 47 Eden Street
+	city = Cambridge
+	postcode = 126
+	$Address2
+
+!$Address3:
+	name = Helen Zoe
+	street = 47 Eden Street
+	city = Cambridge
+	postcode = 126
+	$Address3
+
+!$Address4:
+	name = Helen Zoe
+	street = 47 Eden Street
+	city = Cambridge
+	postcode = 126
+	$Address5

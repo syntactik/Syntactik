@@ -1,0 +1,29 @@
+!doc1:
+	root:
+		$alias2: %p1: test1
+
+!doc2:
+	root:
+		$alias2: %p2: test2
+
+!doc3:
+	root:
+		$alias2
+!doc4:
+	root:
+		$alias2: %p3 = text
+
+!$alias2::
+	:
+		!%p1
+		element2
+		element3
+	:
+		element1 
+		!%p2
+		element3
+	:
+		element1 
+		element2
+		:= !%p3
+	:	element1 

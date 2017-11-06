@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<request xmlns:ns1="syntactik.com" xmlns:ns2="syntactik.com/Syntactik">
+  <ns1:e1>
+    <ns1:e2 />
+    <ns2:e3>
+      <e4>
+        <e5 />
+      </e4>
+      <ns2:e6 />
+    </ns2:e3>
+    <e7 />
+    <ns1:e5>
+      <ns1:e6 />
+    </ns1:e5>
+    <ns1:e7>
+      <ns1:e8 />
+    </ns1:e7>
+  </ns1:e1>
+</request>

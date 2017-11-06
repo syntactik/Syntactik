@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root.element xmlns:ns="namespace" awesome.attribute="cool" ns:spaced.attribute="cool">
+  <another.element>test</another.element>
+  <ns:spaced.element>test</ns:spaced.element>
+</root.element>

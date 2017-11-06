@@ -1,0 +1,8 @@
+﻿
+!PurchaseOrder:
+
+	purchaseOrder:
+		orderDate = 2001-12-12
+		shipTo:
+			$Address.UK.Cambridge
+

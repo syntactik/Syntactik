@@ -1,0 +1,4 @@
+00:00	Module `Module`:
+02:01		AliasDefinition `Address`= `47 Eden Street`
+04:01		AliasDefinition `AddressMl`= `47 Eden Street\nCambridge\n126`
+08:01		AliasDefinition `AddressRef`:= 	Alias `Address`

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ipo2:purchaseOrder ipo2:orderDate="2001-12-12" xmlns:ipo2="http://www.example.com/myipo">
+  <ipo2:shipTo export-code="1">
+    <ipo2:name>Helen Zoe</ipo2:name>
+    <ipo2:street>47 Eden Street</ipo2:street>
+    <ipo2:city>Cambridge</ipo2:city>
+    <ipo2:postcode>126</ipo2:postcode>
+  </ipo2:shipTo>
+</ipo2:purchaseOrder>

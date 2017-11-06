@@ -1,0 +1,6 @@
+!#incorrect.ns = incorrect.ns
+!doc:
+	element 1 : 
+		#incorrect.ns:
+
+!$

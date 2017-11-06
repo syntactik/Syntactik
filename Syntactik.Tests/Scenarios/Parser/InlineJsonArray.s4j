@@ -1,0 +1,11 @@
+!json:
+	items:
+		: prop1 == a, prop2 = b
+		: prop3 == a, prop4 == "b", sub_items:
+			:
+				prop5 == "a"
+				prop6 == b
+			:
+				prop7 = a
+				prop8 = b					
+		(: propA = "a", propB = b),	: propC == "a", propD = b

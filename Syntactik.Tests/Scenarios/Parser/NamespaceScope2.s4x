@@ -1,0 +1,7 @@
+
+!MyRequest:
+	request:
+		e1:
+			#ns1:	
+				e2
+		e3: #ns2: e4

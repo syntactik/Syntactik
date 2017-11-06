@@ -1,0 +1,9 @@
+00:00	Module `Module`:
+01:01		Document `Module`
+01:01			Element `bl`:
+02:02				Element `el1`:= 	Alias `al1`= `txt1`
+03:02				Element `el3`:= 	Alias `al2`:= 	Element ``:= 	Element `txt2`
+04:02				Element `el4`:= 	Element "el5":= 	Element `el6`= `txt3`
+05:02				Element `el7`:= 	Element 'el8'== `el9`
+05:21				Element ``= `txt4`
+06:02				Element `el10`:= 	Element `el11`

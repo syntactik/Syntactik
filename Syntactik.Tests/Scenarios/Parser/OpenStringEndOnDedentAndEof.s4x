@@ -1,0 +1,13 @@
+﻿!$Indicators.Batch1:
+	$indicator:
+		%Name = 274933_BP215
+		%SKU == 274933, %Indicator == 274933
+		%Description = Bas Dir W Save $25off-12moterm
+	$indicator:
+		%Name = 274933_BP215
+		(%SKU = 274933, %Indicator = 274933)
+		%Description == Bas Dir W Save $25off-12moterm
+	$indicator:
+		%Name = 274933_BP215
+		%SKU == "274933", %Indicator = 274933
+		%Description == Bas Dir W Save $25off-12moterm

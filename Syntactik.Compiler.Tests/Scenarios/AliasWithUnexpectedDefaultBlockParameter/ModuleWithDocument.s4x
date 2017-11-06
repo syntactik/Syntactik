@@ -1,0 +1,7 @@
+﻿!$RootAlias:
+
+!Document2:
+	root:
+		$RootAlias:
+			element1
+			element2

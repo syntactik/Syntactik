@@ -1,0 +1,5 @@
+!Doc:
+	$Alias:
+		items: 
+			($Items.Jewelry.Necklaces.Lapis: %Quantity = 2), $fff, $ddd
+			$Items.Jewelry.Necklaces.Lapis: %Quantity ==2,, $fff

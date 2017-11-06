@@ -1,0 +1,26 @@
+!MyRequest:
+	request:
+		emptyObject:
+		arrayOfEmptyArrays: ::, ::, ::,
+		arrayOfEmptyArrays: 
+			:: 
+			:: 
+			::
+
+		arrayWithEmptyObject:
+			:
+
+		emptyArray::
+
+		arrayWithEmptyObject: :()
+
+		arrayOfEmptyObjects: :, :, :
+		arrayOfEmptyObjects: 
+			:() 
+			:()
+			:()
+
+
+!EmptyDoc1:: 
+
+!EmptyDoc2:

@@ -1,0 +1,54 @@
+{
+  "ipo.purchaseOrder": {
+    "orderDate": "2014-10-3",
+    "shipTo": {
+      "xsi.type": "ipo:US-Address",
+      "ipo.name": "Robert Smith",
+      "ipo.street": "80 Main St",
+      "ipo.city": "Fort Lee",
+      "ipo.state": "NJ",
+      "ipo.zip": "07024"
+    },
+    "billTo": {
+      "xsi.type": "ipo:US-Address",
+      "ipo.name": "Robert Smith",
+      "ipo.street": "8 Oak Avenue",
+      "ipo.city": "OldTown",
+      "ipo.state": "NJ",
+      "ipo.zip": 95819
+    },
+    "Items": {
+      "item": {
+        "partNum": "748-OT",
+        "productName": "Diamond heart",
+        "quantity": 1,
+        "price": 248.90,
+        "ipo.comment": "Valentine's day packaging.",
+        "shipDate": "2000-02-14"
+      },
+      "item": {
+        "partNum": "833-AA",
+        "productName": "Lapis necklace",
+        "quantity": 100,
+        "price": 1,
+        "ipo.comment": "Need this for the holidays!",
+        "shipDate": "1999-12-05"
+      },
+      "item": {
+        "partNum": "748-OT",
+        "productName": "Diamond heart",
+        "quantity": 1,
+        "price": 248.90,
+        "ipo.comment": "Valentine's day packaging.",
+        "shipDate": "2000-02-14"
+      },
+      "item": {
+        "partNum": "783-KL",
+        "productName": "Uncut diamond",
+        "quantity": 7,
+        "price": 79.90,
+        "shipDate": "2000-01-07"
+      }
+    }
+  }
+}

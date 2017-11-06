@@ -1,0 +1,10 @@
+﻿!Doc:
+	root: 
+		parent1: parent2:
+			a:
+				b
+			c
+		el1, el2:
+			d, e, f
+		el3: el4 == a, el5:
+			a, b, c

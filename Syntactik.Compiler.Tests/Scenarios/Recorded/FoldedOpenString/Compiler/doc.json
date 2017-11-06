@@ -1,0 +1,11 @@
+{
+  "root": {
+    "value": "folded open string",
+    "value1": "folded open string\r\nwith second line",
+    "value2": "first line first line continues",
+    "value3": "first line\r\n\r\nthird line (second line is empty)",
+    "value4": "first line\r\n\r\n\r\nforth line (second and third lines are empty)",
+    "value5": "first line\r\nsecond line",
+    "value6": "First line.\r\nSecond line. Second line continues. Second line continues.\r\nThird line."
+  }
+}

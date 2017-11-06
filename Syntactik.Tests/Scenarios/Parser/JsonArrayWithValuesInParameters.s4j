@@ -1,0 +1,25 @@
+!json:
+	items:
+		: prop1 = a
+		= string
+		== "string2"
+		:= $Number
+		:= $Number: %value = 123.45
+		:= $True
+		:= $True: %value = true
+
+		:= $False
+		:= $False: %value = false
+
+		:= $Null
+		:= $Null: %value = null
+
+		= '$True
+			story'
+		= 'this is
+			$False'
+
+!$True := !%value = true
+!$False := !%value == 'false'
+!$Number := !%value = 123.34
+!$Null := !%value == 'null'

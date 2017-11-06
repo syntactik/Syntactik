@@ -1,0 +1,7 @@
+{
+  "root": {
+    "url1": "www.google.com/search?q = foo",
+    "url2": "www.google.com/search",
+    "url3": "www.example.com"
+  }
+}

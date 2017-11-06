@@ -1,0 +1,12 @@
+﻿!PurchaseOrder123:
+	$Templates.PurchaseOrder:
+		%orderDate = 2001-12-12
+		%shipTo:
+			$Templates.USAddress:
+				%name = Robert Smith
+				%street = 8 Oak Avenue
+				%city = Old Town
+				%state = NJ
+				%zip = 95819
+		%billTo:
+			$UKAddress

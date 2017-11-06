@@ -1,0 +1,10 @@
+MCE0030 JsonDoc.s4j(3,3,17): Alias or Parameter expected after ':='.
+MCE0030 JsonDoc.s4j(4,10,34): Alias or Parameter expected after ':='.
+MCE0030 JsonDoc.s4j(5,3,41): Alias or Parameter expected after ':='.
+MCE0030 JsonDoc.s4j(6,13,64): Alias or Parameter expected after ':='.
+MCE0031 XmlDoc.s4x(1,1,0): Invalid delimiter ':='.
+MCE0031 XmlDoc.s4x(4,3,39): Invalid delimiter ':='.
+MCE0030 XmlDoc.s4x(5,3,55): Alias or Parameter expected after ':='.
+MCE0030 XmlDoc.s4x(6,10,72): Alias or Parameter expected after ':='.
+MCE0030 XmlDoc.s4x(7,3,79): Alias or Parameter expected after ':='.
+MCE0030 XmlDoc.s4x(8,13,102): Alias or Parameter expected after ':='.

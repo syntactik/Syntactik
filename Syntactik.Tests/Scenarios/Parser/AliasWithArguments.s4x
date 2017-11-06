@@ -1,0 +1,10 @@
+
+!ParametersTestDoc:
+	request:
+		$Customer:
+			%BillingAddress:
+				$Addresses.NJ.Paterson
+			%ServiceAddress:
+				$Addresses.NY.Albany
+			%AccountType:
+				$AccountTypes.NewCustomer

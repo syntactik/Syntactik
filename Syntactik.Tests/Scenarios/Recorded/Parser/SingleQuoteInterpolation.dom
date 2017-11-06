@@ -1,0 +1,5 @@
+00:00	Module `Module`:
+01:01		Document `MyRequest`:
+02:02			Element `request`:
+03:03				Element `e1`== 'bla\nbla$bla bla'
+05:03				Element `name`== '[f: $user.first l: $( user.last)`s ]'

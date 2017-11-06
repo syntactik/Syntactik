@@ -1,0 +1,14 @@
+﻿!#ipo = http://www.example.com/myipo
+!#ipo2 = http://www.example.com/myipo
+
+ipo.purchaseOrder:
+	@ipo.orderDate = 2001-12-12
+	ipo2.shipTo:
+		$Address.UK.Cambridge
+
+!$Address.UK.Cambridge:
+	@export-code = 1
+	ipo.name = Helen Zoe
+	ipo.street = 47 Eden Street
+	ipo.city = Cambridge
+	ipo.postcode = 126

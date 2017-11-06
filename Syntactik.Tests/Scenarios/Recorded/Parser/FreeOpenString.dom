@@ -1,0 +1,11 @@
+00:00	Module `Module`:
+01:01		Document `doc`:
+02:02			Element `root`:
+03:03				Element `value`= `free open string`
+04:03				Element `value`= `free open string\n\nwith second line`
+07:03				Element `value`= `"double quoted free openstring"`
+08:03				Element `value`= `'single quoted free openstring'`
+09:03				Element `value`= `'single quoted free openstring'\n\nwith second line`
+12:03				Element `value`= `first line\n\n\tsecond line`
+16:03				Element `value`= `first line\n\nsecond line`
+21:02				Element ``== ``

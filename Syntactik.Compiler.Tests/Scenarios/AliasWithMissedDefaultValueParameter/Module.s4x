@@ -1,0 +1,6 @@
+﻿!$AddressAlias == "Address is \!%_"
+
+!Document:
+	customer:
+		address := $AddressAlias
+			

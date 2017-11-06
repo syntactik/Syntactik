@@ -1,0 +1,7 @@
+00:00	Module `Module`:
+02:01		AliasDefinition `Customer`:
+03:02			Element `Customer`:
+04:03				Attribute `Account`:= 	Parameter `Account`
+05:03				Element `AccountType`:
+06:04					Parameter `AccountType`
+07:03				Parameter `Address`

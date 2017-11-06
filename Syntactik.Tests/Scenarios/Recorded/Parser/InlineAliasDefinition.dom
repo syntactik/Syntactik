@@ -1,0 +1,8 @@
+00:00	Module `Module`:
+01:01		AliasDefinition `test`:
+01:10			Element `x`:
+01:13				Attribute `a`= `a`
+01:21				Attribute `b`= `b`
+01:30			Element `y`:
+01:33				Element `a`
+01:36				Element `b`

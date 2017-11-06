@@ -1,0 +1,10 @@
+﻿!doc1:
+	foo =
+	$bar
+	
+!$bar = text
+
+!doc2:
+	$bar
+	foo =
+	

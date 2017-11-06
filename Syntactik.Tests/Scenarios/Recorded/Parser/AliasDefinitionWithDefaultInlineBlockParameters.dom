@@ -1,0 +1,10 @@
+00:00	Module `Module`:
+02:01		AliasDefinition `Customer`:
+03:02			Element `Customer`:
+04:03				Element `Account`:
+04:12					Parameter `AccountType`:
+04:27						Element `Type`= `NewCustomer`
+05:03				Parameter `ServiceAddress`:
+05:21					Alias `Addresses.PA.Hawley`
+06:03				Parameter `BillingAddress`:
+06:21					Alias `Addresses.PA.Hawley`

@@ -1,0 +1,22 @@
+{
+  "ipo.purchaseOrder": {
+    "orderDate": "2001-12-12",
+    "shipTo": {
+      "xsi.type": "ipo:US-Address",
+      "ipo2.name": "Robert Smith",
+      "ipo2.street": "8 Oak Avenue",
+      "ipo2.city": "Old Town",
+      "ipo2.state": "NJ",
+      "ipo2.zip": 95819
+    },
+    "billTo": {
+      "xsi.type": "ipo:EU-Address",
+      "export-code": 1,
+      "ipo3.name": "Helen Zoe",
+      "ipo3.street": "47 Eden Street",
+      "ipo3.city": "Cambridge",
+      "ipo3.postcode": 126
+    },
+    "ipo.comment": ""
+  }
+}

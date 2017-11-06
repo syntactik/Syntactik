@@ -1,0 +1,10 @@
+{
+  "root": {
+    "text1": "$5 'FiOS' TV Offer",
+    "text1": "$5 \"FiOS\" TV Offer",
+    "text2": "blabla $\b\t \n\u000b\f\r\"\\",
+    "text3": "¯ 日本\nLine 1\nline\n",
+    "foldedText": "Line 1. Line 1 continues\r\nLine2 starts. Line 2 continues\r\n",
+    "h": "$5 FiOS TV Offer"
+  }
+}

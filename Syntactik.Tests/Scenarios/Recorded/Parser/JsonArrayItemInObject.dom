@@ -1,0 +1,11 @@
+00:00	Module `Module`:
+01:01		Document `json`:
+02:02			Element `item`:
+03:03				Element `prop1`= `a`
+04:03				Element `prop2`= `b`
+05:02				Element ``:
+06:04					Element `prop1`= `a`
+07:04					Element `prop2`= `b`
+08:02				Element ``:
+09:04					Attribute `prop1`= `a`
+10:04					Attribute `prop2`= `b`

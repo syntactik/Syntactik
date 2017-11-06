@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <value>String</value>
+  <value1>Folded string
+with second line</value1>
+  <value2>First line. First line continues.</value2>
+  <value3>First line.
+
+Third line (second line is empty).</value3>
+  <value4>First line.
+
+
+Forth line (second and third lines are empty).</value4>
+  <value5>First line.
+Second line.</value5>
+  <value6>First line.
+Second line. Second line continues. Second line continues.
+Third line.			
+</value6>
+</root>

@@ -1,0 +1,6 @@
+
+!MyRequest:
+	ns1.request:
+		@name := $alias1
+		@ns1.name2 = name2
+

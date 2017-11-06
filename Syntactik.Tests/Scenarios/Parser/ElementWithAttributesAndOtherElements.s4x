@@ -1,0 +1,10 @@
+
+!MyRequest:
+	ns1.request:
+		test = // one / two / three // it is not a comment
+		ssss = ' one two te$$ting $$$three'
+		@name = "name1"
+		@ns1.name2 = name2
+		tag1 = tag1
+		ns1.tag2 = "tag2"
+		

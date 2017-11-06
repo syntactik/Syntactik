@@ -1,0 +1,32 @@
+!#ipo = http://www.example.com/myipo
+!#xsi = http://www.w3.org/2001/XMLSchema-instance
+!$Templates.PurchaseOrder:
+	ipo.purchaseOrder:
+		@orderDate := !%orderDate
+		shipTo: !%shipTo
+		billTo: !%billTo
+		::
+			: ipo.comment := !%comment
+			:
+		Items: !%items
+
+!$Items.Jewelry.Diamonds.Heart:
+	item:
+		@partNum = 748-OT
+		productName = Diamond heart
+		quantity := !%quantity = 1
+		price = 248.90
+		ipo.comment = Valentine's day packaging.
+		shipDate = 2000-02-14
+
+!PurchaseOrderFromTemplate:
+	$Templates.PurchaseOrder:
+		%orderDate = 2017-09-11
+		%shipTo:
+			@xsi.type = ipo:EU-Address
+			(@export-code = 1, ipo.name = Helen Zoe, ipo.street = 47 Eden Street, ipo.city = Cambridge, ipo.postcode = 126)
+		%billTo:
+			@xsi.type = ipo:US-Address
+			(ipo.name = Robert Smith, ipo.street = 8 Oak Avenue, ipo.city = Old Town, ipo.state = AK, ipo.zip = 95819)
+		%items:
+			$Items.Jewelry.Diamonds.Heart

@@ -1,0 +1,15 @@
+﻿!PurchaseOrder:
+	purchaseOrder:
+		shipTo:
+			$Address
+
+
+!$Address =  47 Eden Street
+	
+!PurchaseOrder2:
+	purchaseOrder:
+		shipTo:
+			name := $Name
+
+!$Name:
+	name = Helen Zoe

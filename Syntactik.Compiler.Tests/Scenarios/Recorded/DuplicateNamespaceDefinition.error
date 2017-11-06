@@ -1,0 +1,6 @@
+MCE0033 ModuleWithNsDef1.s4x(1,1,0): Duplicate namespace definition name - 'ipo'.
+MCE0033 ModuleWithNsDef1.s4x(2,1,38): Duplicate namespace definition name - 'ipo'.
+MCE0033 ModuleWithNsDef1.s4x(5,2,87): Duplicate namespace definition name - 'ipo1'.
+MCE0033 ModuleWithNsDef1.s4x(6,2,127): Duplicate namespace definition name - 'ipo1'.
+MCE0033 ModuleWithNsDef1.s4x(10,2,190): Duplicate namespace definition name - 'ipo2'.
+MCE0033 ModuleWithNsDef1.s4x(11,2,230): Duplicate namespace definition name - 'ipo2'.

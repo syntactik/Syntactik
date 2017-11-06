@@ -1,0 +1,5 @@
+!doc:
+	root:
+		!doc2
+		!#ns = ns
+		!$alias:

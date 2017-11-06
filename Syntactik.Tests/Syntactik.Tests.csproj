@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A628E8B6-489D-44B4-8B34-8C8CFE3D5858}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Syntactik.Tests</RootNamespace>
+    <AssemblyName>Syntactik.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DomPrinter.cs" />
+    <Compile Include="ErrorListener.cs" />
+    <Compile Include="PairParserTests.cs" />
+    <Compile Include="ParserTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecordedTestAttributes.cs" />
+    <Compile Include="TestUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Scenarios\PairParser\Comma.s4x" />
+    <None Include="Scenarios\PairParser\ChainedPairs.s4x" />
+    <None Include="Scenarios\PairParser\ChainedPairs2.s4x" />
+    <None Include="Scenarios\PairParser\CommentEndsOpenString.s4x" />
+    <None Include="Scenarios\PairParser\Comments.s4x" />
+    <None Include="Scenarios\PairParser\CommentsMultiline.s4x" />
+    <None Include="Scenarios\PairParser\DqName.s4x" />
+    <None Include="Scenarios\PairParser\DqName2.s4x" />
+    <None Include="Scenarios\PairParser\DqString.s4x" />
+    <None Include="Scenarios\PairParser\EmptyInlinePair.s4x" />
+    <None Include="Scenarios\PairParser\EmptyName.s4x" />
+    <None Include="Scenarios\PairParser\EmptyValue.s4x" />
+    <None Include="Scenarios\PairParser\EmptyValue1.s4x" />
+    <None Include="Scenarios\PairParser\EmptyValue2.s4x" />
+    <None Include="Scenarios\PairParser\EmptyValue3.s4x" />
+    <None Include="Scenarios\PairParser\EmptyWsaBlock.s4x" />
+    <None Include="Scenarios\PairParser\ErrorOpenParenthesis.s4x" />
+    <None Include="Scenarios\PairParser\ExtraDelimiter.s4x" />
+    <None Include="Scenarios\PairParser\InlineBlock2.s4x" />
+    <None Include="Scenarios\PairParser\InlineBlock.s4x" />
+    <None Include="Scenarios\PairParser\InvalidIndent.s4x" />
+    <None Include="Scenarios\PairParser\InvalidIndentMultiplicity.s4x" />
+    <None Include="Scenarios\PairParser\InvalidMixedIndentation.s4x" />
+    <None Include="Scenarios\PairParser\InvalidWsaIndent.s4x" />
+    <None Include="Scenarios\PairParser\MultilineBlock.s4x" />
+    <None Include="Scenarios\PairParser\MultilineDqString.s4x" />
+    <None Include="Scenarios\PairParser\MultilineDqString2.s4x" />
+    <None Include="Scenarios\PairParser\MultilineDqString3.s4x" />
+    <None Include="Scenarios\PairParser\MultilineFreeOpenString.s4x" />
+    <None Include="Scenarios\PairParser\MultilineOpenString.s4x" />
+    <None Include="Scenarios\PairParser\MultilineOpenStringIndent.s4x" />
+    <None Include="Scenarios\PairParser\MultilineSqString.s4x" />
+    <None Include="Scenarios\PairParser\MultilineSqString2.s4x" />
+    <None Include="Scenarios\PairParser\MultilineStringIndentMismatch.s4x" />
+    <None Include="Scenarios\PairParser\PairDelimiter.s4x" />
+    <None Include="Scenarios\PairParser\SimpleBlock.s4x" />
+    <None Include="Scenarios\PairParser\SimpleBlock1.s4x" />
+    <None Include="Scenarios\PairParser\SimpleBlock2.s4x" />
+    <None Include="Scenarios\PairParser\SimpleBlock3.s4x" />
+    <None Include="Scenarios\PairParser\SimplePair.s4x" />
+    <None Include="Scenarios\PairParser\SqName.s4x" />
+    <None Include="Scenarios\PairParser\SqName2.s4x" />
+    <None Include="Scenarios\PairParser\UnclosedDq.s4x" />
+    <None Include="Scenarios\PairParser\UnclosedDq2.s4x" />
+    <None Include="Scenarios\PairParser\Wsa.s4x" />
+    <None Include="Scenarios\PairParser\Wsa4.s4x" />
+    <None Include="Scenarios\PairParser\Wsa3.s4x" />
+    <None Include="Scenarios\PairParser\Wsa2.s4x" />
+    <None Include="Scenarios\Parser\AliasDefinitionWithAttrAndElem.s4x" />
+    <None Include="Scenarios\Parser\AliasDefinitionWithAttributes.s4x" />
+    <None Include="Scenarios\Parser\AliasDefinitionWithDefaultBlockParameters.s4x" />
+    <None Include="Scenarios\Parser\AliasDefinitionWithDefaultInlineBlockParameters.s4x" />
+    <None Include="Scenarios\Parser\AliasDefinitionWithDefaultValueParameters.s4x" />
+    <None Include="Scenarios\Parser\AliasDefinitionWithInlineAttributeDefaultParameters.s4x" />
+    <None Include="Scenarios\Parser\AliasDefinitionWithInlineAttributeParameters.s4x" />
+    <None Include="Scenarios\Parser\AliasDefinitionWithInlineParameters.s4x" />
+    <None Include="Scenarios\Parser\AliasDefinitionWithSimpleParameters.s4x" />
+    <None Include="Scenarios\Parser\AliasWithArguments.s4x" />
+    <None Include="Scenarios\Parser\AliasWithDefaultValueParameter.s4x" />
+    <None Include="Scenarios\Parser\AliasWithIncorrectBlock.s4x" />
+    <None Include="Scenarios\Parser\AliasWithInlineArgumentList.s4x" />
+    <None Include="Scenarios\Parser\AliasWithInlineArgumentList2.s4x" />
+    <None Include="Scenarios\Parser\AliasWithInlineArgumentList3.s4x" />
+    <None Include="Scenarios\Parser\AliasWithInlineArgumentList4.s4x" />
+    <None Include="Scenarios\Parser\AliasWithInlineArgumentList5.s4x" />
+    <None Include="Scenarios\Parser\AliasWithInlineArguments.s4x" />
+    <None Include="Scenarios\Parser\DotEscapedInId.s4x" />
+    <None Include="Scenarios\Parser\DoubleQuoteMultilineString.s4x" />
+    <None Include="Scenarios\Parser\DoubleQuoteMultilineStringEof.s4x" />
+    <None Include="Scenarios\Parser\DoubleQuoteMultilineStringEof2.s4x" />
+    <None Include="Scenarios\Parser\ElementAtEOF.s4x" />
+    <None Include="Scenarios\Parser\ElementList1.s4x" />
+    <None Include="Scenarios\Parser\ElementWithAlias.s4x" />
+    <None Include="Scenarios\Parser\ElementWithAliasAndAliasDefinition.s4x" />
+    <None Include="Scenarios\Parser\ElementWithAliasedAttribute.s4x" />
+    <None Include="Scenarios\Parser\ElementWithAttributes.s4x" />
+    <None Include="Scenarios\Parser\ElementWithAttributesAndOtherElements.s4x" />
+    <None Include="Scenarios\Parser\ElementWithNamespace.s4x" />
+    <None Include="Scenarios\Parser\ElementWithNestedAlias.s4x" />
+    <None Include="Scenarios\Parser\ElementWithNestedAliasAndNestedAliasDefinition.s4x" />
+    <None Include="Scenarios\Parser\EmptyElement.s4x" />
+    <None Include="Scenarios\Parser\EmptyElementWithNamespace.s4x" />
+    <None Include="Scenarios\Parser\EmptyParameters.s4x" />
+    <None Include="Scenarios\Parser\FreeOpenString.s4x" />
+    <None Include="Scenarios\Parser\HybridBlock.s4x" />
+    <None Include="Scenarios\Parser\HybridBlockAliasStmt.s4x" />
+    <None Include="Scenarios\Parser\HybridBlockArgumentStmt.s4x" />
+    <None Include="Scenarios\Parser\HybridBlockParameterStmt.s4x" />
+    <None Include="Scenarios\Parser\InlineAliasDefinition.s4x" />
+    <None Include="Scenarios\Parser\InlineAliasEndOfBlock.s4x" />
+    <None Include="Scenarios\Parser\InlineDocumentDefinition.s4x" />
+    <None Include="Scenarios\Parser\InlineElementBody1.s4x" />
+    <None Include="Scenarios\Parser\InlineElementBody2.s4x" />
+    <None Include="Scenarios\Parser\InlineElementBody3.s4x" />
+    <None Include="Scenarios\Parser\InlineJsonArray.s4j" />
+    <None Include="Scenarios\Parser\JsonArray.s4j" />
+    <None Include="Scenarios\Parser\JsonArrayItemInObject.s4j" />
+    <None Include="Scenarios\Parser\JsonArrayWithValues.s4j" />
+    <None Include="Scenarios\Parser\JsonArrayWithValuesInParameters.s4j" />
+    <None Include="Scenarios\Parser\JsonEmptyArrayAndObject.s4j" />
+    <None Include="Scenarios\Parser\JsonLiteralsInSqs.s4j" />
+    <None Include="Scenarios\Parser\LineComments.s4x" />
+    <None Include="Scenarios\Parser\ModuleNamespaceOverload.s4x" />
+    <None Include="Scenarios\Parser\NamespaceScope1.s4x" />
+    <None Include="Scenarios\Parser\NamespaceScope2.s4x" />
+    <None Include="Scenarios\Parser\NamespaceScope3.s4x" />
+    <None Include="Scenarios\Parser\NestedAliasesWithParameters.s4x" />
+    <None Include="Scenarios\Parser\OpenStringEmpty.s4x" />
+    <None Include="Scenarios\Parser\OpenStringEndOnDedentAndEof.s4x" />
+    <None Include="Scenarios\Parser\OpenStringEndsWithIndentEof.s4x" />
+    <None Include="Scenarios\Parser\OpenStringMultiline.s4x" />
+    <None Include="Scenarios\Parser\OpenStringMultiline2.s4x" />
+    <None Include="Scenarios\Parser\OpenStringMultiline3.s4x" />
+    <None Include="Scenarios\Parser\SingleQuotedStringInline.s4x" />
+    <None Include="Scenarios\Parser\DoubleQuoteEscape.s4x" />
+    <None Include="Scenarios\Parser\SingleQuoteMultiline.s4x" />
+    <None Include="Scenarios\Parser\ValueAliasDefinition.s4x" />
+    <None Include="Scenarios\Parser\wsa1.s4x" />
+    <None Include="Scenarios\Parser\Wsa2.s4x" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Syntactik\Syntactik.csproj">
+      <Project>{b36ec10c-824d-4023-a32e-8bc9369869ae}</Project>
+      <Name>Syntactik</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>rmdir $(TargetDir)Scenarios /s /q
+xcopy $(ProjectDir)Scenarios  $(TargetDir)Scenarios /E /I /Y /Q</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

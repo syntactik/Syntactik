@@ -1,0 +1,20 @@
+!doc:
+	root:
+		el1 =:
+		el2 =:
+			foo
+			$bar
+		el3 =:
+			$bar
+			foo
+		el4 =:
+			$name:
+				%first = John
+				%last = Brown
+			
+!$bar = bar
+
+!$name =:
+	!%first
+	" "
+	!%last			

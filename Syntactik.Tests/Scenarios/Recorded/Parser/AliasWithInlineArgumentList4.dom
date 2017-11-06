@@ -1,0 +1,7 @@
+00:00	Module `Module`:
+02:01		Document `ParametersTestDoc`:
+03:02			Element `request`:
+04:03				Alias `Customer`:
+05:04					Argument `AccountType`== `Assets`
+05:28					Argument `IsActive`== `True`
+06:03				Alias `Account`

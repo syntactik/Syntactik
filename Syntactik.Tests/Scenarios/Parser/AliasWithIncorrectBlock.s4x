@@ -1,0 +1,13 @@
+'''Alias body must be either block or block of arguments
+
+!PurchaseOrder:
+	purchaseOrder:
+		@orderDate = 2001-12-12
+		shipTo:
+			$Address:
+				%Name = Helen
+				City = London
+
+
+!$Address:
+	name := !%name =  Helen Zoe

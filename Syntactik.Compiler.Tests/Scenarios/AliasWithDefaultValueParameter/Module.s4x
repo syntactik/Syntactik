@@ -1,0 +1,11 @@
+﻿!$AddressAlias == "Address is \!%_"
+
+!Document:
+	customer:
+		address := $AddressAlias = 1100 main street
+
+!Document2:
+	customer:
+		address := $AddressAlias := $MainStreet
+
+!$MainStreet = 1100 main street

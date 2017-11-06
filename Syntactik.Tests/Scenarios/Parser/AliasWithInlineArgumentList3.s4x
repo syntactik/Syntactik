@@ -1,0 +1,4 @@
+
+!ParametersTestDoc:
+	request:
+		$Customer: %AccountType == "Assets", %IsActive == "false"

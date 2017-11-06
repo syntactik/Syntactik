@@ -1,0 +1,15 @@
+!json:
+	item1:
+		$Array
+	item2:
+		:
+			prop1 = a
+		$Array
+
+!$Array:
+	:
+		prop1 = a
+		prop2 = b
+	:
+		@prop1 = a
+		@prop2 = b

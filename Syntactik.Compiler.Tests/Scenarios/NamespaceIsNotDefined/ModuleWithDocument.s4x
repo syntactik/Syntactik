@@ -1,0 +1,6 @@
+﻿
+!PurchaseOrder:	
+	ipo.purchaseOrder:
+		@ipo2.orderDate = 2001-12-12
+
+

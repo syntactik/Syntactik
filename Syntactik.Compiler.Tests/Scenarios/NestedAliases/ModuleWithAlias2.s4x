@@ -1,0 +1,7 @@
+﻿!#ipo5 = http://www.example.com/myipo
+
+!$Address.UK.Cambridge.Street:
+	ipo5.street = 47 Eden Street
+	ipo5.city = Cambridge
+	ipo5.postcode = 126
+

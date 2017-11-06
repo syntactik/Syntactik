@@ -1,0 +1,20 @@
+﻿
+!MyRequest.json:
+	(a, b)
+	(a = true, 
+b= 2, 
+		state = active, 
+			c = true, 
+			d = false, e = .02
+	)
+	items:
+		:
+			(a = true, 
+				b= 2, state = active,
+		c = true, d = false, e = .02
+		)
+	ns1.request:
+		(a = true, b= 2, state = active)
+		(a = true, b= 2, state = active,
+	c = true, d = false, e = .02
+	)

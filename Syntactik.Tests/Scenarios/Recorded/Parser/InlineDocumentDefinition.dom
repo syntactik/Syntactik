@@ -1,0 +1,8 @@
+00:00	Module `Module`:
+01:01		Document `test`:
+01:09			Element `x`:
+01:12				Attribute `a`= "a"
+01:20				Attribute `b`= "b"
+01:29			Element `y`:
+01:32				Element `a`
+01:35				Element `b`

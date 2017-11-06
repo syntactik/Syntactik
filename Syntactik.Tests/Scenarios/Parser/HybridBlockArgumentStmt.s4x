@@ -1,0 +1,7 @@
+﻿!Document1:
+	root:
+		$Alias: 
+			%arg14: @attr == 4, element:
+				element1 = text1
+				element2 = text2
+				

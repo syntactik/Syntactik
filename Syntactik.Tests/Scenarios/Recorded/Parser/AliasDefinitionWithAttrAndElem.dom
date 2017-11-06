@@ -1,0 +1,7 @@
+00:00	Module `Module`:
+02:01		AliasDefinition `Customer`:
+03:02			Attribute `attr1`= `1`
+04:02			Attribute `attr2`== `2`
+04:15			Attribute `attr3`== `3`
+05:02			Element `Customer`:
+06:03				Element `Account`

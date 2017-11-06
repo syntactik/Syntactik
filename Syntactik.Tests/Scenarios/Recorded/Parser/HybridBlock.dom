@@ -1,0 +1,19 @@
+00:00	Module `Module`:
+01:01		Document `Doc`:
+02:02			Element `root`:
+03:03				Element `parent1`:
+03:12					Element `parent2`:
+04:04						Element `a`:
+05:05							Element `b`
+06:04						Element `c`
+07:03				Element `el1`
+07:08				Element `el2`:
+08:04					Element `d`
+08:07					Element `e`
+08:10					Element `f`
+09:03				Element `el3`:
+09:08					Element `el4`== `a`
+09:18					Element `el5`:
+10:04						Element `a`
+10:07						Element `b`
+10:10						Element `c`

@@ -1,0 +1,6 @@
+﻿!Document:
+	$Alias: %param1:, %param2:
+
+!$Alias:
+	root:
+		!%param1

@@ -1,0 +1,11 @@
+00:00	Module `Module`:
+01:01		AliasDefinition `Alias`:
+02:02			Parameter `param`:
+03:02			Element `item`:
+04:03				Parameter `param1`:
+04:14				Parameter `param4`:
+04:25				Parameter `param5`:
+05:02			Element `item`
+06:02			Parameter `param2`:
+07:02			Element `item`
+08:02			Parameter `param3`:

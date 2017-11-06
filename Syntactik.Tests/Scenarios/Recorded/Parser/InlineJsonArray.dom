@@ -1,0 +1,22 @@
+00:00	Module `Module`:
+01:01		Document `json`:
+02:02			Element `items`:
+03:02				Element ``:
+03:05					Element `prop1`== `a`
+03:17					Element `prop2`= `b`
+04:02				Element ``:
+04:05					Element `prop3`== `a`
+04:17					Element `prop4`== "b"
+04:31					Element `sub_items`:
+05:03						Element ``:
+06:05							Element `prop5`== "a"
+07:05							Element `prop6`== `b`
+08:03						Element ``:
+09:05							Element `prop7`= `a`
+10:05							Element `prop8`= `b`
+11:03				Element ``:
+11:06					Element `propA`= "a"
+11:19					Element `propB`= `b`
+11:30				Element ``:
+11:33					Element `propC`== "a"
+11:47					Element `propD`= `b`

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <value>folded open string</value>
+  <value1>folded open string
+with second line</value1>
+  <value2>first line first line continues</value2>
+  <value3>first line
+
+third line (second line is empty)</value3>
+  <value4>first line
+
+
+forth line (second and third lines are empty)</value4>
+  <value5>first line
+second line</value5>
+  <value6>First line.
+Second line. Second line continues. Second line continues.
+Third line.</value6>
+</root>

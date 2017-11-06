@@ -1,0 +1,7 @@
+00:00	Module `Module`:
+01:01		Document `Module`
+01:01			Element `bl1`:
+02:02				Element `el1`= `text1`
+05:02				Element `el2`
+06:02				Element `el3`= `line1\n'''line2`
+08:02				Element `el4`

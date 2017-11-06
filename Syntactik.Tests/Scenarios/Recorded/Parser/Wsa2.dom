@@ -1,0 +1,7 @@
+00:00	Module `Module`:
+02:01		Document `MyRequest.json`:
+03:01			Element `root`:
+04:02				Element `el1`= `2`
+05:02				Element `el2`:
+06:03					Element `el3`= 'blablabla'
+07:02					Element `el4`= "blablabla"

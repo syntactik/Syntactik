@@ -1,0 +1,10 @@
+﻿!doc:
+	root: 
+		guests: $GuestList: %man
+
+!$GuestList::
+	:
+		John Brown
+	:
+		Martha White
+	

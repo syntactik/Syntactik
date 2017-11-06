@@ -1,0 +1,11 @@
+00:00	Module `Module`:
+01:01		NamespaceDefinition `ns01`= `http://myNs01.com`
+02:01		NamespaceDefinition `nsModule`= `http://myNsModule.com`
+04:01		Document `MyRequest`:
+05:02			NamespaceDefinition `ns11`= `http://myNs11.com`
+06:02			NamespaceDefinition `nsModule`= `http://myNsDoc1.com`
+08:02			Element `request`
+10:01		Document `MyRequest2`:
+11:02			NamespaceDefinition `ns21`= `http://myNs21.com`
+12:02			NamespaceDefinition `nsModule`= `http://myNsDoc2.com`
+14:02			Element `request`

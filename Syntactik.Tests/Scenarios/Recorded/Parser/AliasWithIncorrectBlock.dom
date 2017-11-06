@@ -1,0 +1,10 @@
+00:00	Module `Module`:
+03:01		Document `PurchaseOrder`:
+04:02			Element `purchaseOrder`:
+05:03				Attribute `orderDate`= `2001-12-12`
+06:03				Element `shipTo`:
+07:04					Alias `Address`:
+08:05						Argument `Name`= `Helen`
+09:05						Element `City`= `London`
+12:01		AliasDefinition `Address`:
+13:02			Element `name`:= 	Parameter `name`= `Helen Zoe`

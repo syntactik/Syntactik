@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "prop1": "a"
+    },
+    "string",
+    "string2",
+    123.34,
+    123.45,
+    true,
+    true,
+    false,
+    false,
+    null,
+    null,
+    "true\r\nstory",
+    "this is\r\nfalse"
+  ]
+}

@@ -1,0 +1,8 @@
+
+!$Customer:
+	Customer:
+		@Account := !%Account = Inactive
+		AccountType:
+			!%AccountType
+		!%Address
+		

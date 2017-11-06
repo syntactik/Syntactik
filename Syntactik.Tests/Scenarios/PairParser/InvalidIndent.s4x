@@ -1,0 +1,10 @@
+﻿bl: el1 == "text"
+	el2
+el3:
+	el4
+		el5
+ el6
+el7:
+		el8
+el9
+ el10

@@ -1,0 +1,19 @@
+﻿!#xsi = http://www.w3.org/2001/XMLSchema-instance
+!#ipo = http://www.example.com/myipo
+
+!$Address.UK.Cambridge:
+	@xsi.type = ipo:EU-Address
+	@export-code = 1
+	ipo.name = Helen Zoe
+	ipo.street = 47 Eden Street
+	ipo.city = Cambridge
+	ipo.postcode = 126
+		
+
+!$Address.US.NJ:
+	@xsi.type = ipo:US-Address
+	ipo.name = Robert Smith
+	ipo.street = 8 Oak Avenue
+	ipo.city = Old Town
+	ipo.state = NJ
+	ipo.zip = 95819

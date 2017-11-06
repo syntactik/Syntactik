@@ -1,0 +1,10 @@
+﻿!PurchaseOrder:
+	purchaseOrder:
+		shipTo:
+			address := $Address
+			name := $Name
+
+
+!$Address := !%street
+
+!$Name == "Name: \!%name"

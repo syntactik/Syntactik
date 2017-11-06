@@ -1,0 +1,73 @@
+﻿#ipo = http://www.altova.com/IPO
+#xsi = http://www.w3.org/2001/XMLSchema-instance
+
+!PurchaseOrder:
+	$Templates.PurchaseOrderByState.NJ:
+		.Items:
+			$Items.Jewelry.Diamond.Heart
+			$Items.Jewelry.Necklaces.Lapis
+			$Items.Jewelry.Diamond.Heart
+			$Items.Jewelry.Diamond.Uncut
+
+!$Templates.PurchaseOrderByState.NJ:
+	$Templates.PurchaseOrderTemplate:
+		.OrderDate = %OrderDate = 2014-10-19
+		.ShipTo:
+			%ShipTo: $Addresses.USAddress.NJ.Default.ShipTo
+		.BillTo:
+			%BillTo: $Addresses.USAddress.NJ.Default.BillTo
+		.Items:
+			%Items
+
+!$Templates.PurchaseOrderTemplate:
+	ipo.purchaseOrder:
+		@orderDate = %OrderDate
+		shipTo:
+			%ShipTo
+		billTo:
+			%BillTo
+		Items:
+			%Items
+
+
+!$Addresses.USAddress.NJ.Default.BillTo:
+	@xsi.type="ipo:US-Address"
+	ipo.name == Robert Smith
+	ipo.street == 8 Oak Avenue
+	ipo.city == OldTown
+	ipo.state = AK
+	ipo.zip = 95819
+
+!$Addresses.USAddress.NJ.Default.ShipTo:
+	@xsi.type="ipo:US-Address"
+	ipo.name == Robert Smith
+	ipo.street == 8 Oak Avenue
+	ipo.city == OldTown
+	ipo.state = AK
+	ipo.zip = 95819
+
+!$Items.Jewelry.Necklaces.Lapis:
+	item:
+		@partNum = 833-AA
+		productName == Lapis necklace
+		quantity = %Quantity = 1
+		price = %Price = 1
+		ipo.comment == Need this for the holidays!
+		shipDate = 1999-12-05
+
+!$Items.Jewelry.Diamond.Heart:
+	item:
+		@partNum = 748-OT
+		productName == Diamond heart
+		quantity = 1
+		price = 248.90
+		ipo.comment == Valentine's day packaging.
+		shipDate = 2000-02-14
+
+!$Items.Jewelry.Diamond.Uncut:
+	item:
+		@partNum = 783-KL
+		productName == Uncut diamond
+		quantity = 7
+		price = 79.90
+		shipDate = 2000-01-07

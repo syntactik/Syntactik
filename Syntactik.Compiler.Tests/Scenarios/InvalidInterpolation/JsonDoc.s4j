@@ -1,0 +1,8 @@
+!doc:
+	root:
+		element1 == "\z"
+		element2 == "bla\$(test"
+		element3 == "bla\!%(test"
+		element4 == "bla\u0047"
+		element5 == "bla\u047"
+

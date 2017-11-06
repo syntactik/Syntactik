@@ -1,0 +1,10 @@
+﻿!MyRequest:
+	request:
+		e1 == "User Address:
+			\$Address"
+		name == "[f: \"\$User.FirstName\" l: \"\$( User.LastName )\" ]"
+
+!$Address = 50 Main Street
+
+!$User.FirstName = Helen
+!$User.LastName = Zoe

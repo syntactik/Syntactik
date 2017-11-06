@@ -1,0 +1,57 @@
+﻿
+!#xsi = http://www.w3.org/2001/XMLSchema-instance
+!#ipo = http://www.example.com/myipo
+
+!$Items.Jewelry.Necklaces.Lapis:
+	item:
+		@partNum = 833-AA
+		productName = Lapis necklace
+		quantity := !%quantity = 1
+		price = 99.95
+		ipo.comment = Need this for the holidays!
+		shipDate = 2016-12-12
+
+!$Items.Jewelry.Diamonds.Heart:
+	item:
+		@partNum = 748-OT
+		productName = Diamond heart
+		quantity := !%quantity = 1
+		price = 248.90
+		ipo.comment = Valentine's day packaging.
+		shipDate = 2000-02-14
+
+!$Items.Jewelry.Diamonds.Uncut:
+	item:
+		@partNum = 783-KL
+		productName = Uncut diamond
+		quantity := !%quantity = 1
+		price = 79.90
+		shipDate = 2000-01-07
+
+!$Items.Jewelry.Rings.Amber:
+	item:
+		@partNum = 238-KK
+		productName = Amber ring
+		quantity := !%quantity = 1
+		price = 89.90
+		ipo.comment = With no inclusions, please.
+		shipDate = 2000-01-07
+
+
+!$Items.Jewelry.Necklaces.Pearl:
+	item:
+		@partNum = 229-OB
+		productName = Pearl necklace
+		quantity := !%quantity = 1
+		price = 4879.00
+		shipDate = 1999-12-05
+
+!$Items.Jewelry.Earings.Jade:
+	item:
+		@partNum = 128-UL
+		productName = Jade earring
+		quantity := !%quantity = 1
+		price = 179.90
+		shipDate = 2000-02-14
+
+ 

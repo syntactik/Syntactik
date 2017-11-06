@@ -1,0 +1,13 @@
+01:00	AliasDefinition `Address.UK.Cambridge`:
+02:01		Attribute `export-code`= `1`
+03:01		Element `name`= `Helen Zoe`
+04:01		Element `street`= `47 Eden Street`
+05:01		Element `city`= `Cambridge`
+06:01		Element `postcode`= `126`
+
+01:00	Document `PurchaseOrder`:
+02:01		Element `purchaseOrder`:
+03:02			Attribute `orderDate`= `2001-12-12`
+04:02			Element `shipTo`:
+05:03				Alias `Address.UK.Cambridge`
+

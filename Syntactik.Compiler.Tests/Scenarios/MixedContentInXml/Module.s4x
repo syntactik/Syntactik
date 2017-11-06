@@ -1,0 +1,10 @@
+﻿!MyRequest:
+	html:
+		body:
+			div:
+				@class == footer-col col-md-4
+				img: @src == "white-trans.png"
+				== "Copyright \u00A9 Syntactik 2016"
+				br
+				= info@syntactik.com
+					

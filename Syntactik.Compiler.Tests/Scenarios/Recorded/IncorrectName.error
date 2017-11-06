@@ -1,0 +1,5 @@
+MCE0101 JsonDoc.s4j(4,1,24): Invalid name.
+MCE0102 XmlDoc.s4x(1,1,0): Invalid namespace prefix name.
+MCE0100 XmlDoc.s4x(3,2,39): Invalid XML element name.
+MCE0003 XmlDoc.s4x(4,3,55): Namespace prefix 'incorrect' is not defined.
+MCE0101 XmlDoc.s4x(6,1,73): Invalid name.

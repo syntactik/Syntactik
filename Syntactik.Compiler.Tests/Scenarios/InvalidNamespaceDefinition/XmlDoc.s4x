@@ -1,0 +1,7 @@
+!doc:
+	root:
+	!#ns1 = namespace
+!#ns1 = namespace
+!$alias:
+	root
+	!#ns1 = namespace

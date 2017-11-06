@@ -1,0 +1,9 @@
+﻿!doc:
+	root: 
+		guests: $Guests: %man
+
+!$Guests::
+	:
+		name = John Brown
+	:
+		name = Martha White

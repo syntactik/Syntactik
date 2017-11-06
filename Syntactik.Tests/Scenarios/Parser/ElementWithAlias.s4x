@@ -1,0 +1,6 @@
+
+!MyRequest:
+	ns1.request:
+		tag1 = tag1
+		ns1.tag2 = tag2
+		$aliasGroup1.aliasName1

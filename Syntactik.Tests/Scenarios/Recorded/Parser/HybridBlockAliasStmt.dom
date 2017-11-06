@@ -1,0 +1,9 @@
+00:00	Module `Module`:
+01:01		Document `Document1`:
+02:02			Element `root`:
+03:03				Alias `Alias`:
+03:12					Argument `arg1`:
+03:18						Element `el4`= `4`
+03:28					Argument `arg2`:
+04:04						Element `element1`= `text1`
+05:04						Element `element2`= `text2`

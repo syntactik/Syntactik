@@ -1,0 +1,10 @@
+!json1 = text1
+
+!json2 = 1
+!json3 = true
+!json4 := $null
+!json5 := $pi
+
+!$null = null
+!$pi == 3.14
+

@@ -1,0 +1,5 @@
+
+!MyRequest:
+	!#ns1 = http://myNs1.com
+	
+	ns1.request

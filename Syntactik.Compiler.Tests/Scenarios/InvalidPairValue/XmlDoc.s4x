@@ -1,0 +1,8 @@
+!#scope := namespace
+!doc:
+	root:
+		#scope := el
+		el1 :=
+		el2 := el3
+		@attr1 :=
+		@attr1 := el4 

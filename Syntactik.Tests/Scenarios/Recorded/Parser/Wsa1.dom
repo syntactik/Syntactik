@@ -1,0 +1,28 @@
+00:00	Module `Module`:
+02:01		Document `MyRequest.json`:
+03:03			Element `a`
+03:06			Element `b`
+04:03			Element `a`= `true`
+05:01			Element `b`= `2`
+06:03			Element `state`= `active`
+07:04			Element `c`= `true`
+08:04			Element `d`= `false`
+08:15			Element `e`= `.02`
+10:02			Element `items`:
+11:02				Element ``:
+12:05					Element `a`= `true`
+13:05					Element `b`= `2`
+13:11					Element `state`= `active`
+14:03					Element `c`= `true`
+14:13					Element `d`= `false`
+14:24					Element `e`= `.02`
+16:02			Element `ns1.request`:
+17:04				Element `a`= `true`
+17:14				Element `b`= `2`
+17:20				Element `state`= `active`
+18:04				Element `a`= `true`
+18:14				Element `b`= `2`
+18:20				Element `state`= `active`
+19:02				Element `c`= `true`
+19:12				Element `d`= `false`
+19:23				Element `e`= `.02`

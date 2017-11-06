@@ -1,0 +1,19 @@
+'''XmlDeclaration: version="1.0" encoding="UTF-8"
+'''ProcessingInstruction xml-stylesheet: type="text/xsl" href="style.xsl"
+!#xsi = http://www.w3.org/2001/XMLSchema-instance
+!#ipo = http://www.altova.com/IPO
+purchaseOrder:
+
+!doc1:
+'''XmlDeclaration: version="1.0" encoding="UTF-8"
+'''ProcessingInstruction xml-stylesheet: type="text/xsl" href="style.xsl"
+	!#xsi = http://www.w3.org/2001/XMLSchema-instance
+	!#ipo = http://www.altova.com/IPO
+	element
+
+!$AliasDef1:
+'''XmlDeclaration: version="1.0" encoding="UTF-8"
+'''ProcessingInstruction xml-stylesheet: type="text/xsl" href="style.xsl"
+	!#xsi = http://www.w3.org/2001/XMLSchema-instance
+	!#ipo = http://www.altova.com/IPO
+	element

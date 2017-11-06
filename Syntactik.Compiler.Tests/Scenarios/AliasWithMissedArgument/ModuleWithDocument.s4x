@@ -1,0 +1,9 @@
+﻿!PurchaseOrder:
+	purchaseOrder:
+		shipTo:
+			$Address
+
+
+!$Address:
+	name := !%name =  Helen Zoe
+	street := !%street

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<purchaseOrder orderDate="2001-12-12">
+  <shipTo export-code="1">
+    <name>Helen Zoe</name>
+    <street>47 Eden Street</street>
+    <city>Cambridge</city>
+    <postcode>126</postcode>
+  </shipTo>
+</purchaseOrder>

@@ -1,0 +1,34 @@
+!doc:
+	root:
+		value == folded open string
+		value1 == folded open string
+
+			with second line
+		value2 ==
+			first line
+			first line continues
+		value3 == first line
+
+
+			third line (second line is empty)
+		value4 == first line
+
+
+
+			forth line (second and third lines are empty)
+
+		value5 ==
+			first line
+
+			second line
+		'''==
+		value6 ==
+			First line.
+
+			Second line.
+			Second line continues.
+			Second line continues.
+
+			Third line.
+
+		'''==

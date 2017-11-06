@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <url1>www.google.com/search?q = foo</url1>
+  <url2>www.google.com/search</url2>
+  <url3>www.google.com</url3>
+</root>

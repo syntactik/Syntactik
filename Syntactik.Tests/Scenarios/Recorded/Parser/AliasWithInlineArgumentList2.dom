@@ -1,0 +1,5 @@
+00:00	Module `Module`:
+02:01		Document `ParametersTestDoc`:
+03:02			Element `request`:
+04:03				Alias `Customer`:
+04:15					Argument `AccountType`= "Assets"

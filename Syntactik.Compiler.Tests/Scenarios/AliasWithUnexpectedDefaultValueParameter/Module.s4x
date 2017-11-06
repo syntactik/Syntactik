@@ -1,0 +1,6 @@
+﻿!$AddressAlias = 1100 Main St
+
+!Document:
+	customer:
+		address := $AddressAlias = 1100 Main St
+			

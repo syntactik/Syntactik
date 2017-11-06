@@ -1,0 +1,20 @@
+00:00	Module `Module`:
+01:01		Document `Module`
+01:01			Element `bl`:
+02:02				Element `el1`= `line1\nline2`
+04:02				Element `el2`:
+04:07					Element `el3`= `line1`
+05:03					Element `el4`
+05:08					Element `el5`
+06:02				Element `el2`:
+06:07					Element `el3`== `line1`
+07:03					Element `el4`
+07:08					Element `el5`
+08:02				Element `el2`:
+08:07					Element `el3`== 'line1'
+09:03					Element `el4`
+09:08					Element `el5`
+10:02				Element `el2`:
+10:07					Element `el3`== "line1"
+11:03					Element `el4`
+11:08					Element `el5`

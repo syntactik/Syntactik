@@ -1,0 +1,17 @@
+00:00	Module `Module`:
+01:01		AliasDefinition `Indicators.Batch1`:
+02:02			Alias `indicator`:
+03:03				Argument `Name`= `274933_BP215`
+04:03				Argument `SKU`== `274933`
+04:19				Argument `Indicator`== `274933`
+05:03				Argument `Description`= `Bas Dir W Save $25off-12moterm`
+06:02			Alias `indicator`:
+07:03				Argument `Name`= `274933_BP215`
+08:04				Argument `SKU`= `274933`
+08:19				Argument `Indicator`= `274933`
+09:03				Argument `Description`== `Bas Dir W Save $25off-12moterm`
+10:02			Alias `indicator`:
+11:03				Argument `Name`= `274933_BP215`
+12:03				Argument `SKU`== "274933"
+12:21				Argument `Indicator`= `274933`
+13:03				Argument `Description`== `Bas Dir W Save $25off-12moterm`

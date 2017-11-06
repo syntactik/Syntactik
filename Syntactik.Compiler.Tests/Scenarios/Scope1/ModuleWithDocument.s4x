@@ -1,0 +1,8 @@
+﻿'''XmlDeclaration: version="1.0" encoding="UTF-8"
+!#ns1 = http://schemas.microsoft.com/wix/2006/wi
+#ns1.Wix:
+	Product:
+		@Id = *
+		@Name = MalinaSetup
+		@Language = 1033
+		@Version = 1.0.0.0

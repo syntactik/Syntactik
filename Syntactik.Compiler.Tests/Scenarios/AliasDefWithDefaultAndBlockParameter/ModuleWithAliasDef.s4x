@@ -1,0 +1,9 @@
+﻿!$RootAlias:
+	root:
+		!%_ '''default parameter
+		!%param
+
+!$RootAlias2:
+	root:
+		!%param
+		!%_ '''default parameter

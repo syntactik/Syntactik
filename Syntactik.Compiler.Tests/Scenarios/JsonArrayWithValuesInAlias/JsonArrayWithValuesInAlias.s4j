@@ -1,0 +1,30 @@
+!json:
+	items:
+		: prop1 == "a"
+		= string
+		== "string2"
+		:= $Number
+		:= $NumberOpen
+		:= $True
+		:= $TrueOpen
+		:= $False
+		:= $FalseOpen
+		:= $Null
+		:= $NullOpen
+		== "true
+
+			story"
+		== "this is
+
+			false"
+
+!$TrueOpen = true
+!$True == true
+!$FalseOpen = false
+!$False == false
+
+!$NumberOpen = 123
+!$Number == 123.34
+
+!$Null == null
+!$NullOpen = null

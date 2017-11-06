@@ -1,0 +1,18 @@
+﻿!PurchaseOrder:
+	purchaseOrder:
+		billTo:
+			name = Robert Smith
+			street = 8 Oak Avenue
+			city = Old Town
+			zip := $ZipCodes.NJ
+			$USA
+		$OrderDate
+
+!$PurchaseDate = 2001-12-12
+
+!$OrderDate:
+	@orderDate := $PurchaseDate
+	
+
+!$ZipCodes.NJ = 95819
+!$USA: @country = USA

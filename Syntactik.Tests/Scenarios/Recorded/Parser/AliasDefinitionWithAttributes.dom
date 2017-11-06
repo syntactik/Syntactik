@@ -1,0 +1,5 @@
+00:00	Module `Module`:
+02:01		AliasDefinition `Address.UK.Cambridge`:
+03:02			Attribute `xsi.type`= `ipo:EU-Address`
+08:01		AliasDefinition `Address.UK.Cambridge`:
+09:02			Attribute `xsi.type`= `ipo:EU-Address`

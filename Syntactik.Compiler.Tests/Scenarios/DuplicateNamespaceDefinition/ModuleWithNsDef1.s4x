@@ -1,0 +1,11 @@
+﻿!#ipo = http://www.example.com/myipo
+!#ipo = http://www.example.com/myipo
+
+!doc1:
+	!#ipo1 = http://www.example.com/myipo
+	!#ipo1 = http://www.example.com/myipo
+	root
+	
+!$aliasDef:
+	!#ipo2 = http://www.example.com/myipo
+	!#ipo2 = http://www.example.com/myipo

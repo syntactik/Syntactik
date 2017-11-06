@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ipo:purchaseOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" orderDate="2017-09-11" xmlns:ipo="http://www.example.com/myipo">
+  <shipTo xsi:type="ipo:EU-Address" export-code="1">
+    <ipo:name>Helen Zoe</ipo:name>
+    <ipo:street>47 Eden Street</ipo:street>
+    <ipo:city>Cambridge</ipo:city>
+    <ipo:postcode>126</ipo:postcode>
+  </shipTo>
+  <billTo xsi:type="ipo:US-Address">
+    <ipo:name>Robert Smith</ipo:name>
+    <ipo:street>8 Oak Avenue</ipo:street>
+    <ipo:city>Old Town</ipo:city>
+    <ipo:state>AK</ipo:state>
+    <ipo:zip>95819</ipo:zip>
+  </billTo>
+  <Items>
+    <item partNum="748-OT">
+      <productName>Diamond heart</productName>
+      <quantity>1</quantity>
+      <price>248.90</price>
+      <ipo:comment>Valentine's day packaging.</ipo:comment>
+      <shipDate>2000-02-14</shipDate>
+    </item>
+  </Items>
+</ipo:purchaseOrder>

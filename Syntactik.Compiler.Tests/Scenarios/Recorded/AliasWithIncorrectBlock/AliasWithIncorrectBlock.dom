@@ -1,0 +1,10 @@
+03:00	AliasDefinition `Address`:
+04:01		Element `name`= 	Parameter `name`= `Helen Zoe`
+
+06:00	Document `PurchaseOrder`:
+07:01		Element `purchaseOrder`:
+08:02			Attribute `orderDate`= `2001-12-12`
+09:02			Element `shipTo`:
+10:03				Alias `Address`:
+11:04					Argument `Name`= `Helen`
+

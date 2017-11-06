@@ -1,0 +1,31 @@
+!doc:
+	root:
+		value == "String"
+		value1 == "Folded string
+
+			with second line"
+		value2 == "First line.
+			First line continues."
+		value3 == "First line.
+
+
+			Third line (second line is empty)."
+		value4 == "First line.
+
+
+
+			Forth line (second and third lines are empty)."
+
+		value5 == "First line.
+
+			Second line."
+
+		value6 == "First line.
+
+			Second line.
+			Second line continues.
+			Second line continues.
+
+			Third line.
+						
+			"

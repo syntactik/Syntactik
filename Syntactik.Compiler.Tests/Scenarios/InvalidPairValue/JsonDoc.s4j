@@ -1,0 +1,6 @@
+!doc:
+	root:
+		el1 :=
+		el2 := el3
+		@attr1 :=
+		@attr1 := el4 

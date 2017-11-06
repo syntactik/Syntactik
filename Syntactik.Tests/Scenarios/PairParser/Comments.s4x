@@ -1,0 +1,9 @@
+﻿''' Comment
+el1, ''' Comment
+el2 ''' Comment
+el3 == ''' Comment
+el4 = ''' free open string
+el5 == open string ''' comment
+el6 == open string, ''' this is comment
+(el7 = open string, ''' this is comment
+)

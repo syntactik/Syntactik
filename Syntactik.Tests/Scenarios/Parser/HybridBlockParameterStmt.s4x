@@ -1,0 +1,6 @@
+﻿!$Document1:
+	root:
+		!%param4: @attr == "4", element:
+			element1 = text1
+			element2 = text2
+				

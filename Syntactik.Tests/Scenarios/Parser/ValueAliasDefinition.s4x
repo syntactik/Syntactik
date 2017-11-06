@@ -1,0 +1,8 @@
+
+!$Address =  47 Eden Street
+
+!$AddressMl = 47 Eden Street
+	Cambridge
+	126
+
+!$AddressRef := $Address

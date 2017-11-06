@@ -1,0 +1,12 @@
+!MyRequest:
+	request:
+		e1 == "bla
+			bla bla
+		e2 == "bla
+				 bla bla"
+		e3 == "bla
+
+			bla bla"
+		e4 == "bla
+				
+			bla bla"

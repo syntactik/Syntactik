@@ -1,0 +1,4 @@
+MCE0018 ModuleWithDocument.s4x(4,2,0): XML validation error - 'The element 'purchaseOrder' in namespace 'http://www.example.com/myipo' has incomplete content. List of possible elements expected: 'comment' in namespace 'http://www.example.com/myipo' as well as 'Items'.'.
+MCE0018 ModuleWithDocument.s4x(5,3,0): XML validation error - 'The element 'shipTo' has incomplete content. List of possible elements expected: 'name, street' in namespace 'http://www.example.com/myipo'.'.
+MCE0018 ModuleWithDocument.s4x(6,3,0): XML validation error - 'The element 'billTo' has incomplete content. List of possible elements expected: 'name, street' in namespace 'http://www.example.com/myipo'.'.
+MCE0018 ModuleWithDocument.s4x(12,2,0): XML validation error - 'The element 'purchaseOrder' in namespace 'http://www.example.com/myipo' has incomplete content. List of possible elements expected: 'shipTo'.'.

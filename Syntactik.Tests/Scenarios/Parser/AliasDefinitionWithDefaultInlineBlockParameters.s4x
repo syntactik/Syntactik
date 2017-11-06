@@ -1,0 +1,6 @@
+
+!$Customer:
+	Customer:
+		Account: !%AccountType: Type = NewCustomer
+		!%ServiceAddress: $Addresses.PA.Hawley
+		!%BillingAddress: $Addresses.PA.Hawley

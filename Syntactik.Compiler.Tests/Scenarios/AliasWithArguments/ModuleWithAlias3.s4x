@@ -1,0 +1,10 @@
+﻿!#ipo3 = http://www.example.com/myipo
+
+!$UKAddress:
+	$Templates.UKAddress:
+		%address:
+			ipo3.name = Helen Zoe
+			ipo3.street = 47 Eden Street
+			ipo3.city = Cambridge
+			ipo3.postcode = 126
+		

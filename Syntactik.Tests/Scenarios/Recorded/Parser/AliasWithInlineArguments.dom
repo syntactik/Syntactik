@@ -1,0 +1,10 @@
+00:00	Module `Module`:
+02:01		Document `ParametersTestDoc`:
+03:02			Element `request`:
+04:03				Alias `Customer`:
+05:04					Argument `BillingAddress`:
+05:21						Alias `Addresses.NJ.Paterson`
+06:04					Argument `ServiceAddress`:
+06:21						Alias `Addresses.NY.Albany`
+07:04					Argument `AccountType`:
+07:18						Alias `AccountTypes.NewCustomer`

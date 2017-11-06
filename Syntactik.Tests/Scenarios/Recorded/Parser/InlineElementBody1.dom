@@ -1,0 +1,6 @@
+00:00	Module `Module`:
+02:01		Document `MyRequest`:
+03:02			Element `request`:
+04:03				Element `e1`:
+04:08					Attribute `attr1`:= 	Alias `a1`
+04:23					Alias `a2`

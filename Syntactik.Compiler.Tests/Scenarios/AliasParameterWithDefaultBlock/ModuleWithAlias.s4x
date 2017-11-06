@@ -1,0 +1,22 @@
+﻿!#ipo = http://www.example.com/myipo
+!#ipo3 = http://www.example.com/myipo
+
+!$Templates.PurchaseOrder:
+	ipo.purchaseOrder:
+		@orderDate := !%orderDate
+		shipTo:
+			!%shipTo
+		billTo:
+			!%billTo
+		ipo.comment := !%comment = 
+
+
+!$UKAddress:
+	!%address:
+		$Templates.UKAddress:
+			%address:
+				ipo3.name = Helen Zoe
+				ipo3.street = 47 Eden Street
+				ipo3.city = Cambridge
+				ipo3.postcode = 126
+

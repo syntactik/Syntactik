@@ -1,0 +1,9 @@
+00:00	Module `Module`:
+01:01		Document `doc`:
+02:02			Element `root`:
+03:03				Attribute `text1`== "$5 'FiOS' TV Offer"
+04:03				Element `text1`== "$5 \"FiOS\" TV Offer"
+06:03				Element `text2`== "blabla \$\b\t \n\v\f\r\"\'\\"
+09:03				Element `text3`== "\u00af \u65e5\u672c\nLine 1\u000aline\n"
+10:03				Element `foldedText`== "Line 1. Line 1 continues\nLine2 starts. Line 2 continues\n"
+17:03				Element `h`== "$5 FiOS TV Offer"

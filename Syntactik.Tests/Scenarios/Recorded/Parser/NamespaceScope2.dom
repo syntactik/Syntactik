@@ -1,0 +1,9 @@
+00:00	Module `Module`:
+02:01		Document `MyRequest`:
+03:02			Element `request`:
+04:03				Element `e1`:
+05:04					Scope `ns1.`:
+06:05						Element `e2`
+07:03				Element `e3`:
+07:07					Scope `ns2.`:
+07:13						Element `e4`

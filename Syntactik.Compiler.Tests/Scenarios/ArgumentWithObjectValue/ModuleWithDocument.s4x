@@ -1,0 +1,36 @@
+﻿!PurchaseOrder:
+	purchaseOrder:
+		@orderDate := $PurchaseDate
+		shipTo:
+			$UKAddress:
+				%name = Robert Smith
+				%street = 8 Oak Avenue
+				%city = Old Town
+
+		billTo:
+			$USAddress:
+				%name = Robert Smith
+				%street = 8 Oak Avenue
+				%city = Old Town
+				%zip := $ZipCodes.NJ
+			
+
+
+!$PurchaseDate = 2001-12-12
+
+!$UKAddress:
+	@name := !%name
+	@street := !%street
+	@city := !%city
+	@zip := !%zip = 00000
+
+!$USAddress:
+	name := !%name
+	street := !%street
+	city := !%city
+	state := !%state = NJ
+	zip := !%zip
+	country := $USA
+
+!$ZipCodes.NJ = 95819
+!$USA = USA

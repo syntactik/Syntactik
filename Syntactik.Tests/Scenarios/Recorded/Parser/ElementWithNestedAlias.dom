@@ -1,0 +1,6 @@
+00:00	Module `Module`:
+02:01		Document `MyRequest`:
+03:02			Element `ns1.request`:
+04:03				Element `tag1`= `tag1`
+05:03				Element `ns1.tag2`= `tag2`
+06:03				Alias `aliasGroup1.aliasName1.AliasName2.AliasName3`
