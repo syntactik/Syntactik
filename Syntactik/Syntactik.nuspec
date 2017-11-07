@@ -15,9 +15,4 @@
         <dependency id="Newtonsoft.Json" version="10.0" />
     </dependencies>
   </metadata>
-  <files>
-
-    <!-- Add files from an arbitrary folder that's not necessarily in the project -->
-    <file src="syntactik.dll" target="" />
-  </files>
 </package>
