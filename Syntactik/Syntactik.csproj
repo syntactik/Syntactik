@@ -40,6 +40,9 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
   </ItemGroup>
+  <PropertyGroup Condition=" '$(CI)' == 'True' ">
+    <DefineConstants>$(DefineConstants);CI</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Compiler\CompilerContext.cs" />
     <Compile Include="Compiler\CompilerError.cs" />
