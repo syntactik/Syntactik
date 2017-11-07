@@ -32,8 +32,9 @@ namespace Syntactik.Compiler.Tests
     {
         public static void PerformCompilerTest(bool generateComments = false)
         {
+#if (!CI)
             PrintTestScenario();
-
+#endif
             var compilerParameters = CreateCompilerParameters(generateComments);
             var compiler = new SyntactikCompiler(compilerParameters);
             var context = compiler.Run();
@@ -44,14 +45,18 @@ namespace Syntactik.Compiler.Tests
             var recordedParserErros = LoadSavedCompilerErrors(context.Errors, out serialParserErrors);
             if (recordedParserErros != null)
             {
+#if (!CI)
                 TestContext.WriteLine("Compiler Errors:");
                 TestContext.WriteLine(serialParserErrors);
+#endif       
                 Assert.AreEqual(recordedParserErros, serialParserErrors);
             }
             else
             {
+#if (!CI)
                 TestContext.WriteLine("Compiler Errors:");
                 TestContext.WriteLine(serialParserErrors);
+#endif
                 Assert.IsTrue(context.Errors.Count == 0, "Compiler has errors");
             }
 
@@ -146,17 +151,20 @@ namespace Syntactik.Compiler.Tests
 
                 //Equal number of files
                 Assert.AreEqual(Directory.GetFiles(recordedDir).Length, Directory.GetFiles(resultDir).Length, "Number of files {0} in '{1}' should be equal {2}", Directory.GetFiles(resultDir).Length, resultDir, Directory.GetFiles(recordedDir).Length);
+#if (!CI)
                 TestContext.WriteLine();
                 TestContext.WriteLine("Generated Files:");
+#endif            
                 foreach (var file in Directory.GetFiles(recordedDir))
                 {
                     var recordedFileName = Path.GetFileName(file);
                     var resultFileName = resultDir + recordedFileName;
                     var result = File.ReadAllText(resultFileName).Replace("\r\n", "\n");
                     var recorded = File.ReadAllText(file).Replace("\r\n", "\n");
-
+#if (!CI)
                     TestContext.WriteLine($"File {file}:");
                     TestContext.WriteLine(result);
+#endif
                     Assert.AreEqual(recorded, result);
                 }
             }

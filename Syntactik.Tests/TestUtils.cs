@@ -18,8 +18,9 @@ namespace Syntactik.Tests
         public static void DoTest()
         {
             var code = LoadTestCode();
-
+#if (!CI)
             PrintCode(code);
+#endif
 
             var parser = new Parser(new InputStream(code), new PairFactory(), new DOM.Module { Name = "Module" });
             var errorListener = new ErrorListener();
@@ -34,8 +35,10 @@ namespace Syntactik.Tests
             var recordedParserErros = LoadParserErrors(errorListener, out serialParserErrors);
             if (recordedParserErros != null)
             {
+#if (!CI)
                 TestContext.WriteLine("Parser Errors:");
                 TestContext.WriteLine(serialParserErrors);
+#endif
             }
 
             //DOM Assertions
@@ -51,8 +54,10 @@ namespace Syntactik.Tests
             }
             else
             {
+#if (!CI)
                 if (errorListener.Errors.Count > 0)
                     PrintErrors(errorListener.Errors, "Parser Errors:");
+#endif
 
                 Assert.AreEqual(false, errorListener.Errors.Count > 0, "ParserErrorListener has errors");
             }
@@ -113,11 +118,14 @@ namespace Syntactik.Tests
 
         public static string PrintModule(Pair pair)
         {
+#if (!CI)
             TestContext.WriteLine("\nDOM:");
-
+#endif
             var printer = new DomPrinter();
             printer.Visit(pair);
+#if (!CI)
             TestContext.WriteLine(printer.Text);
+#endif
             return printer.Text;
         }
 
