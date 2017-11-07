@@ -18,6 +18,6 @@
   <files>
 
     <!-- Add files from an arbitrary folder that's not necessarily in the project -->
-    <file src="bin\release\syntactik.dll" target="" />
+    <file src="syntactik.dll" target="" />
   </files>
 </package>
