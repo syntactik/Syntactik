@@ -129,6 +129,7 @@
     <Compile Include="Compiler\Steps\ProcessAliasesAndNamespaces\ProcessAliasesAndNamespaces.cs" />
     <Compile Include="Compiler\Steps\ValidateDocuments\ValidateDocuments.cs" />
     <Compile Include="Compiler\Steps\ValidateDocuments\ValidatingDocumentsVisitor.cs" />
+    <Compile Include="Properties\SharedAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
