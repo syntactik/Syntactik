@@ -18,8 +18,9 @@ namespace Syntactik.Tests
         public static void DoTest()
         {
             var code = LoadTestCode();
-
+#if (!CI)
             PrintCode(code);
+#endif
 
             var parser = new Parser(new InputStream(code), new PairFactory(), new DOM.Module { Name = "Module" });
             var errorListener = new ErrorListener();
@@ -34,8 +35,10 @@ namespace Syntactik.Tests
             var recordedParserErros = LoadParserErrors(errorListener, out serialParserErrors);
             if (recordedParserErros != null)
             {
-                Console.WriteLine("Parser Errors:");
-                Console.WriteLine(serialParserErrors);
+#if (!CI)
+                TestContext.WriteLine("Parser Errors:");
+                TestContext.WriteLine(serialParserErrors);
+#endif
             }
 
             //DOM Assertions
@@ -51,8 +54,10 @@ namespace Syntactik.Tests
             }
             else
             {
+#if (!CI)
                 if (errorListener.Errors.Count > 0)
                     PrintErrors(errorListener.Errors, "Parser Errors:");
+#endif
 
                 Assert.AreEqual(false, errorListener.Errors.Count > 0, "ParserErrorListener has errors");
             }
@@ -60,12 +65,12 @@ namespace Syntactik.Tests
 
         private static void PrintErrors(List<string> errors, string title)
         {
-            Console.WriteLine(title);
+            TestContext.WriteLine(title);
 
             foreach (var error in errors)
             {
-                Console.WriteLine();
-                Console.WriteLine(error);
+                TestContext.WriteLine();
+                TestContext.WriteLine(error);
             }
 
         }
@@ -113,11 +118,14 @@ namespace Syntactik.Tests
 
         public static string PrintModule(Pair pair)
         {
-            Console.WriteLine("\nDOM:");
-
+#if (!CI)
+            TestContext.WriteLine("\nDOM:");
+#endif
             var printer = new DomPrinter();
             printer.Visit(pair);
-            Console.WriteLine(printer.Text);
+#if (!CI)
+            TestContext.WriteLine(printer.Text);
+#endif
             return printer.Text;
         }
 
@@ -193,27 +201,27 @@ namespace Syntactik.Tests
         public static void PrintCode(string code)
         {
             int line = 1;
-            Console.WriteLine("Code:");
-            Console.Write("{0}:\t ", line);
+            TestContext.WriteLine("Code:");
+            TestContext.Write("{0}:\t ", line);
             int offset = 0;
             foreach (var c in code)
             {
                 if (c == '\r') continue;
                 if (c == '\n')
                 {
-                    Console.Write(" ({0})", offset);
+                    TestContext.Write(" ({0})", offset);
                 }
 
-                Console.Write(c);
+                TestContext.Write(c);
                 offset++;
                 if (c == '\n')
                 {
                     line++;
-                    Console.Write("{0}:\t ", line);
+                    TestContext.Write("{0}:\t ", line);
                 }
             }
-            Console.Write(" ({0})", offset);
-            Console.WriteLine();
+            TestContext.Write(" ({0})", offset);
+            TestContext.WriteLine();
         }
 
         private static bool TestHasAttribute<T>()
