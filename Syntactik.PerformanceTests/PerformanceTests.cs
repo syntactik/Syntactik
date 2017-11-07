@@ -22,7 +22,7 @@ namespace Syntactik.PerformanceTests
         [Test]
         public void BigFile2()
         {
-            Console.WriteLine("Starting BigFile2");
+            TestContext.WriteLine("Starting BigFile2");
             var code = LoadTestCodeRaw();
 
             var parser = new Parser(new InputStream(code), new PairFactory(), new DOM.Module {Name = "Module" });
@@ -32,7 +32,7 @@ namespace Syntactik.PerformanceTests
             var m = parser.ParseModule("");
             var t2 = Environment.TickCount;
 
-            Console.WriteLine("ParseModule Time: {0}", t2 - t1);
+            TestContext.WriteLine("ParseModule Time: {0}", t2 - t1);
             //Assert.Less(t2 - t1, 400);
 
             code = LoadTestCodeRaw(".xml");
@@ -42,14 +42,14 @@ namespace Syntactik.PerformanceTests
             t1 = Environment.TickCount;
             xml.LoadXml(code);
             t2 = Environment.TickCount;
-            Console.WriteLine("XML Time: {0}", t2 - t1);
+            TestContext.WriteLine("XML Time: {0}", t2 - t1);
 
             code = LoadTestCodeRaw(".json");
 
             t1 = Environment.TickCount;
             JObject o = (JObject)JToken.ReadFrom(new JsonTextReader(new StringReader(code)));
             t2 = Environment.TickCount;
-            Console.WriteLine("JSON Time: {0}", t2 - t1);
+            TestContext.WriteLine("JSON Time: {0}", t2 - t1);
 
             code = LoadTestCodeRaw(".yml");
 
@@ -58,7 +58,7 @@ namespace Syntactik.PerformanceTests
             t1 = Environment.TickCount;
             yaml.Load(input);
             t2 = Environment.TickCount;
-            Console.WriteLine("Yaml Time: {0}", t2 - t1);
+            TestContext.WriteLine("Yaml Time: {0}", t2 - t1);
         }
 
       

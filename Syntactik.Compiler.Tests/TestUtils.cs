@@ -44,14 +44,14 @@ namespace Syntactik.Compiler.Tests
             var recordedParserErros = LoadSavedCompilerErrors(context.Errors, out serialParserErrors);
             if (recordedParserErros != null)
             {
-                Console.WriteLine("Compiler Errors:");
-                Console.WriteLine(serialParserErrors);
+                TestContext.WriteLine("Compiler Errors:");
+                TestContext.WriteLine(serialParserErrors);
                 Assert.AreEqual(recordedParserErros, serialParserErrors);
             }
             else
             {
-                Console.WriteLine("Compiler Errors:");
-                Console.WriteLine(serialParserErrors);
+                TestContext.WriteLine("Compiler Errors:");
+                TestContext.WriteLine(serialParserErrors);
                 Assert.IsTrue(context.Errors.Count == 0, "Compiler has errors");
             }
 
@@ -146,8 +146,8 @@ namespace Syntactik.Compiler.Tests
 
                 //Equal number of files
                 Assert.AreEqual(Directory.GetFiles(recordedDir).Length, Directory.GetFiles(resultDir).Length, "Number of files {0} in '{1}' should be equal {2}", Directory.GetFiles(resultDir).Length, resultDir, Directory.GetFiles(recordedDir).Length);
-                Console.WriteLine();
-                Console.WriteLine("Generated Files:");
+                TestContext.WriteLine();
+                TestContext.WriteLine("Generated Files:");
                 foreach (var file in Directory.GetFiles(recordedDir))
                 {
                     var recordedFileName = Path.GetFileName(file);
@@ -155,8 +155,8 @@ namespace Syntactik.Compiler.Tests
                     var result = File.ReadAllText(resultFileName).Replace("\r\n", "\n");
                     var recorded = File.ReadAllText(file).Replace("\r\n", "\n");
 
-                    Console.WriteLine($"File {file}:");
-                    Console.WriteLine(result);
+                    TestContext.WriteLine($"File {file}:");
+                    TestContext.WriteLine(result);
                     Assert.AreEqual(recorded, result);
                 }
             }
@@ -174,8 +174,8 @@ namespace Syntactik.Compiler.Tests
             {
                 if (!fileName.EndsWith(".s4x") && !fileName.EndsWith(".s4j")) continue;
 
-                Console.WriteLine();
-                Console.WriteLine(Path.GetFileName(fileName));
+                TestContext.WriteLine();
+                TestContext.WriteLine(Path.GetFileName(fileName));
                 var code = File.ReadAllText(fileName);
                 PrintCode(code);
             }
@@ -204,27 +204,27 @@ namespace Syntactik.Compiler.Tests
         public static void PrintCode(string code)
         {
             int line = 1;
-            Console.WriteLine("Code:");
-            Console.Write("{0}:\t ", line);
+            TestContext.WriteLine("Code:");
+            TestContext.Write($"{line}:\t ");
             int offset = 0;
             foreach (var c in code)
             {
                 if (c == '\r') continue;
                 if (c == '\n')
                 {
-                    Console.Write(" ({0})", offset);
+                    TestContext.Write($" ({offset})");
                 }
 
-                Console.Write(c);
+                TestContext.Write(c);
                 offset++;
                 if (c == '\n')
                 {
                     line++;
-                    Console.Write("{0}:\t ", line);
+                    TestContext.Write($"{line}:\t ");
                 }
             }
-            Console.Write(" ({0})", offset);
-            Console.WriteLine();
+            TestContext.Write($" ({offset})");
+            TestContext.WriteLine("");
         }
 
         public static string AssemblyDirectory => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
