@@ -1,7 +1,7 @@
 {
   "root": {
     "value": "String",
-    "value1": "Folded string\r\nwith second line",
+    "value1": "string\r\nwith second line",
     "value2": "First line.First line continues.",
     "value3": "First line.\r\n\r\nThird line (second line is empty).",
     "value4": "First line.\r\n\r\n\r\nForth line (second and third lines are empty).",

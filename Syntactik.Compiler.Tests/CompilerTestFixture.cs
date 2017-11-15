@@ -188,7 +188,7 @@ namespace Syntactik.Compiler.Tests
             PerformCompilerTest();
         }
         [Test, RecordedTest]
-        public void FoldedSQS()
+        public void MultilineSQS()
         {
             PerformCompilerTest();
         }

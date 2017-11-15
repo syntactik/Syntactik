@@ -1,7 +1,7 @@
 !doc:
 	root:
 		value == 'String'
-		value1 == 'Folded string
+		value1 == 'String
 			with second line'
 		value2 == 'First line.First line continues.'
 		value3 == 'First line.

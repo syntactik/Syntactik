@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("Syntactik, LLC")]
 [assembly: AssemblyProduct("Syntactik")]
-[assembly: AssemblyCopyright("Copyright © Maxim Trushin, Syntactik, LLC,  2017")]
+[assembly: AssemblyCopyright("Copyright © Maxim Trushin, 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -272,10 +272,10 @@
     <None Include="Scenarios\EmptyParameters\EmptyParameters.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\FoldedSQS\FoldedSQS.s4j">
+    <None Include="Scenarios\MultilineSQS\MultilineSQS.s4j">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\FoldedSQS\FoldedSQS.s4x">
+    <None Include="Scenarios\MultilineSQS\MultilineSQS.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scenarios\FoldedOpenString\FoldedOpenString.s4j">
