@@ -41,7 +41,8 @@ namespace Syntactik.IO
             }
 
             _index++;
-            _next = _index + 2 <= _length ? Data[_index + 1] : -1;
+            _next = _index + 2 <= _length ? char.ConvertToUtf32(Data, _index + 1) : -1;
+
 
             if (Data[_index] == 10)
             {
@@ -52,7 +53,11 @@ namespace Syntactik.IO
             {
                 _column++;
             }
-            
+
+            //If this Unicode symbol takes two bytes ...
+            if (_index + 1 < _length && char.IsHighSurrogate(Data, _index + 1))
+                _index++;
+
         }
 
         /// <summary>
@@ -69,7 +74,16 @@ namespace Syntactik.IO
         {
             if (i > 0)
             {
-                var j = _index + i;
+                //var j = _index + i;
+                var j = _index;
+                do
+                {
+                    j++;
+                    if (j >= _length) return Eof;
+                    if (char.IsHighSurrogate(Data, j))
+                        j++;
+                    i--;
+                } while (i > 0);
                 return j >= _length ? Eof : Data[j];
             }
 
