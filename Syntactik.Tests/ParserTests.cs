@@ -216,6 +216,12 @@ namespace Syntactik.Tests
         }
 
         [Test, DomRecorded]
+        public void EmptyValueEof()
+        {
+            DoTest();
+        }
+
+        [Test, DomRecorded]
         public void FreeOpenString()
         {
             DoTest();

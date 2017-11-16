@@ -62,7 +62,7 @@ namespace Syntactik
         /// </summary>
         private void ParseLine()
         {
-            if (_lineState.State != ParserStateEnum.IndentMLS)
+            if (_lineState.State != ParserStateEnum.IndentMLS && _lineState.State != ParserStateEnum.Value)
                 _lineState.Reset();
             while (_input.Next != -1)
             {
@@ -101,11 +101,11 @@ namespace Syntactik
                         break;
                 }
                 if (_wsaStack.Count != 0) continue;
-                if (!ConsumeEol()) continue;
+                if (_lineState.State != ParserStateEnum.Value && !ConsumeEol()) continue;
                 ExitInlinePair();
                 if (_input.Next == -1 && _lineState.State != ParserStateEnum.Indent)
                 {
-                    if (_lineState.State == ParserStateEnum.IndentMLS) ParseMlStringIndent();
+                    if (_lineState.State == ParserStateEnum.IndentMLS || _lineState.State == ParserStateEnum.Value) ParseMlStringIndent();
                     _lineState.Reset();
                     ParseIndent();
                 }
@@ -119,7 +119,7 @@ namespace Syntactik
             {
                 _lineState.CurrentPair = null;
             }
-            if (_lineState.State == ParserStateEnum.IndentMLS) return;
+            if (_lineState.State == ParserStateEnum.IndentMLS || _lineState.State == ParserStateEnum.Value) return;
             while (_pairStack.Count > 0)
             {
                 var pi = _pairStack.Peek();
@@ -367,6 +367,11 @@ namespace Syntactik
 
                 if (c.IsNewLineCharacter())
                 {
+                    if (begin.Index == -1)
+                    {
+                        begin = new CharLocation(_input.Line, _input.Column + 1, _input.Index + 1);
+                        end = new CharLocation(_input.Line, _input.Column + 1, _input.Index + 1);
+                    }
                     if (_wsaStack.Count < 1 && !_lineState.Inline)
                     {
                         _lineState.State = ParserStateEnum.IndentMLS;
@@ -507,12 +512,6 @@ namespace Syntactik
             }
             else if (delimiter == DelimiterEnum.E || delimiter == DelimiterEnum.EE || delimiter == DelimiterEnum.None) //Delimiters followed by literal or chained pair
             {
-                if ((delimiter == DelimiterEnum.E || delimiter == DelimiterEnum.EE) && !_lineState.Inline 
-                            && _input.Next.IsNewLineCharacter())
-                {
-                    _lineState.State = ParserStateEnum.IndentMLS;
-                    return;
-                }
                 _lineState.State = ParserStateEnum.Value;
             }
             else // Delimiters followed by block
@@ -1191,6 +1190,14 @@ namespace Syntactik
             }
             else
             {
+                if (indent == currentIndent && _input.Next == '=' && _input.La(2) == '=' && _input.La(3) == '=')
+                {
+                    _input.Consume();
+                    _input.Consume();
+                    _input.Consume();
+                    var cp = (IMappedPair) _lineState.CurrentPair;
+                    cp.ValueInterval = new Interval(cp.ValueInterval.Begin, new CharLocation(_input));
+                }
                 newPair = AppendCurrentPair();
             }
             //Report end of pair

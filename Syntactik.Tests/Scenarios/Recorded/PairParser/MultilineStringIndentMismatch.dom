@@ -1,6 +1,6 @@
 00:00	Module `Module`:
 01:01		Document `Module`
 01:01			Element `bl`:
-03:03				Element `el`== "line1 ine2"
-05:02				Element `el2`== `line1 ine2`
-10:02				Element `el3`== 'line1\nine2'
+03:03				Element `el`== "line1"
+05:02				Element `el2`== `line1`
+10:02				Element `el3`== 'line1'

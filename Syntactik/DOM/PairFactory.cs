@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using Syntactik.IO;
 
@@ -221,10 +222,20 @@ namespace Syntactik.DOM
 
             var first = true;
             var firstEmptyLine = true; //If true then previous line was not empty therefor newline shouldn't be added
+            var checkIfFirstLineIsEmpty = true;
 
             foreach (var item in lines)
             {
                 var line = TrimEndOfFoldedStringLine(item, folded);
+                if (checkIfFirstLineIsEmpty)  //ignoring first empty line for open strings
+                {
+                    checkIfFirstLineIsEmpty = false;
+                    if (valueQuotesType == (int)QuotesEnum.None && line == string.Empty)
+                    {
+                        first = false;
+                        continue;
+                    }
+                }
 
                 if (first) { sb.Append(line); first = false; continue; } //adding first line without appending new line symbol
 
@@ -241,8 +252,14 @@ namespace Syntactik.DOM
                     sb.AppendLine(); continue;
                 }
 
-                line = line.Substring(valueIndent);
-
+                var lineIndent = line.TakeWhile(c => c == ' ' || c == '\t').Count();
+                if (lineIndent < valueIndent) break; // this is multiline string terminator ===
+                line = line.Substring(valueIndent); //Removing indents
+                if (sb.Length == 0)// If it is first line to be added just add it. No new line or spacing needed.
+                {
+                    sb.Append(line);
+                    continue;
+                }
                 if (folded && firstEmptyLine) sb.Append(" ");
                 if (!folded || !firstEmptyLine) sb.AppendLine();
                 firstEmptyLine = true; //reseting the flag for folded string logic
