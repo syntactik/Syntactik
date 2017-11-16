@@ -1,0 +1,26 @@
+!doc:
+	root:
+		value = free open string
+		value1 = free open string
+			with second line
+		value2 =
+			first line
+			second line
+		value3 = first line
+
+			third line (second line is empty)
+		value4 = first line
+		
+				
+			forth line (second and third lines are empty)
+
+		value5 =
+			first line
+			second line
+		===
+		value6 =
+			First line.
+			Second line.
+			Third line.
+
+		===

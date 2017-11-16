@@ -67,6 +67,12 @@
     <None Include="Scenarios\FoldedDQS\FoldedDQS.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Scenarios\FreeOpenString\FreeOpenString.s4j">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scenarios\FreeOpenString\FreeOpenString.s4x">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Scenarios\InvalidArgumentValue\JsonDoc.s4j">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

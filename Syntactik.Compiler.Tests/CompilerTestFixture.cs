@@ -188,6 +188,12 @@ namespace Syntactik.Compiler.Tests
             PerformCompilerTest();
         }
         [Test, RecordedTest]
+        public void FreeOpenString()
+        {
+            PerformCompilerTest();
+        }
+
+        [Test, RecordedTest]
         public void MultilineSQS()
         {
             PerformCompilerTest();
