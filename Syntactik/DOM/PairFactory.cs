@@ -253,7 +253,13 @@ namespace Syntactik.DOM
                 }
 
                 var lineIndent = line.TakeWhile(c => c == ' ' || c == '\t').Count();
-                if (lineIndent < valueIndent) break; // this is multiline string terminator ===
+                if (lineIndent < valueIndent)
+                {
+                    line = line.Substring(lineIndent); //Removing indents
+                    if (line.TrimEnd() == "===") sb.AppendLine();
+                    break; // this is multiline string terminator ===
+                }
+                    
                 line = line.Substring(valueIndent); //Removing indents
                 if (sb.Length == 0)// If it is first line to be added just add it. No new line or spacing needed.
                 {

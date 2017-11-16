@@ -6,7 +6,5 @@
 07:03				Element `e2_1`== `blabla bla bla \t\t==`
 10:03				Element `e3`== "blablabla"
 11:03				Element `e4`== `blabla \t\tbla bla \tbla`
-14:03				Element `e5`== `blabla \t\tbla bla \tbla`
-17:02				Element ``== ``
-18:03				Element `e6`== `blabla \t\tbla bla \tbla`
-22:02				Element ``== ``
+14:03				Element `e5`== `blabla \t\tbla bla \tbla\n`
+18:03				Element `e6`== `blabla \t\tbla bla \tbla\n`
