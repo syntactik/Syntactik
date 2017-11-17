@@ -15,12 +15,12 @@ using ValueType = Syntactik.DOM.Mapped.ValueType;
 namespace Syntactik.Compiler.Steps
 {
 
-    public class ReportingPairFactoryForXml : IPairFactory
+    public class PairFactoryForXml : IPairFactory
     {
         private readonly CompilerContext _context;
         private readonly Module _module;
 
-        public ReportingPairFactoryForXml(CompilerContext context, Module module)
+        public PairFactoryForXml(CompilerContext context, Module module)
         {
             _context = context;
             _module = module;

@@ -71,11 +71,11 @@ namespace Syntactik.Compiler.Steps
 
             if (m.TargetFormat == DOM.Mapped.Module.TargetFormats.Json)
             {
-                return new Parser(input, new ReportingPairFactoryForJson(_context, module), module);
+                return new Parser(input, new PairFactoryForJson(_context, module), module);
             }
             else
             {
-                return new Parser(input, new ReportingPairFactoryForXml(_context, module), module);
+                return new Parser(input, new PairFactoryForXml(_context, module), module);
             }
         }
     }

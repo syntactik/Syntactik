@@ -17,6 +17,7 @@ namespace Syntactik.DOM
         /// <summary>
         /// Method is called when parser finds comment
         /// </summary>
+        /// <param name="input"></param>
         /// <param name="commentType">1 - single line comment</param>
         /// <param name="commentInterval">2 - multiline comment</param>
         Comment ProcessComment(ICharStream input, int commentType, Interval commentInterval);

@@ -10,12 +10,12 @@ using ValueType = Syntactik.DOM.Mapped.ValueType;
 
 namespace Syntactik.Compiler.Steps
 {
-    public class ReportingPairFactoryForJson : IPairFactory
+    public class PairFactoryForJson : IPairFactory
     {
         private readonly CompilerContext _context;
         private readonly DOM.Module _module;
 
-        public ReportingPairFactoryForJson(CompilerContext context, DOM.Module module)
+        public PairFactoryForJson(CompilerContext context, DOM.Module module)
         {
             _context = context;
             _module = module;
@@ -25,15 +25,15 @@ namespace Syntactik.Compiler.Steps
                                 Interval delimiterInterval, int valueQuotesType, Interval valueInterval, int valueIndent)
         {
             Pair pair;
-            var name = ReportingPairFactoryForXml.GetNameText(input, nameQuotesType, nameInterval);
-            var value = ReportingPairFactoryForXml.GetValue(input, delimiter, valueQuotesType, valueInterval,
+            var name = PairFactoryForXml.GetNameText(input, nameQuotesType, nameInterval);
+            var value = PairFactoryForXml.GetValue(input, delimiter, valueQuotesType, valueInterval,
                     valueIndent, _context, (Module) _module);
 
             if (nameQuotesType > 0)
             {
                 if (delimiter == DelimiterEnum.None)
                 {
-                    value = ReportingPairFactoryForXml.GetValue(input, delimiter, nameQuotesType, nameInterval,
+                    value = PairFactoryForXml.GetValue(input, delimiter, nameQuotesType, nameInterval,
                     0, _context, (Module)_module);
                     valueQuotesType = nameQuotesType;
                 }
@@ -181,7 +181,7 @@ namespace Syntactik.Compiler.Steps
                 };
                 if (delimiter == DelimiterEnum.None)
                 {
-                    value = ReportingPairFactoryForXml.GetValue(input, delimiter, nameQuotesType, nameInterval,
+                    value = PairFactoryForXml.GetValue(input, delimiter, nameQuotesType, nameInterval,
                     0, _context, (Module)_module);
                     valueQuotesType = nameQuotesType;
                 }

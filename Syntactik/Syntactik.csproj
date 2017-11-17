@@ -70,8 +70,8 @@
     <Compile Include="Compiler\Steps\Parse\Parse.cs" />
     <Compile Include="Compiler\Steps\ProcessAliasesAndNamespaces\ProcessAliasesAndNamespacesVisitor.cs" />
     <Compile Include="Compiler\SyntactikCompiler.cs" />
-    <Compile Include="Compiler\Steps\Parse\ReportingPairFactoryForJson.cs" />
-    <Compile Include="Compiler\Steps\Parse\ReportingPairFactoryForXml.cs" />
+    <Compile Include="Compiler\Steps\Parse\PairFactoryForJson.cs" />
+    <Compile Include="Compiler\Steps\Parse\PairFactoryForXml.cs" />
     <Compile Include="DOM\Alias.cs" />
     <Compile Include="DOM\AliasDefinition.cs" />
     <Compile Include="DOM\Argument.cs" />
