@@ -531,7 +531,8 @@ namespace Syntactik.Compiler.Steps
                 Name = match.Value.TrimStart('\\', '!', '%', '(', '\t', ' ').TrimEnd(')', '\t', ' '),
                 NameInterval = new Interval(new CharLocation(line, column, -1), new CharLocation(line, column + match.Value.Length, -1)),
                 Delimiter = DelimiterEnum.None,
-                ValueType = ValueType.Empty
+                ValueType = ValueType.Empty,
+                IsValueNode = true
             };
             return parameter;
         }
@@ -548,7 +549,8 @@ namespace Syntactik.Compiler.Steps
                 NameInterval = new Interval(new CharLocation(line, column, -1), new CharLocation(line, column + match.Value.Length, -1)),
                 Delimiter = DelimiterEnum.None,
                 Value = null,
-                ValueType = ValueType.Empty
+                ValueType = ValueType.Empty,
+                IsValueNode = true
             };
             return alias;
         }

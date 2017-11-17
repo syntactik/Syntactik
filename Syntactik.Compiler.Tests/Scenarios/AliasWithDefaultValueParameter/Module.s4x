@@ -7,5 +7,9 @@
 !Document2:
 	customer:
 		address := $AddressAlias := $MainStreet
+		$Name = John Brown
 
 !$MainStreet = 1100 main street
+
+!$Name:
+	name := !%_ = John Smith
