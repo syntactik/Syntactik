@@ -1,0 +1,1 @@
+nuget pack Syntactik.csproj -Properties Configuration=Release
