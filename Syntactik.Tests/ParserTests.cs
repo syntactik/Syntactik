@@ -639,6 +639,34 @@ namespace Syntactik.Tests
         }
 
         /// <summary>
+        /// Testing reporting end of inline pair. This is used in completion to identify context.
+        /// </summary>
+        [Test]
+        public void OnEndPairEvent10()
+        {
+            var pf = new PairFactory();
+            Tuple<Pair, Interval, bool> t = null;
+
+            pf.OnEndPair += (pair, interval, endedByEof) =>
+            {
+                if (t == null && endedByEof)
+                {
+                    t = new Tuple<Pair, Interval, bool>(pair, interval, true);
+                }
+            };
+            var code = @"el=";
+            var parser = new Parser(new InputStream(code), pf, new Module { Name = "Module" });
+
+            parser.ParseModule("");
+            Assert.IsNotNull(t);
+            Assert.AreEqual("el", t.Item1.Name);
+            Assert.AreEqual(1, t.Item2.End.Line);
+            Assert.AreEqual(3, t.Item2.End.Column);
+            Assert.AreEqual(true, t.Item3);
+        }
+
+
+        /// <summary>
         /// Testing indent before eof is ignored.
         /// </summary>
         [Test]

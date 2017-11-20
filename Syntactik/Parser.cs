@@ -1203,7 +1203,7 @@ namespace Syntactik
                 newPair = AppendCurrentPair();
             }
             //Report end of pair
-            if (_input.Next != -1 || indent <= currentIndent)
+            if (_input.Next != -1 || (indent <= currentIndent && currentIndent > 0) )
                 _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair)newPair)));
             else
                 _pairFactory.EndPair(newPair, new Interval(_input), true); //Special case used in completion. Value context.
