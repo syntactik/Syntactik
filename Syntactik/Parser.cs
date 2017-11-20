@@ -183,7 +183,7 @@ namespace Syntactik
                 { //Quoted ML string ended
                     _input.Consume();
                     ((IMappedPair)p).ValueInterval = new Interval(((IMappedPair)p).ValueInterval.Begin, new CharLocation(_input));
-                    AssignValueToCurrentPair(((IMappedPair)p).ValueInterval.Begin, ((IMappedPair)p).ValueInterval.End, false);
+                    AssignValueToCurrentPair(((IMappedPair)p).ValueInterval.Begin, ((IMappedPair)p).ValueInterval.End);
                     var newPair = AppendCurrentPair();
                     //Report end of pair
                     _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair)newPair)));
@@ -212,12 +212,10 @@ namespace Syntactik
                         ReportMLSSyntaxError(1, new Interval(_input), valueStart);
                         AssignValueToCurrentPair(((IMappedPair) p).ValueInterval.Begin,
                             ((IMappedPair) p).ValueInterval.End, true);
-                        //AppendCurrentPair();
                     }
                     else
                     {
-                        AssignValueToCurrentPair(((IMappedPair)p).ValueInterval.Begin, ((IMappedPair)p).ValueInterval.End, false);
-                        //AppendCurrentPair();
+                        AssignValueToCurrentPair(((IMappedPair)p).ValueInterval.Begin, ((IMappedPair)p).ValueInterval.End);
                     }
                     return false;
                 }
@@ -317,7 +315,7 @@ namespace Syntactik
                     if (_wsaStack.Count < 1 && !_lineState.Inline)
                     {
                         _lineState.State = ParserStateEnum.IndentMLS;
-                        AssignValueToCurrentPair(begin, end, false);
+                        AssignValueToCurrentPair(begin, end);
                         return;
                     }
                     break;
@@ -333,13 +331,17 @@ namespace Syntactik
                     _input.Consume();
                 }
             }
-            AssignValueToCurrentPair(begin, end, false);
+            AssignValueToCurrentPair(begin, end);
         }
 
         private void ParseLiteralValue()
         {
             _input.ConsumeSpaces();
-            _input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair);
+            if (_input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair))
+            {
+                AssignValueToCurrentPair(CharLocation.Empty, CharLocation.Empty);
+                return;
+            }
             var c = _input.Next;
             if (c == '\'')
             {
@@ -361,7 +363,7 @@ namespace Syntactik
             {
                 if (c.IsEndOfOpenString() || c == -1)
                 {
-                    AssignValueToCurrentPair(begin, end, false);
+                    AssignValueToCurrentPair(begin, end);
                     return;
                 }
 
@@ -375,11 +377,11 @@ namespace Syntactik
                     if (_wsaStack.Count < 1 && !_lineState.Inline)
                     {
                         _lineState.State = ParserStateEnum.IndentMLS;
-                        AssignValueToCurrentPair(begin, end, false);
+                        AssignValueToCurrentPair(begin, end);
                     }
                     else
                     {
-                        AssignValueToCurrentPair(begin, end, false);
+                        AssignValueToCurrentPair(begin, end);
                         return;
                     }
                     break;
@@ -395,7 +397,7 @@ namespace Syntactik
             }
         }
 
-        private void AssignValueToCurrentPair(CharLocation begin, CharLocation end, bool missingQuote)
+        private void AssignValueToCurrentPair(CharLocation begin, CharLocation end, bool missingQuote = false)
         {
             var pair = _lineState.CurrentPair;
             ((IMappedPair)pair).ValueInterval = begin == CharLocation.Empty?Interval.Empty:new Interval(begin, end);
@@ -418,7 +420,7 @@ namespace Syntactik
                 if (c == '\'')
                 {
                     _input.Consume();
-                    AssignValueToCurrentPair(begin, new CharLocation(_input), false);
+                    AssignValueToCurrentPair(begin, new CharLocation(_input));
                     break;
                 }
 
@@ -426,7 +428,7 @@ namespace Syntactik
                 {
                     if (_wsaStack.Count < 1 && !_lineState.Inline)
                     {
-                        AssignValueToCurrentPair(begin, new CharLocation(_input), false);
+                        AssignValueToCurrentPair(begin, new CharLocation(_input));
                         _lineState.State = ParserStateEnum.IndentMLS;
                         break;
                     }
@@ -458,7 +460,7 @@ namespace Syntactik
                 if (c == '"')
                 {
                     _input.Consume();
-                    AssignValueToCurrentPair(begin, new CharLocation(_input), false);
+                    AssignValueToCurrentPair(begin, new CharLocation(_input));
                     break;
                 }
                 if (c == '\\')
@@ -470,7 +472,7 @@ namespace Syntactik
                 {
                     if (_wsaStack.Count < 1 && !_lineState.Inline)
                     {
-                        AssignValueToCurrentPair(begin, new CharLocation(_input), false);
+                        AssignValueToCurrentPair(begin, new CharLocation(_input));
                         _lineState.State = ParserStateEnum.IndentMLS;
                         break;
                     }

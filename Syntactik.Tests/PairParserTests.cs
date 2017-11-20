@@ -175,6 +175,11 @@ namespace Syntactik.Tests
             DoTest();
         }
 
+        [Test, DomRecorded]
+        public void OpenStringComment()
+        {
+            DoTest();
+        }
 
         [Test, DomRecorded]
         public void MultilineSqString()

@@ -90,6 +90,7 @@
     <None Include="Scenarios\PairParser\MultilineOpenStringIndent.s4x" />
     <None Include="Scenarios\PairParser\MultilineSqString.s4x" />
     <None Include="Scenarios\PairParser\MultilineSqString2.s4x" />
+    <None Include="Scenarios\PairParser\OpenStringComment.s4x" />
     <None Include="Scenarios\PairParser\MultilineStringIndentMismatch.s4x" />
     <None Include="Scenarios\PairParser\PairDelimiter.s4x" />
     <None Include="Scenarios\PairParser\SimpleBlock.s4x" />
