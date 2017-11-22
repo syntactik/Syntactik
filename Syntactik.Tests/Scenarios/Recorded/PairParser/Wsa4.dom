@@ -2,4 +2,4 @@
 01:01		Document `Module`
 01:01			Element `el`:
 02:02				Attribute `el1`= `text1`
-03:01			Element `address`= `'multiline\nsingle quoted\nstring'`
+03:01			Element `address`= 'multiline\nsingle quoted\nstring'

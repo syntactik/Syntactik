@@ -193,7 +193,7 @@ namespace Syntactik.Tests
             DoTest();
         }
 
-        [Test, DomRecorded]
+        [Test, DomRecorded, ParserErrorRecorded]
         public void PairDelimiter()
         {
             DoTest();
@@ -248,6 +248,11 @@ namespace Syntactik.Tests
 
         [Test, DomRecorded, ParserErrorRecorded]
         public void SqName2()
+        {
+            DoTest();
+        }
+        [Test, DomRecorded]
+        public void SqString()
         {
             DoTest();
         }

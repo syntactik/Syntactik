@@ -3,5 +3,5 @@
   <tag1>text</tag1>
   <tag2>"tag2"</tag2>
   <element1 />
-  <text>"this is open string"</text>
+  <text>"this is quoted string"</text>
 </request>

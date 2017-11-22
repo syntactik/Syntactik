@@ -1,0 +1,7 @@
+﻿el1 = 'text1'
+el2 == 'text2'
+el3 ='text3'
+el4 =='text4'
+el5:
+	el6 ='text5'
+	el7 =='text6'

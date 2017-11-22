@@ -83,8 +83,8 @@ namespace Syntactik
                         break;
                     case ParserStateEnum.Value:
                         ParseValue();
-                        if (_lineState.State != ParserStateEnum.IndentMLS && _lineState.State != ParserStateEnum.PairDelimiter)
-                            _lineState.State = _lineState.ChainingStarted ? ParserStateEnum.Delimiter : ParserStateEnum.PairDelimiter;
+                        if (_lineState.State != ParserStateEnum.IndentMLS)
+                            _lineState.State = ParserStateEnum.PairDelimiter;
                         break;
                     case ParserStateEnum.PairDelimiter:
                         ParsePairDelimiter();
@@ -151,21 +151,28 @@ namespace Syntactik
         private void ParseValue()
         {
             var p = _lineState.CurrentPair;
-            if (p.Delimiter != DelimiterEnum.E && p.Delimiter != DelimiterEnum.EE && p.Delimiter != DelimiterEnum.CE)
+            if (p.Delimiter != DelimiterEnum.E && p.Delimiter != DelimiterEnum.EE)
                 return;
-
-
-            //Literal
-            if (p.Delimiter == DelimiterEnum.E && _wsaStack.Count == 0) ParseFreeOpenString();
-            else
+            _input.ConsumeSpaces();
+            if (_input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair))
             {
-                ParseLiteralValue();
-                if (_lineState.State != ParserStateEnum.IndentMLS)
-                {
-                    if (_lineState.ChainingStarted && p.Delimiter != DelimiterEnum.CE)
-                        _lineState.State = ParserStateEnum.PairDelimiter;
-                }
+                AssignValueToCurrentPair(CharLocation.Empty, CharLocation.Empty);
+                
             }
+            else if (_input.Next == '\'')
+            {
+                ParseSQValue();
+            }
+            else if (_input.Next == '"')
+            {
+                ParseDQValue();
+            }
+            else if (p.Delimiter == DelimiterEnum.E && _wsaStack.Count == 0)
+            {
+                ParseFreeOpenString();
+            }
+            else
+                ParseOpenString();
         }
 
         /// <summary>
@@ -334,25 +341,6 @@ namespace Syntactik
             AssignValueToCurrentPair(begin, end);
         }
 
-        private void ParseLiteralValue()
-        {
-            _input.ConsumeSpaces();
-            if (_input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair))
-            {
-                AssignValueToCurrentPair(CharLocation.Empty, CharLocation.Empty);
-                return;
-            }
-            var c = _input.Next;
-            if (c == '\'')
-            {
-                ParseSQValue();
-            } else if (c == '"')
-            {
-                ParseDQValue();
-            }
-            else
-                ParseOpenString();
-        }
 
         private void ParseOpenString()
         {

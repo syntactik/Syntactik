@@ -17,8 +17,8 @@
 14:02				Element ``:= 	Alias `Null`
 15:02				Element ``:= 	Alias `Null`:
 15:13					Argument `value`= `null`
-17:02				Element ``= `'$True\nstory'`
-19:02				Element ``= `'this is\n$False'`
+17:02				Element ``= "$True\nstory"
+19:02				Element ``= "this is\n$False"
 22:01		AliasDefinition `True`:= 	Parameter `value`= `true`
 23:01		AliasDefinition `False`:= 	Parameter `value`== 'false'
 24:01		AliasDefinition `Number`:= 	Parameter `value`= `123.34`

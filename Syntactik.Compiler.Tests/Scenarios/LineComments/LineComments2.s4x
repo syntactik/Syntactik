@@ -4,10 +4,12 @@
 	request: '''
 		@name == "name1"
 			'''comment3
-		tag1 = "text"
+		tag1 = 
+			"text"
 	'''text line2
 		tag2 == "tag2"
 			'''line comment
 		element1 '''end comment
-		text = "this is open string"
+		text = 
+			"this is quoted string"
 		'''comment for openstring

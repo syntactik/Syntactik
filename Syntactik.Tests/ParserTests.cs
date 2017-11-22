@@ -324,12 +324,6 @@ namespace Syntactik.Tests
         }
 
         [Test, DomRecorded]
-        public void JsonLiteralsInSqs()
-        {
-            DoTest();
-        }
-
-        [Test, DomRecorded]
         public void LineComments()
         {
             DoTest();

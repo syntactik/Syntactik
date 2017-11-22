@@ -65,6 +65,7 @@
     <None Include="Scenarios\PairParser\CommentsMultiline.s4x" />
     <None Include="Scenarios\PairParser\DqName.s4x" />
     <None Include="Scenarios\PairParser\DqName2.s4x" />
+    <None Include="Scenarios\PairParser\SqString.s4x" />
     <None Include="Scenarios\PairParser\DqString.s4x" />
     <None Include="Scenarios\PairParser\EmptyInlinePair.s4x" />
     <None Include="Scenarios\PairParser\EmptyName.s4x" />
@@ -159,7 +160,6 @@
     <None Include="Scenarios\Parser\JsonArrayWithValues.s4j" />
     <None Include="Scenarios\Parser\JsonArrayWithValuesInParameters.s4j" />
     <None Include="Scenarios\Parser\JsonEmptyArrayAndObject.s4j" />
-    <None Include="Scenarios\Parser\JsonLiteralsInSqs.s4j" />
     <None Include="Scenarios\Parser\LineComments.s4x" />
     <None Include="Scenarios\Parser\ModuleNamespaceOverload.s4x" />
     <None Include="Scenarios\Parser\NamespaceScope1.s4x" />

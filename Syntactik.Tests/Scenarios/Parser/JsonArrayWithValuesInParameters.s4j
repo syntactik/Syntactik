@@ -14,10 +14,10 @@
 		:= $Null
 		:= $Null: %value = null
 
-		= '$True
-			story'
-		= 'this is
-			$False'
+		= "$True
+			story"
+		= "this is
+			$False"
 
 !$True := !%value = true
 !$False := !%value == 'false'
