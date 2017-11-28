@@ -31,7 +31,7 @@ The purpose of the language is:
 - [Assignment](#assignment)
 - [String literals](#string-literals)
 - [Indent](#indent)
-- [Namespace declaration](#namespace-declaration)
+- [Namespace definition](#namespace-definition)
 - [Document](#document)
 - [Element](#element)
 - [Attribute](#attribute)
@@ -72,7 +72,7 @@ The purpose of the language is:
 # Example
 
 ```
-'''Namespace declarations
+'''Namespace definitions
 !#ipo = http://www.example.com/ipo 
 ''' "xsi" is a namespace prefix.
 !#xsi = http://www.w3.org/2001/XMLSchema-instance
@@ -146,7 +146,7 @@ and continue as far as needed.
 # Module
 Syntactik has a notion of a **module**. 
 A **module** is physically represented by a file with extension **"s4x"** or **"s4j"**.
-Module can include [namespace declarations](#namespace-declaration), [documents](#document), [alias definitions](#alias-definition), [elements](#element), [attributes](#attribute), [aliases](#alias), [namespace scopes](#namespace-scope).
+Module can include [namespace definitions](#namespace-definition), [documents](#document), [alias definitions](#alias-definition), [elements](#element), [attributes](#attribute), [aliases](#alias), [namespace scopes](#namespace-scope).
 
 ## s4x-module
 
@@ -183,7 +183,7 @@ This is the list of the prefixes and the corresponding language constructs:
 |      | [Element](#element) |
 | `!`   | [Document](#document) |
 | `!$` | [Alias Definition](#alias-definition)      |
-| `!#` | [Namespace Declaration](#namespace-declaration) |
+| `!#` | [Namespace Definition](#namespace-definition) |
 | `!%` | [Parameter](#parameter) |
 | `#`  | [Namespace Scope](#namespace-scope) |
 | `@`  | [Attribute](#attribute)   |
@@ -223,7 +223,7 @@ Only first dot is used to define namespace prefix. All following dots are part o
 "name.last" = Smith
 ```
 
-All language constructs except a [namespace declaration](#namespace-declaration) can have a **compound identifier**.
+All language constructs except a [namespace definition](#namespace-definition) can have a **compound identifier**.
 The compound IDs are used in [alias definitions](#alias-definition) to structure them in the same way classes are structured using namespaces in programming languages:
 ```
 !$Items.Jewelry.Necklaces.Lapis:
@@ -568,7 +568,7 @@ json_literal_null == null
 Syntactik parser works with both tab and space **indents** like most computer formats and languages. But unlike other formats, Syntactik enforces the same style of indentation in the file. Therefore there can't be indents defined by both tabs and spaces in the same file. The parser also checks that the same number of tabs or spaces is used to define one indent.
 The first indent that the parser finds in the file defines the **indent symbol** (space or tab) and the **indent multiplicity** (the number of symbols used for one indent).
 
-# Namespace declaration
+# Namespace definition
 **Overview**
 
 | Syntax feature        | Options           |
@@ -581,7 +581,7 @@ The first indent that the parser finds in the file defines the **indent symbol**
 **Description**
 
 Namespaces can be declared in the [Module](#module), [Document](#document) or [Alias Definition](#alias-definition).
-Declaration of a namespace starts with `!#` followed by a [simple identifier](#simple-identifier) and a [string literal](#literal). A [simple identifier](#simple-identifier) represents an [XML namespace prefix](https://www.w3.org/TR/xml-names11/#NT-Prefix), and a [string literal](#literal) represents an [XML namespace name](https://www.w3.org/TR/xml-names11/#dt-NSName).
+Definition of a namespace starts with `!#` followed by a [simple identifier](#simple-identifier) and a [string literal](#literal). A [simple identifier](#simple-identifier) represents an [XML namespace prefix](https://www.w3.org/TR/xml-names11/#NT-Prefix), and a [string literal](#literal) represents an [XML namespace name](https://www.w3.org/TR/xml-names11/#dt-NSName).
 For example:
 ```
 !#xsi = http://www.w3.org/2001/XMLSchema-instance
@@ -601,7 +601,7 @@ The namespace declared in the module is visible in the all documents and alias d
 | [Identifier](#identifier)    | [simple](#simple-identifier) or [compound](#compound-identifier) |
 | [Value](#value) | [block](#block) or [literal](#literal) (*only in s4j-module*)      |
 | Can be child of | [Module](#module) |
-| Can be parent of | [Namespace Declaration](#namespace-declaration), [Element](#element), [Attribute](#attribute), [Alias](#alias), [Namespace Scope](#namespace-scope) |
+| Can be parent of | [Namespace Definition](#namespace-definition), [Element](#element), [Attribute](#attribute), [Alias](#alias), [Namespace Scope](#namespace-scope) |
 
 **Description**
 
