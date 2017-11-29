@@ -9,6 +9,11 @@ namespace Syntactik.Tests
     [TestFixture]
     public class PairParserTests
     {
+        [Test, DomRecorded]
+        public void ArrayDelimiter()
+        {
+            DoTest();
+        }
         [Test, DomRecorded, ParserErrorRecorded]
         public void ChainedPairs()
         {

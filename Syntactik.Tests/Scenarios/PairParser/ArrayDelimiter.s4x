@@ -1,0 +1,6 @@
+﻿items:item:::
+	el1 = txt1
+	el2 := $al2 = txt2
+	el3 = txt3
+	el4, el5
+			

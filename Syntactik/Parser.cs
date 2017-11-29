@@ -528,8 +528,14 @@ namespace Syntactik
                 if (_input.Next == ':')
                 {
                     _input.Consume();
-                    delimiter = DelimiterEnum.CC;
                     ((IMappedPair) _lineState.CurrentPair).DelimiterInterval.End.Column++;
+                    if (_input.Next == ':')
+                    {
+                        _input.Consume();
+                        ((IMappedPair)_lineState.CurrentPair).DelimiterInterval.End.Column++;
+                        delimiter = DelimiterEnum.CCC;
+                    }
+                    else delimiter = DelimiterEnum.CC;
                 }
                 else
                 {

@@ -10,6 +10,7 @@ namespace Syntactik.DOM
         EE,  // ==
         C,   // :
         CC,  // ::
+        CCC, // :::
         EC,  // =:
         ECC, // =::
         CE, // :=
@@ -116,6 +117,8 @@ namespace Syntactik.DOM
                     return ":";
                 case DelimiterEnum.CC:
                     return "::";
+                case DelimiterEnum.CCC:
+                    return ":::";
                 case DelimiterEnum.E:
                     return "=";
                 case DelimiterEnum.EC:

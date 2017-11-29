@@ -205,6 +205,7 @@ namespace Syntactik.Compiler.Steps
                     return;
                 case DelimiterEnum.C:
                 case DelimiterEnum.CC:
+                case DelimiterEnum.CCC:
                     pair.ValueType = ValueType.Object;
                     return;
             }

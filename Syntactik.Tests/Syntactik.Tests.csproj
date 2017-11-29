@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Scenarios\PairParser\ArrayDelimiter.s4x" />
     <None Include="Scenarios\PairParser\Comma.s4x" />
     <None Include="Scenarios\PairParser\ChainedPairs.s4x" />
     <None Include="Scenarios\PairParser\ChainedPairs2.s4x" />
