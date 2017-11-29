@@ -1,0 +1,7 @@
+items:item:::
+	:
+		prop1 = a
+		prop2 = b
+	:
+		@prop1 = a
+		@prop2 = b

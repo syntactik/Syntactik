@@ -237,6 +237,18 @@ namespace Syntactik.Compiler.Tests
         }
 
         [Test, RecordedTest]
+        public void JsonExplicitArray()
+        {
+            PerformCompilerTest();
+        }
+
+        [Test, CompilerErrorRecorded]
+        public void JsonExplicitArray2()
+        {
+            PerformCompilerTest();
+        }
+
+        [Test, RecordedTest]
         public void JsonArrayInAlias()
         {
             PerformCompilerTest();
@@ -430,6 +442,13 @@ namespace Syntactik.Compiler.Tests
         {
             PerformCompilerTest();
         }
+
+        [Test, RecordedTest]
+        public void ArrayExplicitInXml()
+        {
+            PerformCompilerTest();
+        }
+
 
         [Test, RecordedTest]
         public void ArgumentWithObjectValue()

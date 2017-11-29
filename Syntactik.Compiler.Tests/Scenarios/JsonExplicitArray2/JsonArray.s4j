@@ -1,0 +1,7 @@
+!json:
+	item:::
+		prop1 = a
+		prop2 = b
+	item:
+		= a
+		prop1 = a

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<items>
+  <item>
+    <prop1>a</prop1>
+    <prop2>b</prop2>
+  </item>
+  <item prop1="a" prop2="b" />
+</items>

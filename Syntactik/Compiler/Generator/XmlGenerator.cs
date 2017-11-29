@@ -194,26 +194,59 @@ namespace Syntactik.Compiler.Generator
                 () => ScopeContext.Peek(),
                 out prefix, out ns);
 
-            if (string.IsNullOrEmpty(element.NsPrefix)) prefix = null; //Default namespace defined
+            if (string.IsNullOrEmpty(element.NsPrefix)) prefix = null; 
             //Starting Element
-            if (!string.IsNullOrEmpty(element.Name)) //not text node
-                _xmlTextWriter.WriteStartElement(prefix, element.Name, ns);
-            
-            AddLocationMapRecord(_currentModuleMember.Module.FileName, (IMappedPair) element);
-
-            //Write all namespace declarations in the root element
-            if (!_rootElementAdded)
+            if (!string.IsNullOrEmpty(element.Name))
             {
-                WritePendingNamespaceDeclarations(ns);
-                _rootElementAdded = true;
+                if (element.Delimiter != DelimiterEnum.CCC)
+                {
+                    //not text node
+                    _xmlTextWriter.WriteStartElement(prefix, element.Name, ns);
+                    AddLocationMapRecord(_currentModuleMember.Module.FileName, (IMappedPair) element);
+
+                    //Write all namespace declarations in the root element
+                    if (!_rootElementAdded)
+                    {
+                        WritePendingNamespaceDeclarations(ns);
+                        _rootElementAdded = true;
+                    }
+                }
+            }
+            else
+            {
+                if (element.Parent.Delimiter == DelimiterEnum.CCC && (element.Delimiter == DelimiterEnum.C || element.Delimiter == DelimiterEnum.CC))
+                {
+                    // This is item of explicit array (:::)
+                    WriteExplicitArrayItem(element);
+                }
             }
 
             if (!ResolveValue(element) && !EnterChoiceContainer(element, element.Entities))
                 base.OnElement(element);
 
             //End Element
-            if (!string.IsNullOrEmpty(element.Name)) //not text node
-                _xmlTextWriter.WriteEndElement();
+            if (!string.IsNullOrEmpty(element.Name))
+            {
+                if (element.Delimiter != DelimiterEnum.CCC) //not text node and not explicit array
+                    _xmlTextWriter.WriteEndElement();
+            }
+            else
+            {
+                if (element.Parent.Delimiter == DelimiterEnum.CCC && (element.Delimiter == DelimiterEnum.C || element.Delimiter == DelimiterEnum.CC))
+                    _xmlTextWriter.WriteEndElement();
+            }
+        }
+
+        private void WriteExplicitArrayItem(Element element)
+        {
+            string prefix;
+            string ns;
+            NamespaceResolver.GetPrefixAndNs((INsNode) element.Parent, _currentDocument,
+                () => ScopeContext.Peek(),
+                out prefix, out ns);
+            if (string.IsNullOrEmpty(element.NsPrefix)) prefix = null;
+            _xmlTextWriter.WriteStartElement(prefix, element.Parent.Name, ns);
+            AddLocationMapRecord(_currentModuleMember.Module.FileName, (IMappedPair) element);
         }
 
         protected virtual void AddLocationMapRecord(string fileName, IMappedPair pair)

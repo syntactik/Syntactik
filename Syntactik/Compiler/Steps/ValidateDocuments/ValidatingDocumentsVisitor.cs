@@ -37,7 +37,7 @@ namespace Syntactik.Compiler.Steps
 {
     public class ValidatingDocumentsVisitor: AliasResolvingVisitor
     {   
-        private bool _blockStart;
+        private bool _blockStateUnknown;
         private Stack<JsonGenerator.BlockState> _blockState;
         private Module _currentModule;
         private readonly Stack<ChoiceInfo> _choiceStack = new Stack<ChoiceInfo>();
@@ -52,7 +52,7 @@ namespace Syntactik.Compiler.Steps
         {
             _currentModule = (Module) module;
             _namespaceResolver.EnterModule(module);
-            _blockStart = true;
+            _blockStateUnknown = true;
             _blockState = new Stack<JsonGenerator.BlockState>();
 
             Visit(module.NamespaceDefinitions);
@@ -68,7 +68,7 @@ namespace Syntactik.Compiler.Steps
         {
             _currentDocument = (Document) document;
             CheckPairValue(document);
-            _blockStart = true;
+            _blockStateUnknown = true;
 
             CheckDocumentNameDuplicates(document);
             _choiceStack.Push(((Document)document).ChoiceInfo);
@@ -291,7 +291,7 @@ namespace Syntactik.Compiler.Steps
 
             if (_currentModule.TargetFormat == Module.TargetFormats.Xml) return;
 
-            if (!_blockStart)
+            if (!_blockStateUnknown)
             {
                 var blockState = _blockState.Peek();
                 if (blockState != JsonGenerator.BlockState.Object) return;
@@ -304,14 +304,14 @@ namespace Syntactik.Compiler.Steps
 
             //This element is the first element of the block. It decides if the block is array or object
             _blockState.Push(JsonGenerator.BlockState.Array);
-            _blockStart = false;
+            _blockStateUnknown = false;
         }
 
         public override void OnAliasDefinition(DOM.AliasDefinition aliasDefinition)
         {
             CheckPairValue(aliasDefinition);
 
-            _blockStart = true;
+            _blockStateUnknown = true;
             CheckAliasDefNameUniqueness(aliasDefinition);
             var choiceInfo = new ChoiceInfo(null, null);
             _choiceStack.Push(choiceInfo);
@@ -354,7 +354,7 @@ namespace Syntactik.Compiler.Steps
                 CheckArrayItem((Element) element);
                 CheckInterpolation((Element)element);
             }
-            _blockStart = true;
+            _blockStateUnknown = true;
             var prevBlockStateCount = _blockState.Count;
             EnterChoiceNode(element);
             if (((Element) element).IsChoice)
@@ -368,14 +368,25 @@ namespace Syntactik.Compiler.Steps
             }
             else
             {
+                CheckArrayDelimiter(element);
                 base.OnElement(element);
             }
             ExitChoiceNode(element);
-            _blockStart = false;
+            _blockStateUnknown = false;
 
             if (_blockState.Count > prevBlockStateCount)
                 _blockState.Pop();
         }
+
+        private void CheckArrayDelimiter(Pair element)
+        {
+            if (element.Delimiter == DelimiterEnum.CCC)
+            {
+                _blockState.Push(JsonGenerator.BlockState.Array);
+                _blockStateUnknown = false;
+            }
+        }
+
         private void EnterChoiceNode(DOM.Element element)
         {
             if (!((IChoiceNode)element).IsChoice) return;
@@ -478,10 +489,13 @@ namespace Syntactik.Compiler.Steps
         /// <param name="node"></param>
         private void CheckArrayItem(Element node)
         {
-            if (_currentModule.TargetFormat != Module.TargetFormats.Xml || node.IsChoice) return;
-            if (string.IsNullOrEmpty(node.Name) 
-                && (!node.IsValueNode || node.Parent is DOM.Document) //Empty name is allowed for value (text) nodes
-                && node.Delimiter != DelimiterEnum.CC) //Empty name is allowed for choice containers
+            if (!string.IsNullOrEmpty(node.Name)) return; //not an array item
+            if (_currentModule.TargetFormat != Module.TargetFormats.Xml) return; //don't check if s4j
+            if (node.IsChoice) return; //don't check if node is choice
+            if (node.Delimiter == DelimiterEnum.CC) return; //Empty name is allowed for choice containers
+            if (node.Parent.Delimiter == DelimiterEnum.CCC) return; //Empty name if parent is an explicit array
+            
+            if (!node.IsValueNode || node.Parent is DOM.Document) //Empty name is allowed for value (text) nodes
             {
                 Context.AddError(CompilerErrorFactory.InvalidXmlElementName(node.NameInterval, _currentModule.FileName));
             }
@@ -556,7 +570,7 @@ namespace Syntactik.Compiler.Steps
         private void CheckStringConcatenation(Pair pair)
         {
             _blockState.Push(JsonGenerator.BlockState.Array);
-            _blockStart = false;
+            _blockStateUnknown = false;
             if (((IPairWithInterpolation)pair).InterpolationItems != null) 
                 Visit(((IPairWithInterpolation) pair).InterpolationItems.ConvertAll(i => (Pair)i));
             _blockState.Pop();
@@ -659,7 +673,7 @@ namespace Syntactik.Compiler.Steps
         private void CheckBlockIntegrity(DOM.Pair pair)
         {
             if (_currentModule.TargetFormat == Module.TargetFormats.Xml) return;
-            if (!_blockStart)
+            if (!_blockStateUnknown)
             {
                 var blockState = _blockState.Peek();
                 if (blockState == JsonGenerator.BlockState.Array)
@@ -687,7 +701,7 @@ namespace Syntactik.Compiler.Steps
             _blockState.Push(string.IsNullOrEmpty(pair.Name) || pair.Delimiter == DelimiterEnum.None
                 ? JsonGenerator.BlockState.Array
                 : JsonGenerator.BlockState.Object);
-            _blockStart = false;
+            _blockStateUnknown = false;
         }
 
         private void ReportErrorForEachNodeInAliasContext(Func<DOM.Pair, CompilerError> func)
