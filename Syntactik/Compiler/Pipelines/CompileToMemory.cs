@@ -1,5 +1,5 @@
 ﻿#region license
-// Copyright © 2016, 2017 Maxim Trushin (dba Syntactik, trushin@gmail.com, maxim.trushin@syntactik.com)
+// Copyright © 2017 Maxim O. Trushin (trushin@gmail.com)
 //
 // This file is part of Syntactik.
 // Syntactik is free software: you can redistribute it and/or modify

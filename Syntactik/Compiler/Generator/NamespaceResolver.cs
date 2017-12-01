@@ -1,6 +1,5 @@
 ﻿#region license
-
-// Copyright © 2016, 2017 Maxim Trushin (dba Syntactik, trushin@gmail.com, maxim.trushin@syntactik.com)
+// Copyright © 2017 Maxim O. Trushin (trushin@gmail.com)
 //
 // This file is part of Syntactik.
 // Syntactik is free software: you can redistribute it and/or modify
@@ -15,7 +14,6 @@
 
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
-
 #endregion
 
 using System;
