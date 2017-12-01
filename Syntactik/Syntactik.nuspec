@@ -4,13 +4,13 @@
     <id>Syntactik</id>
     <version>$version$</version>
     <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <authors>Maxim O. Trushin</authors>
+    <owners></owners>
     <projectUrl>http://syntactik.com</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>    
     <copyright>$copyright$</copyright>
-    <tags>Syntactik xml json editor productivity tool</tags>
+    <tags>syntactik xml json</tags>
 	<dependencies>
         <dependency id="Newtonsoft.Json" version="10.0.2" />
     </dependencies>
