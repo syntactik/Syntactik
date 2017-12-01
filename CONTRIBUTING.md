@@ -1,5 +1,9 @@
 # Contributing to Syntactik
 
+## Code of Conduct
+
+This project and everyone participating in it is governed by the [Syntactik Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [info@syntactik.com](mailto:info@syntactik.com).
+
 ## If you found a bug
 
 * **Ensure the bug was not already reported** by searching on GitHub under [Issues](https://github.com/syntactik/Syntactik/issues).
