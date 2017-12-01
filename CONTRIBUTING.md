@@ -25,3 +25,6 @@ This project and everyone participating in it is governed by the [Syntactik Code
 
 Ask your question in chat:
 [![Join the chat at https://gitter.im/syntactik](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/syntactik)
+
+## If you want to implement Syntactik for another language
+Syntactik was designed to be easily converted to other languages. Look at this project https://github.com/MaximTrushin/SyntactikJs as example. This is a proof of concept project proves that it is possible to convert Syntactik parser to another language (in this case JavaScript) in matter of days by just converting language instructions one to one (*like, for example, converting if statement in C# to if statement in JavaScript etc*).
