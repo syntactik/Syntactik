@@ -1355,6 +1355,9 @@ shipTo: @export-code == 1
     city == Cambridge, postcode == 126
 ```
 
+## Inline syntax and multiline literals
+[Multiline string literals](#multiline-string-literal) can't be defined in the [inline block](#inline-block).
+
 # WSA mode
 # WSA region
 **WSA** is an acronym for **whitespace agnostic mode**. It is a mode when the Syntactik parser ignores indents and dedents.
