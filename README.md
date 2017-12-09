@@ -1277,10 +1277,10 @@ name == Helen Zoe, street == 47 Eden Street, city == Cambridge, postcode = 126
 In the second example, the [open strings](#open-string) are used to define the [string literals](#string-literals). The usage of the [open strings](#open-string) instead of [free open strings](#free-open-string) is essential in this case because it makes possible for the parser to end the strings with a [comma](#comma) `,`. 
 Please also note that the last pair in the second example is still using the [free open string](#free-open-string). It works because it is the last pair in the line.
 In the previous example, literals were ended by a [comma](#comma). **Quoted literals** end with the closing quote. In this case, Syntactik parser still requires [commas](#comma) between inline pairs. 
-> [Comma](#comma) is required before any new pair that is defined in the same line with its previous sibling pair.
 ```
 name == "Helen Zoe", street == "47 Eden Street", city == "Cambridge", postcode == "126"
 ```
+> [Comma](#comma) is required before any new pair that is defined in the same line with its previous sibling pair.
 
 ## Inline block
 An **inline block** is a [block](#block) that is defined in the same line with the [name](#name) and the [block assignment](#block-assignment).
