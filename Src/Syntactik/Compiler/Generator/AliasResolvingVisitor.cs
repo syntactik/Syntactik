@@ -507,7 +507,7 @@ namespace Syntactik.Compiler.Generator
 
             if (parameter.Name == "_") //Default parameter. Value is passed in the body of the alias
             {
-                Visit(aliasContext.Alias.Entities.Where(e => !(e is DOM.Attribute)));
+                Visit(aliasContext.Alias.Entities.Where(e => !(e is DOM.Attribute) && !(e is DOM.Comment)));
                 return;
             }
 

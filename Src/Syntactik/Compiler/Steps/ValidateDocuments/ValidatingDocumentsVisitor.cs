@@ -24,6 +24,7 @@ using Syntactik.DOM.Mapped;
 using Alias = Syntactik.DOM.Mapped.Alias;
 using AliasDefinition = Syntactik.DOM.Mapped.AliasDefinition;
 using Argument = Syntactik.DOM.Mapped.Argument;
+using Comment = Syntactik.DOM.Comment;
 using Document = Syntactik.DOM.Mapped.Document;
 using Element = Syntactik.DOM.Mapped.Element;
 using Module = Syntactik.DOM.Mapped.Module;
@@ -607,7 +608,7 @@ namespace Syntactik.Compiler.Steps
             {
                 if (!parameter.IsValueNode)
                 {
-                    if (alias.Entities.Count == 0 && alias.ValueType != ValueType.Object)
+                    if (alias.Entities.All(e => e is Comment) && alias.ValueType != ValueType.Object)
                         ReportErrorInsideChoice(() => CompilerErrorFactory.DefaultBlockArgumentIsMissing(alias,
                             moduleFileName));
                 }
@@ -725,7 +726,7 @@ namespace Syntactik.Compiler.Steps
                         fileName));
             }
 
-            if (!aliasDef.HasDefaultBlockParameter && alias.Entities.Count > 0)
+            if (!aliasDef.HasDefaultBlockParameter && alias.Entities.Any(e => !(e is DOM.Comment)))
             {
                 Context.AddError(CompilerErrorFactory.UnexpectedDefaultBlockArgument((IMappedPair)alias.Entities[0],
                     fileName));
@@ -746,7 +747,7 @@ namespace Syntactik.Compiler.Steps
                 {
                     if (!parameter.IsValueNode)
                     {
-                        if (alias.Entities.Count == 0 && alias.ValueType != ValueType.Object)
+                        if (alias.Entities.All(e => e is Comment) && alias.ValueType != ValueType.Object)
                             ReportErrorInsideChoice(() => CompilerErrorFactory.DefaultBlockArgumentIsMissing(alias,
                                 fileName));
                     }
