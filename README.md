@@ -1182,7 +1182,7 @@ A **choice** assignment `::` allows the creation of [object alias definitions](#
             espresso := !%espresso
     :
         espresso:
-            espresso := 30
+            espresso = 30
 coffee_drinks:
     ''' capuchino
     $coffee_drink: 
