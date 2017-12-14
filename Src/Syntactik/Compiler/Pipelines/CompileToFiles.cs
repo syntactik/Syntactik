@@ -21,7 +21,7 @@ namespace Syntactik.Compiler.Pipelines
 {
     public class CompileToFiles: CompilerPipeline
     {
-        public CompileToFiles(bool generateComments)
+        public CompileToFiles(bool generateComments = false)
         {
             Steps.Add(new Parse());
             Steps.Add(new ProcessAliasesAndNamespaces());

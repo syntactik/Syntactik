@@ -48,6 +48,7 @@ namespace slc
                 if (context.Errors.Count > 0)
                 {
                     PrintCompilerErrors(context.Errors);
+                    return 1;
                 }
 
                 result = 0;
@@ -69,7 +70,7 @@ namespace slc
 
         private static CompilerParameters GetCompilerParameters(IEnumerable<string> files, string outputDirectory)
         {
-            var compilerParameters = new CompilerParameters {OutputDirectory = outputDirectory != string.Empty?outputDirectory: Directory.GetCurrentDirectory(), Pipeline = new CompileToFiles(false) };
+            var compilerParameters = new CompilerParameters {OutputDirectory = outputDirectory != string.Empty?outputDirectory: Directory.GetCurrentDirectory(), Pipeline = new CompileToFiles() };
 
             var fileNames = files as string[] ?? files.ToArray();
             var s4xFound = false;
@@ -116,7 +117,7 @@ namespace slc
             {
                 var monoRuntime = Type.GetType("Mono.Runtime");
                 return (monoRuntime != null)
-                    ? (string)monoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null)
+                    ? (string)monoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static)?.Invoke(null, null)
                     : $"CLR {Environment.Version}";
             }
         }
