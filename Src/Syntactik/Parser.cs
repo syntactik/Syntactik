@@ -1214,10 +1214,15 @@ namespace Syntactik
                 newPair = AppendCurrentPair();
             }
             //Report end of pair
-            if (_input.Next != -1 || (indent <= currentIndent && currentIndent > 0) )
-                _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair)newPair)));
+            if (_input.Next != -1)
+                _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair) newPair)));
             else
-                _pairFactory.EndPair(newPair, new Interval(_input), true); //Special case used in completion. Value context.
+            {
+                _pairFactory.EndPair(newPair, 
+                        indent <= currentIndent? new Interval(GetPairEnd((IMappedPair)newPair)):new Interval(_input), 
+                        _lineState.State == ParserStateEnum.Value || indent > currentIndent); //Special case used in completion. Value context. True- means value is ended by EOF but not by dedent.
+            }
+
 
             _lineState.CurrentPair = null;
             indent = end - begin + 1;
