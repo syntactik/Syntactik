@@ -1,27 +1,19 @@
-version: 0.1.{build}
-
-configuration:
-- Debug
-- Release
-
-platform:
-- Any CPU
-- x64
-
+version: '{build}'
+branches:
+  only:
+  - master
+  - /^v\d+(?:\.\d+)?$/
+skip_tags: true
 nuget:
-  project_feed: true
   disable_publish_on_pr: true
-  
-before_build:
-- cmd: >-
-    nuget restore    
-build:
-  project: /Syntactik.sln
-  verbosity: minimal
-  parallel: true
-  
-test:
-  assemblies: '**\*.tests.dll'
-  
+image: Visual Studio 2017
+configuration: Release
+environment:
+  VisualStudioVersion: 15.0
+init:
+  git config --global core.autocrlf true
+build_script:
+- ps: Build\runbuild.ps1
 artifacts:
-  - path: 'build'
+- path: Working\NuGet\*.nupkg
+  name: NuGet Package
