@@ -55,10 +55,21 @@ namespace Syntactik.Compiler
     [Serializable]
     public class CompilerError : ApplicationException, IComparable<CompilerError>
     {
+        /// <summary>
+        /// If true then the error occured during parsing step.
+        /// </summary>
         public bool IsParserError { get; }
         private readonly LexicalInfo _lexicalInfo;
         private readonly string _code;
 
+        /// <summary>
+        /// Initializes a new instance of the CompilerError class.
+        /// </summary>
+        /// <param name="code">String identificator of the error.</param>
+        /// <param name="lexicalInfo"></param>
+        /// <param name="cause"></param>
+        /// <param name="args"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public CompilerError(string code, LexicalInfo lexicalInfo, Exception cause, params object[] args) : base(ErrorCodes.Format(code, args), cause)
         {
             if (null == lexicalInfo)

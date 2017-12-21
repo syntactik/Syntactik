@@ -30,33 +30,75 @@ using Parameter = Syntactik.DOM.Mapped.Parameter;
 
 namespace Syntactik.Compiler
 {
+    /// <summary>
+    /// This class factory creates instance of class <see cref="CompilerError"/>. 
+    /// </summary>
     public static class CompilerErrorFactory
     {
-        public static CompilerError InputError(string inputName, Exception x)
+        /// <summary>
+        /// Creates instance of class <see cref="CompilerError"/>.
+        /// </summary>
+        /// <param name="inputName"></param>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        public static CompilerError InputError(string inputName, Exception ex)
         {
-            return InputError(new LexicalInfo(inputName), x);
+            return InputError(new LexicalInfo(inputName), ex);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lexicalInfo"></param>
+        /// <param name="error"></param>
+        /// <returns></returns>
         public static CompilerError InputError(LexicalInfo lexicalInfo, Exception error)
         {
             return Instantiate("MCE0001", lexicalInfo, error, lexicalInfo.FileName, error.Message);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
         public static CompilerError FatalError(Exception ex)
         {
             return new CompilerError("MCE0000", ex, ex.Message);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static CompilerError FatalError(Exception ex, string message)
         {
             return new CompilerError("MCE0000", ex, message);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="location"></param>
+        /// <param name="error"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         private static CompilerError Instantiate(string code, LexicalInfo location, Exception error, params object[] args)
         {
             return new CompilerError(code, location, error, args);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="location"></param>
+        /// <param name="isParserError"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         private static CompilerError Instantiate(string code, LexicalInfo location, bool isParserError, params object[] args)
         {
             return new CompilerError(code, location, isParserError, Array.ConvertAll(args, DisplayStringFor));

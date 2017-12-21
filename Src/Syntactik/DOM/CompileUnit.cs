@@ -19,6 +19,9 @@ using System;
 
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Root DOM object of the compilation session.
+    /// </summary>
     [Serializable]
     public class CompileUnit : Pair
     {
@@ -26,7 +29,9 @@ namespace Syntactik.DOM
         private PairCollection<Module> _modules;
 
 
-        // Properties
+        /// <summary>
+        /// List of compiled modules.
+        /// </summary>
         public virtual PairCollection<Module> Modules
         {
             get { return _modules ?? (_modules = new PairCollection<Module>(this)); }
@@ -38,11 +43,19 @@ namespace Syntactik.DOM
             }
         }
 
+        /// <summary>
+        /// Method Accept is part of implementation of Visitor pattern.
+        /// </summary>
+        /// <param name="visitor"></param>
         public override void Accept(IDomVisitor visitor)
         {
             visitor.OnCompileUnit(this);
         }
 
+        /// <summary>
+        /// Adds a Module as a child of CompilationUnit.
+        /// </summary>
+        /// <param name="child"></param>
         public override void AppendChild(Pair child)
         {
             var item = child as Module;
