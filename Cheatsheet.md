@@ -1,5 +1,5 @@
 # Syntactik language cheat sheet
-# ![Syntactik Logo](http://syntactik.com/img/syntactik_small.png "Syntactik Logo") [![Join the chat at https://gitter.im/syntactik-Malina/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/syntactik-Malina/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# ![Syntactik Logo](https://www.syntactik.com/img/syntactik_small.png "Syntactik Logo") [![Join the chat at https://gitter.im/syntactik-Malina/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/syntactik-Malina/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 ## Name/Value Pair
@@ -45,7 +45,3 @@ ends on the next line.
 
 
 
-
-**Syntactik**
-**XML**
-**Json**
