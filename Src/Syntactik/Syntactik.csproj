@@ -1,11 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <TargetFrameworks>net45</TargetFrameworks>
-    <Company>Syntactik, LLC</Company>
-    <Copyright>Copyright © Maxim Trushin, 2017</Copyright>
-    <PackageProjectUrl>https://www.syntactik.com</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/syntactik/Syntactik/blob/master/LICENSE.md</PackageLicenseUrl>
-    <ProjectGuid>{B36EC10C-824D-4023-A32E-8BC9369869AE}</ProjectGuid>
+	<AssemblyTitle>Syntactik.NET</AssemblyTitle>
+	<AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0</FileVersion>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionSuffix>beta1</VersionSuffix>
+    <Authors>Maxim Trushin</Authors>
+    <Company>Syntactik</Company>
+    <Product>Syntactik.NET</Product>
+    <Description>Syntactik.NET is a preprocessor for XML and JSON.</Description>
+    <Copyright>Copyright © Maxim Trushin 2017</Copyright>
+    <Summary>Syntactik.NET is a preprocessor for XML and JSON.</Summary>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Title>Syntactik.NET</Title>
+    <PackageId>Syntactik.NET</PackageId>
+    <PackageTags>syntactik</PackageTags>
+    <PackageIconUrl>https://www.syntactik.com/img/SyntactikNugetIcon.png</PackageIconUrl>
+    <PackageProjectUrl>https://www.syntactik.com/dotnet</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/syntactik/Syntactik/master/LICENSE.md</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/syntactik/Syntactik</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RootNamespace>Syntactik</RootNamespace>
+    <AssemblyName>Syntactik</AssemblyName>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <MinClientVersion>2.12</MinClientVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
