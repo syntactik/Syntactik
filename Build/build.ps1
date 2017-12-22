@@ -1,12 +1,12 @@
 ﻿properties {
-  $zipFileName = "Json110r1.zip"
-  $majorVersion = "11.0"
-  $majorWithReleaseVersion = "11.0.1"
+  $zipFileName = "Syntactik10r0.zip"
+  $majorVersion = "1.0"
+  $majorWithReleaseVersion = "1.0.0"
   $nugetPrerelease = "beta1"
   $version = GetVersion $majorWithReleaseVersion
-  $packageId = "Newtonsoft.Json"
+  $packageId = "Syntactik"
   $signAssemblies = $false
-  $signKeyPath = "C:\Development\Releases\newtonsoft.snk"
+  $signKeyPath = "C:\Development\Releases\syntactik.snk"
   $buildDocumentation = $false
   $buildNuGet = $true
   $msbuildVerbosity = 'minimal'
@@ -84,15 +84,15 @@ task Build -depends Clean {
   mkdir "$workingDir\Build" -Force
   Copy-Item -Path $buildDir\install.ps1 -Destination $workingDir\Build\
 
-  $xml = [xml](Get-Content "$workingSourceDir\Newtonsoft.Json\Newtonsoft.Json.csproj")
+  $xml = [xml](Get-Content "$workingSourceDir\Syntactik\Syntactik.csproj")
   Edit-XmlNodes -doc $xml -xpath "/Project/PropertyGroup/PackageId" -value $packageId
   Edit-XmlNodes -doc $xml -xpath "/Project/PropertyGroup/VersionPrefix" -value $majorWithReleaseVersion
   Edit-XmlNodes -doc $xml -xpath "/Project/PropertyGroup/VersionSuffix" -value $nugetPrerelease
   Edit-XmlNodes -doc $xml -xpath "/Project/PropertyGroup/AssemblyVersion" -value ($majorVersion + '.0.0')
   Edit-XmlNodes -doc $xml -xpath "/Project/PropertyGroup/FileVersion" -value $version
-  $xml.save("$workingSourceDir\Newtonsoft.Json\Newtonsoft.Json.csproj")
+  $xml.save("$workingSourceDir\Syntactik\Syntactik.csproj")
 
-  $projectPath = "$workingSourceDir\Newtonsoft.Json\Newtonsoft.Json.csproj"
+  $projectPath = "$workingSourceDir\Syntactik\Syntactik.csproj"
 
   NetCliBuild
 }
@@ -103,7 +103,7 @@ task Package -depends Build {
   {
     $finalDir = $build.Framework
 
-    $sourcePath = "$workingSourceDir\Newtonsoft.Json\bin\Release\$finalDir"
+    $sourcePath = "$workingSourceDir\Syntactik\bin\Release\$finalDir"
 
     if (!(Test-Path -path $sourcePath))
     {
@@ -119,10 +119,10 @@ task Package -depends Build {
 
     $targetFrameworks = ($script:enabledBuilds | Select-Object @{Name="Framework";Expression={$_.Framework}} | select -expand Framework) -join ";"
 
-    exec { & $script:msBuildPath "/t:pack" "/v:$msbuildVerbosity" "/p:IncludeSource=true" "/p:Configuration=Release" "/p:TargetFrameworks=`"$targetFrameworks`"" "/m" "$workingSourceDir\Newtonsoft.Json\Newtonsoft.Json.csproj" }
+    exec { & $script:msBuildPath "/t:pack" "/v:$msbuildVerbosity" "/p:IncludeSource=true" "/p:Configuration=Release" "/p:TargetFrameworks=`"$targetFrameworks`"" "/m" "$workingSourceDir\Syntactik\Syntactik.csproj" }
 
     mkdir $workingDir\NuGet
-    move -Path $workingSourceDir\Newtonsoft.Json\bin\Release\*.nupkg -Destination $workingDir\NuGet
+    move -Path $workingSourceDir\Syntactik\bin\Release\*.nupkg -Destination $workingDir\NuGet
   }
 
   Write-Host "Build documentation: $buildDocumentation"
@@ -163,7 +163,7 @@ task Test -depends Build {
 
 function NetCliBuild()
 {
-  $projectPath = "$workingSourceDir\Newtonsoft.Json.sln"
+  $projectPath = "$workingSourceDir\Syntactik.sln"
   $libraryFrameworks = ($script:enabledBuilds | Select-Object @{Name="Framework";Expression={$_.Framework}} | select -expand Framework) -join ";"
   $testFrameworks = ($script:enabledBuilds | Select-Object @{Name="Resolved";Expression={if ($_.TestFramework -ne $null) { $_.TestFramework } else { $_.Framework }}} | select -expand Resolved) -join ";"
 
@@ -209,8 +209,8 @@ function GetMsBuildPath()
 
 function NetCliTests($build)
 {
-  $projectPath = "$workingSourceDir\Newtonsoft.Json.Tests\Newtonsoft.Json.Tests.csproj"
-  $location = "$workingSourceDir\Newtonsoft.Json.Tests"
+  $projectPath = "$workingSourceDir\Syntactik.Compiler.Tests\Syntactik.Compiler.Tests.csproj"
+  $location = "$workingSourceDir\Syntactik.Compiler.Tests"
   $testDir = if ($build.TestFramework -ne $null) { $build.TestFramework } else { $build.Framework }
 
   exec { .\Tools\Dotnet\dotnet-install.ps1 -Channel $netCliChannel -Version $netCliVersion | Out-Default }
@@ -238,14 +238,14 @@ function NUnitTests($build)
 {
   $testDir = if ($build.TestFramework -ne $null) { $build.TestFramework } else { $build.Framework }
   $framework = $build.NUnitFramework
-  $testRunDir = "$workingSourceDir\Newtonsoft.Json.Tests\bin\Release\$testDir"
+  $testRunDir = "$workingSourceDir\Syntactik.Compiler.Tests\bin\Release\$testDir"
 
   Write-Host -ForegroundColor Green "Running NUnit tests $testDir"
   Write-Host
   try
   {
     Set-Location $testRunDir
-    exec { & $nunitConsolePath\tools\nunit3-console.exe "$testRunDir\Newtonsoft.Json.Tests.dll" --framework=$framework --result=$workingDir\$testDir.xml --out=$workingDir\$testDir.txt | Out-Default } "Error running $testDir tests"
+    exec { & $nunitConsolePath\tools\nunit3-console.exe "$testRunDir\Syntactik.Compiler.Tests.dll" --framework=$framework --result=$workingDir\$testDir.xml --out=$workingDir\$testDir.txt | Out-Default } "Error running $testDir tests"
   }
   finally
   {
