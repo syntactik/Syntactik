@@ -9,7 +9,6 @@
   $signKeyPath = "C:\Development\Releases\syntactik.snk"
   $buildDocumentation = $false
   $buildNuGet = $true
-  $msbuildVerbosity = 'minimal'
   $treatWarningsAsErrors = $false
   $workingName = if ($workingName) {$workingName} else {"Working"}
   $netCliChannel = "2.0"
