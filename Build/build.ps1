@@ -135,8 +135,8 @@ task Package -depends Build {
     move -Path $workingDir\Documentation\LastBuild.log -Destination $workingDir\Documentation.log
   }
 
-  Copy-Item -Path $docDir\readme.txt -Destination $workingDir\Package\
-  Copy-Item -Path $docDir\license.txt -Destination $workingDir\Package\
+  # Copy-Item -Path $docDir\readme.txt -Destination $workingDir\Package\
+  # Copy-Item -Path $docDir\license.txt -Destination $workingDir\Package\
 
   robocopy $workingSourceDir $workingDir\Package\Source\Src /MIR /NFL /NDL /NJS /NC /NS /NP /XD bin obj TestResults AppPackages .vs artifacts /XF *.suo *.user *.lock.json | Out-Default
   robocopy $buildDir $workingDir\Package\Source\Build /MIR /NFL /NDL /NJS /NC /NS /NP /XD Temp /XF runbuild.txt | Out-Default
