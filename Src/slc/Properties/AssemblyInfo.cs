@@ -26,5 +26,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("14FF4AEA-B274-4DF7-8E3E-AC46395DE0E3")] 
+[assembly: Guid("14FF4AEA-B274-4DF7-8E3E-AC46395DE0E3")]
+
+[assembly: AssemblyCompany("Syntactik, LLC")]
+[assembly: AssemblyProduct("Syntactik")]
+[assembly: AssemblyCopyright("Copyright © Maxim Trushin, 2017")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
 
