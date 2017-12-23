@@ -6,7 +6,7 @@
   $version = GetVersion $majorWithReleaseVersion
   $packageId = "Syntactik"
   $signAssemblies = $false
-  $signKeyPath = "C:\Development\Releases\syntactik.snk"
+  #$signKeyPath = "C:\Development\Releases\syntactik.snk"
   $buildDocumentation = $false
   $buildNuGet = $true
   $msbuildVerbosity = 'normal'
@@ -31,14 +31,14 @@
   $nunitConsoleVersion = "3.7.0"
   $nunitConsolePath = "$buildDir\Temp\NUnit.ConsoleRunner.$nunitConsoleVersion"
 
-  $builds = @(   	
+  $builds = @(	
     @{Framework = "net45"; TestsFunction = "NUnitTests"; TestFramework = "net46"; NUnitFramework="net-4.0"; Enabled=$true}
   )
 }
 
 framework '4.6x86'
 
-task default -depends Package
+task default -depends Package, Test
 
 # Ensure a clean working directory
 task Clean {
@@ -74,7 +74,7 @@ task Build -depends Clean {
   robocopy $sourceDir $workingSourceDir /MIR /NFL /NDL /NP /XD bin obj TestResults AppPackages $packageDirs .vs artifacts /XF *.suo *.user *.lock.json | Out-Default
   Copy-Item -Path $baseDir\LICENSE.md -Destination $workingDir\
   mkdir "$workingDir\Build" -Force
-  Copy-Item -Path $buildDir\install.ps1 -Destination $workingDir\Build\
+  #Copy-Item -Path $buildDir\install.ps1 -Destination $workingDir\Build\
 
   $xml = [xml](Get-Content "$workingSourceDir\Syntactik\Syntactik.csproj")
   Edit-XmlNodes -doc $xml -xpath "/Project/PropertyGroup/PackageId" -value $packageId
@@ -205,7 +205,7 @@ function NetCliTests($build)
   $location = "$workingSourceDir\Syntactik.Compiler.Tests"
   $testDir = if ($build.TestFramework -ne $null) { $build.TestFramework } else { $build.Framework }
 
-  exec { .\Tools\Dotnet\dotnet-install.ps1 -Channel $netCliChannel -Version $netCliVersion | Out-Default }
+  #exec { .\Tools\Dotnet\dotnet-install.ps1 -Channel $netCliChannel -Version $netCliVersion | Out-Default }
 
   try
   {
