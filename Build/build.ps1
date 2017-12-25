@@ -7,7 +7,7 @@
   $packageId = "Syntactik"
   $signAssemblies = $false
   #$signKeyPath = "C:\Development\Releases\syntactik.snk"
-  $buildDocumentation = $false
+  $buildDocumentation = $true
   $buildNuGet = $true
   $msbuildVerbosity = 'normal'
   $treatWarningsAsErrors = $false
@@ -42,6 +42,7 @@ task default -depends Package
 
 # Ensure a clean working directory
 task Clean {
+  dotnet --info
   Write-Host "Setting location to $baseDir"
   Set-Location $baseDir
 
