@@ -17,15 +17,20 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents an Alias.
+    /// </summary>
     public class Alias : Entity, IContainer
     {
-        // Fields
-        protected PairCollection<Argument> _arguments;
-        protected PairCollection<Entity> _entities;
-        //Properties
+        private PairCollection<Argument> _arguments;
+        private PairCollection<Entity> _entities;
+
+        /// <summary>
+        /// Collection of child pairs.
+        /// </summary>
         public virtual PairCollection<Entity> Entities
         {
-            get { return _entities ?? (_entities = new PairCollection<Entity>(this)); }
+            get => _entities ?? (_entities = new PairCollection<Entity>(this));
             set
             {
                 if (value != _entities)
@@ -36,34 +41,12 @@ namespace Syntactik.DOM
             }
         }
 
-        // Methods
-        public override void Accept(IDomVisitor visitor)
-        {
-            visitor.OnAlias(this);
-        }
-
-        public override void AppendChild(Pair child)
-        {
-            Value = null;
-            PairValue = null;
-            var item = child as Argument;
-            if (item != null)
-            {
-                Arguments.Add(item);
-            }
-            else
-            {
-                Entities.Add((Entity)child);
-            }
-        }
-
-        // Properties
+        /// <summary>
+        /// Collection of arguments.
+        /// </summary>
         public virtual PairCollection<Argument> Arguments
         {
-            get
-            {
-                return _arguments ?? (_arguments = new PairCollection<Argument>(this));
-            }
+            get => _arguments ?? (_arguments = new PairCollection<Argument>(this));
             set
             {
                 if (value != _arguments)
@@ -74,5 +57,32 @@ namespace Syntactik.DOM
             }
         }
 
+
+        /// <summary>
+        /// Method is a part the <see href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor pattern</see> implementation.
+        /// </summary>
+        /// <param name="visitor">Vistor object.</param>
+        public override void Accept(IDomVisitor visitor)
+        {
+            visitor.OnAlias(this);
+        }
+
+        /// <summary>
+        /// Adds another pair as a child.
+        /// </summary>
+        /// <param name="child">Child pair to be added</param>
+        public override void AppendChild(Pair child)
+        {
+            Value = null;
+            PairValue = null;
+            if (child is Argument item)
+            {
+                Arguments.Add(item);
+            }
+            else
+            {
+                Entities.Add((Entity)child);
+            }
+        }
     }
 }

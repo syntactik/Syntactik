@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Syntactik.DOM;
 using Newtonsoft.Json;
+using Syntactik.Compiler.Steps;
 using Syntactik.DOM.Mapped;
 using Alias = Syntactik.DOM.Alias;
 using Attribute = Syntactik.DOM.Attribute;
@@ -257,9 +258,9 @@ namespace Syntactik.Compiler.Generator
             }
 
 
-            AliasContext.Push(new AliasContext() { AliasDefinition = aliasDef, Alias = (DOM.Mapped.Alias)alias, AliasNsInfo = GetContextNsInfo() });
+            AliasContext.Push((DOM.Mapped.Alias) alias);
             if (!EnterChoiceContainer((DOM.Mapped.Alias) alias, aliasDef.Entities))
-                Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
+                Visit(aliasDef.Entities.Where(e => !(e is Attribute)));
             AliasContext.Pop();
         }
 

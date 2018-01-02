@@ -18,7 +18,7 @@
 
 using System.Collections.Generic;
 
-namespace Syntactik.Compiler
+namespace Syntactik.Compiler.Steps
 {
     /// <summary>
     /// Collects a list of used namespaces and aliases in the ModuleMember (Document or AliasDef)

@@ -71,9 +71,8 @@ namespace Syntactik.DOM
             visitor.OnModule(this);
         }
 
-        public Module()
+        public Module(): base(DelimiterEnum.C)
         {
-            _delimiter = DelimiterEnum.C;
         }
 
         public override void AppendChild(Pair child)

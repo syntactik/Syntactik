@@ -24,7 +24,7 @@ using Syntactik.DOM;
 
 namespace Syntactik.Compiler.Generator
 {
-    public class SourceMappedXmlValidator
+    class SourceMappedXmlValidator
     {
         private int _validationIndex;
         private Stack<int> _indicesStack;

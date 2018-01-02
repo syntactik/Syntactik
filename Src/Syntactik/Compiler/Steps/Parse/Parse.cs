@@ -83,8 +83,7 @@ namespace Syntactik.Compiler.Steps
 
         protected virtual Parser GetParser(Module module, ICharStream input)
         {
-            var m = module as DOM.Mapped.Module;
-            if (m == null) throw new ArgumentException("Invalid module type.");
+            if (!(module is DOM.Mapped.Module m)) throw new ArgumentException("Invalid module type.");
 
             if (m.TargetFormat == DOM.Mapped.Module.TargetFormats.Json)
             {

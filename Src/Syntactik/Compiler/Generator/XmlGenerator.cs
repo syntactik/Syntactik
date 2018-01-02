@@ -265,7 +265,7 @@ namespace Syntactik.Compiler.Generator
                 ValueType valueType;
                 OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out valueType), valueType);
             }
-            AliasContext.Push(new AliasContext() { AliasDefinition = aliasDef, Alias = (DOM.Mapped.Alias)alias, AliasNsInfo = GetContextNsInfo() });
+            AliasContext.Push((DOM.Mapped.Alias) alias);
             if (!EnterChoiceContainer((DOM.Mapped.Alias) alias, aliasDef.Entities, aliasDef))
                 Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
             AliasContext.Pop();

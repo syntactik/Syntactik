@@ -26,7 +26,7 @@ namespace Syntactik
         Name = 4,
         Delimiter = 8,
         Value = 16,
-        IndentMLS = 32 //Indent for multiline string
+        IndentMLS = 32 //Indent for multi-line string
     }
 
     public struct LineParsingState

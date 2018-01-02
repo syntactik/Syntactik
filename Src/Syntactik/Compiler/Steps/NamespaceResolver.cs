@@ -27,10 +27,11 @@ using Argument = Syntactik.DOM.Mapped.Argument;
 using Attribute = Syntactik.DOM.Attribute;
 using Document = Syntactik.DOM.Mapped.Document;
 using Module = Syntactik.DOM.Mapped.Module;
+using NamespaceDefinition = Syntactik.DOM.NamespaceDefinition;
 using Parameter = Syntactik.DOM.Mapped.Parameter;
 using Scope = Syntactik.DOM.Mapped.Scope;
 
-namespace Syntactik.Compiler
+namespace Syntactik.Compiler.Steps
 {
     public class NamespaceResolver
     {
@@ -107,9 +108,7 @@ namespace Syntactik.Compiler
 
         private void CheckModuleMember(NsInfo nsInfo)
         {
-            var document = nsInfo.ModuleMember as Document;
-
-            if (document == null)
+            if (!(nsInfo.ModuleMember is Document))
             {
                 ValidateAliasDefDefaultParameter((AliasDefinition) nsInfo.ModuleMember);
                 return;
@@ -135,8 +134,7 @@ namespace Syntactik.Compiler
         public AliasDefinition GetAliasDefinition(string name)
         {
             NsInfo resultInfo =
-                ModuleMembersNsInfo.FirstOrDefault(
-                    a => (a.ModuleMember is DOM.AliasDefinition) && a.ModuleMember.Name == name);
+                ModuleMembersNsInfo.FirstOrDefault(a => (a.ModuleMember is DOM.AliasDefinition) && a.ModuleMember.Name == name);
             return (AliasDefinition) resultInfo?.ModuleMember;
         }
 
@@ -337,8 +335,7 @@ namespace Syntactik.Compiler
                     //If namespace is already defined with different prefix then changing prefix on pair
                     if (foundNs.Name != nsPrefix) ((INsNode) pair).NsPrefix = foundNs.Name;
 
-                var attribute = pair as Attribute;
-                if (attribute != null && attribute.Name == "type" && nsPrefix == "xsi")
+                if (pair is Attribute attribute && attribute.Name == "type" && nsPrefix == "xsi")
                 {
                     var typeInfo = attribute.Value?.Split(':');
                     if (typeInfo?.Length > 1)
@@ -414,8 +411,7 @@ namespace Syntactik.Compiler
             //Getting namespace info for the generated document.
             var targetNsInfo = ModuleMembersNsInfo.First(n => n.ModuleMember == document);
             var moduleMember = GetModuleMember((Pair)node);
-            var member = moduleMember as ModuleMember;
-            if (member != null)
+            if (moduleMember is ModuleMember member)
             {
                 //Resolving ns first using aliasDef context NsInfo
                 var contextNsInfo = ModuleMembersNsInfo.First(n => n.ModuleMember == moduleMember);

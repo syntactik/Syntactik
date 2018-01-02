@@ -36,7 +36,7 @@ using ValueType = Syntactik.DOM.Mapped.ValueType;
 
 namespace Syntactik.Compiler.Steps
 {
-    public class ValidatingDocumentsVisitor: AliasResolvingVisitor
+    class ValidatingDocumentsVisitor: AliasResolvingVisitor
     {   
         private bool _blockStateUnknown;
         private Stack<JsonGenerator.BlockState> _blockState;
@@ -94,8 +94,7 @@ namespace Syntactik.Compiler.Steps
             {
                 if (entity is DOM.Element) rootElementCount++;
 
-                var scope = entity as Scope;
-                if (scope != null) rootElementCount += CalcNumOfRootElements(scope);
+                if (entity is Scope scope) rootElementCount += CalcNumOfRootElements(scope);
 
                 if (entity is DOM.Alias) rootElementCount += CalcNumOfRootElements((Alias)entity);
 
@@ -120,8 +119,7 @@ namespace Syntactik.Compiler.Steps
             {
                 if (entity is DOM.Element) rootElementCount++;
 
-                var scopeEntity = entity as Scope;
-                if (scopeEntity != null) rootElementCount += CalcNumOfRootElements(scopeEntity);
+                if (entity is Scope scopeEntity) rootElementCount += CalcNumOfRootElements(scopeEntity);
 
                 if (entity is DOM.Alias) rootElementCount += CalcNumOfRootElements((Alias)entity);
 
@@ -156,15 +154,13 @@ namespace Syntactik.Compiler.Steps
                     continue;
                 }
 
-                var scopeEntity = entity as Scope;
-                if (scopeEntity != null)
+                if (entity is Scope scopeEntity)
                 {
                     result += CalcNumOfRootElements(scopeEntity);
                     continue;
                 }
 
-                var aliasEntity = entity as DOM.Alias;
-                if (aliasEntity != null)
+                if (entity is DOM.Alias aliasEntity)
                 {
                     result += CalcNumOfRootElements((Alias)aliasEntity);
                     continue;
@@ -198,8 +194,7 @@ namespace Syntactik.Compiler.Steps
         /// <param name="namespaceDefinition"></param>
         private void CheckNsDefDuplicates(NamespaceDefinition namespaceDefinition)
         {
-            var parentModule = namespaceDefinition.Parent as Module;
-            if (parentModule != null)
+            if (namespaceDefinition.Parent is Module parentModule)
             {
                 var sameNsDefs = parentModule.NamespaceDefinitions.Where(n => n.Name == namespaceDefinition.Name);
                 if (sameNsDefs.Count() > 1)
@@ -210,8 +205,7 @@ namespace Syntactik.Compiler.Steps
                 return;
             }
 
-            var parentModuleMember = namespaceDefinition.Parent as ModuleMember;
-            if (parentModuleMember != null)
+            if (namespaceDefinition.Parent is ModuleMember parentModuleMember)
             {
                 var sameNsDefs = parentModuleMember.NamespaceDefinitions.Where(n => n.Name == namespaceDefinition.Name);
                 if (sameNsDefs.Count() > 1)
@@ -243,7 +237,7 @@ namespace Syntactik.Compiler.Steps
             //Do not resolve alias without AliasDef or having circular reference
             if (aliasDef == null || aliasDef.HasCircularReference) return;
 
-            AliasContext.Push(new AliasContext{ AliasDefinition = aliasDef, Alias = (Alias)alias, AliasNsInfo = GetContextNsInfo() });
+            AliasContext.Push((Alias) alias);
             CheckForUnexpectedArguments((Alias)alias, aliasDef, _currentModule.FileName);
             CheckInterpolation((Alias)alias);
             if (CheckStartOfChoiceContainer((Alias) alias, aliasDef.Entities, aliasDef))
@@ -287,7 +281,7 @@ namespace Syntactik.Compiler.Steps
             if (((Alias) alias).AliasDefinition == null) return;
             if (!((Alias)alias).AliasDefinition.IsValueNode) return;
             if (alias?.Parent.Delimiter == DelimiterEnum.CE) return;
-            if (_currentModule.TargetFormat == Module.TargetFormats.Xml && alias.Parent is Document)
+            if (_currentModule.TargetFormat == Module.TargetFormats.Xml && alias?.Parent is Document)
                 Context.AddError(CompilerErrorFactory.InvalidUsageOfValueAlias((Alias) alias, _currentModule.FileName));
 
             if (_currentModule.TargetFormat == Module.TargetFormats.Xml) return;
@@ -467,19 +461,17 @@ namespace Syntactik.Compiler.Steps
             if (((Pair) pair).ValueQuotesType != 2) return;
             foreach (var item in pair.InterpolationItems)
             {
-                var alias = item as Alias;
-                if (alias != null)
+                if (item is Alias alias)
                 {
                     CheckAliasIsDefined(alias);
                     continue;
                 }
 
-                var param = item as DOM.Parameter;
-                if (param != null)
+                if (item is DOM.Parameter param)
                 {
                     var aliasContext = AliasContext.Peek();
                     if (aliasContext != null)
-                        ValidateParameter((Parameter) param, aliasContext.Alias, _currentModule.FileName);
+                        ValidateParameter((Parameter) param, aliasContext, _currentModule.FileName);
                 }
             }
         }
@@ -523,8 +515,7 @@ namespace Syntactik.Compiler.Steps
             {
                 if (pair.PairValue == null || !(pair.PairValue is DOM.Alias) && !(pair.PairValue is DOM.Parameter))
                 {
-                    var mappedPair = pair.PairValue as IMappedPair;
-                    Context.AddError(mappedPair != null
+                    Context.AddError(pair.PairValue is IMappedPair mappedPair
                         ? CompilerErrorFactory.AliasOrParameterExpected(mappedPair.NameInterval, _currentModule.FileName)
                         : CompilerErrorFactory.AliasOrParameterExpected(((IMappedPair) pair).NameInterval,
                             _currentModule.FileName));
@@ -540,7 +531,7 @@ namespace Syntactik.Compiler.Steps
             {
                 var aliasContext = AliasContext.Peek();
                 if (aliasContext != null)
-                    ValidateParameter((Parameter)pair.PairValue, aliasContext.Alias, _currentModule.FileName);
+                    ValidateParameter((Parameter)pair.PairValue, aliasContext, _currentModule.FileName);
             }
             else if (pair.PairValue is DOM.Alias)
             {
@@ -551,7 +542,7 @@ namespace Syntactik.Compiler.Steps
                 //Do not resolve alias without AliasDef or having circular reference
                 if (aliasDef == null || aliasDef.HasCircularReference) return;
 
-                AliasContext.Push(new AliasContext() { AliasDefinition = aliasDef, Alias = alias, AliasNsInfo = GetContextNsInfo() });
+                AliasContext.Push(alias);
                 CheckForUnexpectedArguments(alias, aliasDef, _currentModule.FileName);
                 CheckInterpolation(aliasDef);
                 CheckPairValue(aliasDef);
@@ -597,7 +588,7 @@ namespace Syntactik.Compiler.Steps
             CheckPairValue(parameter);
             var aliasContext = AliasContext.Peek();
             if (aliasContext != null)
-                ValidateParameter((Parameter) parameter, aliasContext.Alias, _currentModule.FileName);
+                ValidateParameter((Parameter) parameter, aliasContext, _currentModule.FileName);
             base.OnParameter(parameter);
         }
 
@@ -711,7 +702,7 @@ namespace Syntactik.Compiler.Steps
             {
                 if (item != null)
                 {
-                    Context.AddError(func(item.Alias));
+                    Context.AddError(func(item));
                 }
             }
         }
@@ -736,55 +727,6 @@ namespace Syntactik.Compiler.Steps
             {
                 Context.AddError(CompilerErrorFactory.UnexpectedDefaultValueArgument(alias,
                     fileName));
-            }
-        }
-
-        private void CheckCompatibilityWithParameters(Alias alias, AliasDefinition aliasDef, string fileName)
-        {
-            foreach (var parameter in aliasDef.Parameters)
-            {
-                if (parameter.Name == "_") //Default parameter
-                {
-                    if (!parameter.IsValueNode)
-                    {
-                        if (alias.Entities.All(e => e is Comment) && alias.ValueType != ValueType.Object)
-                            ReportErrorInsideChoice(() => CompilerErrorFactory.DefaultBlockArgumentIsMissing(alias,
-                                fileName));
-                    }
-                    else
-                    {
-                        if (parameter.HasValue()) continue; //if parameter has default value then skip check
-
-                        if (!alias.HasValue())
-                        {
-                            ReportErrorInsideChoice(() => CompilerErrorFactory.DefaultValueArgumentIsMissing(alias,
-                                fileName));
-                        }
-                    }
-                    continue;
-                }
-
-                //Non default parameter
-                var argument = alias.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
-                if (argument == null)
-                {
-                    //Report Error if argument is missing and there is no default value for the parameter
-                    if (parameter.Value == null && parameter.Entities.Count == 0 && parameter.ValueType != ValueType.Object)
-                        ReportErrorInsideChoice(() => CompilerErrorFactory.ArgumentIsMissing(alias, parameter.Name,
-                            fileName));
-
-                    continue;
-                }
-
-                //Report error if type of argument (value/block) mismatch the type of parameter
-                if (((Argument)argument).IsValueNode != parameter.IsValueNode)
-                {
-                    ReportErrorInsideChoice( () => parameter.IsValueNode
-                        ? CompilerErrorFactory.ValueArgumentIsExpected((Argument)argument,
-                            fileName)
-                        : CompilerErrorFactory.BlockArgumentIsExpected((Argument)argument,
-                            fileName));
-                }
             }
         }
     }

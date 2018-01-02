@@ -20,46 +20,43 @@ using System.Text;
 
 namespace Syntactik.DOM
 {
-    public enum DelimiterEnum
-    {
-        None, 
-        E,   // =
-        EE,  // ==
-        C,   // :
-        CC,  // ::
-        CCC, // :::
-        EC,  // =:
-        ECC, // =::
-        CE, // :=
-    }
-
-    public enum QuotesEnum
-    {
-        None,
-        Single,
-        Double
-    }
     /// <summary>
-    /// Pair has either literal (property Value), pair (property PairValue) or block (implemented by descendants) value.
+    /// Base class for all DOM classes. 
     /// </summary>
     public abstract class Pair{
-        protected string _value;
-        protected Pair _pairValue;
-        protected Pair _parent;
-        protected string _name;
-        protected DelimiterEnum _delimiter;
-        protected int _nameQuotesType;
-        protected int _valueQuotesType;
+        private string _value;
+        private Pair _pairValue;
+        private Pair _parent;
+        private DelimiterEnum _delimiter;
 
-        public virtual string Name
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Pair"/> class.
+        /// </summary>
+        protected Pair()
         {
-            get { return _name; }
-            set { _name = value; }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Pair"/> class.
+        /// This constructor is used if pair descendant has default value of delimiter.
+        /// </summary>
+        /// <param name="delimiter"></param>
+        protected Pair(DelimiterEnum delimiter)
+        {
+            _delimiter = delimiter;
+        }
+
+        /// <summary>
+        /// Name of the pair.
+        /// </summary>
+        public virtual string Name { get; set; }
+
+        /// <summary>
+        /// Pair value of the pair.
+        /// </summary>
         public virtual Pair PairValue
         {
-            get { return _pairValue; }
+            get => _pairValue;
             set
             {
                 _pairValue = value;
@@ -68,65 +65,87 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
-        /// Represent a literal value of a pair.
+        /// Literal value of the pair.
         /// </summary>
         public virtual string Value
         {
-            get { return _value; }
+            get => _value;
             set
             {
                 _value = value;
                 _pairValue = null;
             }
         }
+
+        /// <summary>
+        /// If true then the pair has either literal value or pair value.
+        /// </summary>
+        /// <returns></returns>
         public virtual bool HasValue()
         {
             return PairValue != null || Value != null;
         }
 
-
+        /// <summary>
+        /// Gets or sets a value of pair delimiter.
+        /// </summary>
         public virtual DelimiterEnum Delimiter
         {
-            get { return _delimiter; }
-            set { _delimiter = value; }
+            get => _delimiter;
+            set => _delimiter = value;
         }
 
         /// <summary>
+        /// Stores info about quotes used to define name of the pair.
         /// 0 - no quotes
         /// 1 - single quotes
         /// 2 - double quotes
         /// </summary>
-        public virtual int NameQuotesType
-        {
-            get { return _nameQuotesType; }
-            set { _nameQuotesType = value; }
-        }
+        public virtual int NameQuotesType { get; set; }
 
         /// <summary>
+        /// Stores info about quotes used to define value of the pair.
         /// 0 - no quotes
         /// 1 - single quotes
         /// 2 - double quotes
         /// </summary>
-        public virtual int ValueQuotesType
-        {
-            get { return _valueQuotesType; }
-            set { _valueQuotesType = value; }
-        }
+        public virtual int ValueQuotesType { get; set; }
 
+        /// <summary>
+        /// This method is called when the pair is added as child to another pair.
+        /// </summary>
+        /// <param name="parent">Parent of the pair.</param>
         public virtual void InitializeParent(Pair parent)
         {
             _parent = parent;
         }
+
+        /// <summary>
+        /// Parent of the pair.
+        /// </summary>
         public virtual Pair Parent => _parent;
 
-        // Methods
+        /// <summary>
+        /// Method is a part the <see href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor pattern</see> implementation.
+        /// </summary>
+        /// <param name="visitor">Visitor object</param>
         public abstract void Accept(IDomVisitor visitor);
+
+        /// <summary>
+        /// Adds another pair as a child.
+        /// </summary>
+        /// <param name="child">Child pair to be added</param>
         public virtual void AppendChild(Pair child)
         {
             throw new NotSupportedException(new StringBuilder("Cannot add ").Append(child.GetType().Name).Append(" in ").Append(GetType().Name).ToString());
         }
 
-        public static string DelimiterToString(DelimiterEnum delimiter)
+        /// <summary>
+        /// Auxiliary function to convert delimiter value to its string representation.
+        /// </summary>
+        /// <param name="delimiter"></param>
+        /// <returns></returns>
+        internal static string DelimiterToString(DelimiterEnum delimiter)
         {
             switch (delimiter)
             {

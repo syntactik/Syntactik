@@ -18,6 +18,7 @@
 using Syntactik.DOM.Mapped;
 using System;
 using System.Xml.Schema;
+using Syntactik.Compiler.Steps;
 using Syntactik.DOM;
 using Alias = Syntactik.DOM.Mapped.Alias;
 using AliasDefinition = Syntactik.DOM.Mapped.AliasDefinition;

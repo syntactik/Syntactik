@@ -47,8 +47,7 @@ namespace Syntactik.Tests
             var recordedDom = GetRecordedDomText(domText);
 
             //Parser Errors
-            string serialParserErrors;
-            var recordedParserErros = LoadParserErrors(errorListener, out serialParserErrors);
+            var recordedParserErros = LoadParserErrors(errorListener, out var serialParserErrors);
             if (recordedParserErros != null)
             {
 #if (!CI)

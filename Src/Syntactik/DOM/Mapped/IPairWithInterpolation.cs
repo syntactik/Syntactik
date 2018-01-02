@@ -19,8 +19,14 @@ using System.Collections.Generic;
 
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Represents a pair with interpolation.
+    /// </summary>
     interface IPairWithInterpolation
     {
+        /// <summary>
+        /// List of interpolation objects.
+        /// </summary>
         List<object> InterpolationItems { get;}
     }
 }

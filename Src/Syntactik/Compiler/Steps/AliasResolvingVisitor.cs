@@ -20,10 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Syntactik.Compiler.Steps;
 using Syntactik.DOM;
 using Syntactik.DOM.Mapped;
 using Alias = Syntactik.DOM.Mapped.Alias;
+using Argument = Syntactik.DOM.Argument;
 using Attribute = Syntactik.DOM.Attribute;
 using Document = Syntactik.DOM.Mapped.Document;
 using Element = Syntactik.DOM.Mapped.Element;
@@ -31,24 +31,24 @@ using Parameter = Syntactik.DOM.Mapped.Parameter;
 using Scope = Syntactik.DOM.Mapped.Scope;
 using ValueType = Syntactik.DOM.Mapped.ValueType;
 
-namespace Syntactik.Compiler.Generator
+namespace Syntactik.Compiler.Steps
 {
-    public class AliasResolvingVisitor : DOM.SyntactikDepthFirstVisitor
+    public class AliasResolvingVisitor : SyntactikDepthFirstVisitor
     {
 
-        private Stack<AliasContext> _aliasContext;
+        private Stack<Alias> _aliasContext;
         private Stack<Scope> _scopeContext;
         protected CompilerContext Context;
         protected Document _currentDocument;
         protected readonly NamespaceResolver NamespaceResolver;
 
-        protected Stack<AliasContext> AliasContext
+        protected Stack<Alias> AliasContext
         {
             get
             {
                 if (_aliasContext != null) return _aliasContext;
 
-                _aliasContext = new Stack<AliasContext>();
+                _aliasContext = new Stack<Alias>();
                 _aliasContext.Push(null);
 
                 return _aliasContext;
@@ -130,21 +130,21 @@ namespace Syntactik.Compiler.Generator
                     var alias = item as Alias;
                     if (alias != null)
                     {
-                        sb.Append(ResolveValueAlias(alias, out valueType));
+                        sb.Append((string) ResolveValueAlias(alias, out valueType));
                         previousLine = item;
                         continue;
                     }
                     var param = item as Parameter;
                     if (param != null)
                     {
-                        sb.Append(ResolveValueParameter(param, out valueType));
+                        sb.Append((string) ResolveValueParameter(param, out valueType));
                         previousLine = item;
                         continue;
                     }
                     var element = item as Element;
                     if (element != null)
                     {
-                        sb.Append(ResolveNodeValue(element, out valueType));
+                        sb.Append((string) ResolveNodeValue(element, out valueType));
                         previousLine = item;
                         continue;
                     }
@@ -208,9 +208,10 @@ namespace Syntactik.Compiler.Generator
 
         protected string ResolveValueAlias(Alias alias, out ValueType valueType)
         {
-            var aliasDef = NamespaceResolver.GetAliasDefinition(alias.Name);
+            //var aliasDef = NamespaceResolver.GetAliasDefinition(alias.Name);
+            var aliasDef = alias.AliasDefinition;
 
-            AliasContext.Push(new AliasContext { AliasDefinition = aliasDef, Alias = alias, AliasNsInfo = GetContextNsInfo() });
+            AliasContext.Push(alias);
             string result;
 
             if (aliasDef.ValueType == ValueType.LiteralChoice)
@@ -283,8 +284,7 @@ namespace Syntactik.Compiler.Generator
             var typeInfo = attribute.Value?.Split(':');
             if (!(typeInfo?.Length > 1)) return;
             var nsPrefix = typeInfo[0];
-            string prefix, ns;
-            NamespaceResolver.GetPrefixAndNs(nsPrefix, attribute, _currentDocument, out prefix, out ns);
+            NamespaceResolver.GetPrefixAndNs(nsPrefix, attribute, _currentDocument, out var prefix, out var _);
             OnValue($"{prefix}:{typeInfo[1]}", ValueType.FreeOpenString);
         }
 
@@ -304,17 +304,17 @@ namespace Syntactik.Compiler.Generator
                 object value = item as Parameter;
                 if (value != null)
                 {
-                    sb.Append(ResolveValueParameter((Parameter) value, out valueType));
+                    sb.Append((string) ResolveValueParameter((Parameter) value, out valueType));
                 }
                 else
                 {
                     value = item as Alias;
                     if (value != null)
                     {
-                        sb.Append(ResolveValueAlias((Alias)value, out valueType));
+                        sb.Append((string) ResolveValueAlias((Alias)value, out valueType));
                     } else if (((IMappedPair)item).IsValueNode)
                     {
-                        sb.Append(ResolveNodeValue((IMappedPair)item, out valueType));
+                        sb.Append((string) ResolveNodeValue((IMappedPair)item, out valueType));
                     }
                 }
                 resultValueType = resultValueType == ValueType.None ? valueType : ValueType.Concatenation;
@@ -334,15 +334,15 @@ namespace Syntactik.Compiler.Generator
             if (parameter.Name == "_")
             {
                 //Resolving default value parameter
-                if (aliasContext.Alias.PairValue != null)
+                if (aliasContext.PairValue != null)
                 {
-                    return ResolvePairValue(aliasContext.Alias.PairValue, out valueType);
+                    return ResolvePairValue(aliasContext.PairValue, out valueType);
                 }
-                return ResolveNodeValue(aliasContext.Alias, out valueType);
+                return ResolveNodeValue(aliasContext, out valueType);
             }
 
 
-            var argument = aliasContext.Alias.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
+            var argument = Enumerable.FirstOrDefault<Argument>(aliasContext.Arguments, a => a.Name == parameter.Name);
             if (argument != null)
             {
                 if (argument.PairValue != null)
@@ -396,11 +396,11 @@ namespace Syntactik.Compiler.Generator
 
             if (aliasContext == null) return;
 
-            var argument = aliasContext.Alias.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
+            var argument = Enumerable.FirstOrDefault<Argument>(aliasContext.Arguments, a => a.Name == parameter.Name);
             ResolveAttributes(argument != null ? argument.Entities : parameter.Entities);
         }
 
-        private AliasContext GetAliasContextForParameter(Parameter parameter)
+        private Alias GetAliasContextForParameter(Parameter parameter)
         {
             foreach (var context in AliasContext)
             {
@@ -417,25 +417,15 @@ namespace Syntactik.Compiler.Generator
             //Do not resolve alias without AliasDef or having circular reference
             if (aliasDef == null || aliasDef.HasCircularReference) return;
 
-            AliasContext.Push(new AliasContext() { AliasDefinition = aliasDef, Alias = alias, AliasNsInfo = GetContextNsInfo() });
+            AliasContext.Push(alias);
             ResolveAttributes(aliasDef.Entities);
             AliasContext.Pop();
         }
 
 
-        protected NsInfo GetContextNsInfo()
-        {
-            if (AliasContext.Peek() == null)
-            {
-                return NamespaceResolver.GetNsInfo(_currentDocument);
-            }
-
-            return NamespaceResolver.GetNsInfo(AliasContext.Peek().AliasDefinition);
-        }
-
         ///// <summary>
         ///// Resolves EolEscapeMatch token. Returns string with new line and indentation symbols.
-        ///// EolEscapeMatch can spread accross several lines.
+        ///// EolEscapeMatch can spread across several lines.
         ///// The first newline symbol is ignored because DQS is "folded" string. 
         ///// If there are only one new line symbol in SQS_EOL then it is ignored.
         ///// </summary>
@@ -494,7 +484,7 @@ namespace Syntactik.Compiler.Generator
             //Do not resolve alias without AliasDef or having circular reference
             if (aliasDef == null || aliasDef.HasCircularReference) return;
 
-            AliasContext.Push(new AliasContext{ AliasDefinition = aliasDef, Alias = (Alias) alias, AliasNsInfo = GetContextNsInfo() });
+            AliasContext.Push((Alias) alias);
             Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
             AliasContext.Pop();
         }
@@ -507,11 +497,11 @@ namespace Syntactik.Compiler.Generator
 
             if (parameter.Name == "_") //Default parameter. Value is passed in the body of the alias
             {
-                Visit(aliasContext.Alias.Entities.Where(e => !(e is DOM.Attribute) && !(e is DOM.Comment)));
+                Visit(Enumerable.Where<Entity>(aliasContext.Entities, e => !(e is DOM.Attribute) && !(e is DOM.Comment)));
                 return;
             }
 
-            var argument = aliasContext.Alias.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
+            var argument = Enumerable.FirstOrDefault<Argument>(aliasContext.Arguments, a => a.Name == parameter.Name);
 
             Visit(argument?.Entities.Where(e => !(e is DOM.Attribute)) ?? parameter.Entities.Where(e => !(e is DOM.Attribute)));
         }

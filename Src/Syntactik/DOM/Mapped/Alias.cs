@@ -19,21 +19,40 @@ using System.Collections.Generic;
 
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Implementation of Alias class with additional parsing and compilation information.
+    /// </summary>
     public class Alias: DOM.Alias, IMappedPair, IPairWithInterpolation
     {
+        /// <summary>
+        /// Alias definition object which defines this alias.
+        /// </summary>
         public AliasDefinition AliasDefinition { get; set; }
+
+        /// <inheritdoc />
         public Interval NameInterval { get; set; }
+        /// <inheritdoc />
         public Interval ValueInterval { get; set; }
+
+        /// <inheritdoc />
         public Interval DelimiterInterval { get; set; }
+
+        /// <inheritdoc />
         public ValueType ValueType { get; set; }
+
+        /// <inheritdoc />
         public virtual bool IsValueNode { get; set; }
+        /// <inheritdoc />
         public List<object> InterpolationItems { get; set; }
+        /// <inheritdoc />
         public int ValueIndent { get; set; }
+        /// <inheritdoc />
         public override void InitializeParent(Pair parent)
         {
             base.InitializeParent(parent);
             IsValueNode = Parent.Delimiter == DelimiterEnum.EC || Parent.Delimiter == DelimiterEnum.CE;
         }
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             if (Delimiter == DelimiterEnum.EC)
