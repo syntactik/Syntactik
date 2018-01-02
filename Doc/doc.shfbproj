@@ -13,12 +13,14 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.5</FrameworkVersion>
+    <FrameworkVersion>.NET Framework 4.5.2</FrameworkVersion>
     <OutputPath>.\Help\</OutputPath>
     <HtmlHelpName>Documentation</HtmlHelpName>
     <Language>en-US</Language>
+    <DocumentationSourcePath>..\Working\Src\Syntactik\bin\Release\net45</DocumentationSourcePath>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\Src\Syntactik\Syntactik.csproj" xmlns="" />
+      <DocumentationSource sourceFile="$(DocumentationSourcePath)\Syntactik.dll" />
+      <DocumentationSource sourceFile="$(DocumentationSourcePath)\Syntactik.xml" />
     </DocumentationSources>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
@@ -39,8 +41,20 @@
     <HelpTitle>Syntactik.NET Documentation</HelpTitle>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <NamespaceSummaries>
-      <NamespaceSummaryItem name="Syntactik" isDocumented="True">The &lt;b&gt;Syntactik&lt;/b&gt;namespace provides classes that are used to implement parsing services.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="Syntactik.Compiler" isDocumented="True">The &lt;b&gt;Syntactik.Compiler&lt;/b&gt;namespace provides classes that are used to implement compilation services.</NamespaceSummaryItem></NamespaceSummaries>
+      <NamespaceSummaryItem name="(global)" isDocumented="False" />
+      <NamespaceSummaryItem name="Syntactik" isDocumented="True">The &lt;b&gt;Syntactik&lt;/b&gt; namespace provides classes that are used to implement parsing services.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Syntactik.Compiler" isDocumented="True">The &lt;b&gt;Syntactik.Compiler&lt;/b&gt; namespace provides classes that are used to implement compilation services.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Syntactik.Compiler.Generator" isDocumented="True">The &lt;b&gt;Syntactik.Compiler.Generator&lt;/b&gt; namespace provides classes that are used to generate XML or JSON from Syntactik DOM structure.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Syntactik.Compiler.IO" isDocumented="True">The &lt;b&gt;Syntactik.Compiler.IO&lt;/b&gt; namespace provides classes that provide input/output for compiler steps.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Syntactik.Compiler.Pipelines" isDocumented="True">The &lt;b&gt;Syntactik.Compiler.Pipelines&lt;/b&gt; namespace provides pipeline classes for compiler.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Syntactik.Compiler.Steps" isDocumented="True">The &lt;b&gt;Syntactik.Compiler.Steps&lt;/b&gt; namespace contains classes that are used to implement compiler pipelines.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Syntactik.DOM" isDocumented="True">The &lt;b&gt;Syntactik.DOM&lt;/b&gt; namespace provides classes that are implementing Document Object Model of Syntactik language.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Syntactik.DOM.Mapped" isDocumented="True">The &lt;b&gt;Syntactik.DOM.Mapped&lt;/b&gt; namespace provides DOM classes that are mapped to the source code.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Syntactik.IO" isDocumented="True">The &lt;b&gt;Syntactik.IO&lt;/b&gt; namespace contains classes that implement input/output logic of Syntactik parser.</NamespaceSummaryItem>
+    </NamespaceSummaries>
+    <RootNamespaceContainer>True</RootNamespaceContainer>
+    <RootNamespaceTitle>API Reference</RootNamespaceTitle>
+    <FeedbackEMailAddress>info%40syntactik.com</FeedbackEMailAddress>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
