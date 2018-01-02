@@ -15,24 +15,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+
 namespace Syntactik
 {
-    public static class ErrorCodes
+    enum ParserStateEnum
     {
-        public static string[] Errors =
-        {
-            "Unexpected character(s) `{0}`.", // 0
-            "{0} is expected.", // 1
-            "Invalid indentation.", //2
-            "Block indent mismatch.",// 3
-            "Invalid indent multiplicity.",// 4
-            "Mixed indentation.", //5
-            "Invalid indentation size.",// 6
-        };
-
-        public static string Format(int code, params object[] args)
-        {
-            return string.Format(Errors[code], args);
-        }
+        Indent = 1, //New line started. Indent is checked to calculate the current pair.
+        PairDelimiter = 2,
+        Name = 4,
+        Delimiter = 8,
+        Value = 16,
+        IndentMLS = 32 //Indent for multi-line string
     }
 }

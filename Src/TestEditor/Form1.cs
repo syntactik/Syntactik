@@ -26,13 +26,22 @@ using Syntactik.Compiler.IO;
 using Syntactik.Compiler.Pipelines;
 using Syntactik.DOM;
 using Syntactik.IO;
-using ErrorListener = Syntactik.ErrorListener;
 using Module = Syntactik.DOM.Mapped.Module;
 
 namespace TestEditor
 {
     public partial class Form1 : Form
     {
+        class ErrorListener : IErrorListener
+        {
+            public List<string> Errors { get; } = new List<string>();
+
+            public void OnSyntaxError(int code, Interval interval, params object[] args)
+            {
+                Errors.Add(ParsingErrors.Format(code, args) + $" ({interval.Begin.Line}:{interval.Begin.Column})-({interval.End.Line}:{interval.End.Column})");
+            }
+        }
+
         public Form1()
         {
             InitializeComponent();

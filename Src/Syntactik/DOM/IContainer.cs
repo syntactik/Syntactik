@@ -18,7 +18,7 @@
 namespace Syntactik.DOM
 {
     /// <summary>
-    /// Represent pair with child pairs.
+    /// Represents a pair that has child pairs.
     /// </summary>
     public interface IContainer
     {

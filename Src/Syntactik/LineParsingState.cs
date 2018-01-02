@@ -19,17 +19,7 @@ using Pair = Syntactik.DOM.Pair;
 
 namespace Syntactik
 {
-    public enum ParserStateEnum
-    {
-        Indent = 1, //New line started. Indent is checked to calculate the current pair.
-        PairDelimiter = 2,
-        Name = 4,
-        Delimiter = 8,
-        Value = 16,
-        IndentMLS = 32 //Indent for multi-line string
-    }
-
-    public struct LineParsingState
+    struct LineParsingState
     {
         public int Indent;
         public ParserStateEnum State;

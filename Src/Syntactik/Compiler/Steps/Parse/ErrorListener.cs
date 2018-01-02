@@ -32,9 +32,9 @@ namespace Syntactik.Compiler
         }
         public List<string> Errors { get; } = new List<string>();
 
-        public void SyntaxError(int code, Interval interval, params object[] args)
+        public void OnSyntaxError(int code, Interval interval, params object[] args)
         {
-            _context.AddError(CompilerErrorFactory.ParserError(Syntactik.ErrorCodes.Format(code, args), _fileName, interval.Begin.Line,
+            _context.AddError(CompilerErrorFactory.ParserError(Syntactik.ParsingErrors.Format(code, args), _fileName, interval.Begin.Line,
                 interval.Begin.Column));
         }
     }

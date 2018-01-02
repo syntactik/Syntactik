@@ -156,7 +156,7 @@ namespace Syntactik.Tests
             return File.ReadAllText(fileName).Replace("\r\n", "\n");
         }
 
-        public static string LoadParserErrors(ErrorListener errorListener, out string serialParserErrors)
+        static string LoadParserErrors(ErrorListener errorListener, out string serialParserErrors)
         {
             var isParserErrorRecordedTest = IsParserErrorRecordedTest();
             var isParserErrorRecordTest = IsParserErrorRecordTest(); //Overwrites existing recording

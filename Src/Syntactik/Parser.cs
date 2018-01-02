@@ -145,7 +145,7 @@ namespace Syntactik
                 {
                     //Report end of pair
                     var newPair = AppendCurrentPair();
-                    _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair)newPair))/*,false alwayse false because this proc is called after ConsumeEol consuming eol.*/);
+                    _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair)newPair))/*,false always false because this proc is called after ConsumeEol consuming eol.*/);
                     _lineState.CurrentPair = null;
                 }
                 if (pi.Pair.Delimiter == DelimiterEnum.E || pi.Pair.Delimiter == DelimiterEnum.EE || pi.Pair.Delimiter == DelimiterEnum.CE || pi.Pair.Delimiter == DelimiterEnum.None)
@@ -1031,38 +1031,38 @@ namespace Syntactik
         private void ReportInvalidIndentation(Interval interval)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.SyntaxError(2, interval);
+            proxy.OnSyntaxError(2, interval);
         }
 
         private void ReportInvalidIndentationSize(Interval interval)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.SyntaxError(6, interval);
+            proxy.OnSyntaxError(6, interval);
         }
 
         private void ReportMixedIndentation(Interval interval)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.SyntaxError(5, interval);
+            proxy.OnSyntaxError(5, interval);
         }
 
         private void ReportInvalidIndentationMultiplicity(Interval interval)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.SyntaxError(4, interval);
+            proxy.OnSyntaxError(4, interval);
         }
 
         private void ReportBlockIndentationMismatch(Interval interval)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.SyntaxError(3, interval);
+            proxy.OnSyntaxError(3, interval);
         }
 
 
         private void ReportSyntaxError(int code, Interval interval, params object[] args)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.SyntaxError(code, interval, args);
+            proxy.OnSyntaxError(code, interval, args);
         }
 
         private void ReportMLSSyntaxError(int code, Interval interval, int start)
@@ -1071,7 +1071,7 @@ namespace Syntactik
 
             string quoteName = start == '"' ? "Double quote" : "Single quote";
 
-            proxy.SyntaxError(code, interval, quoteName);
+            proxy.OnSyntaxError(code, interval, quoteName);
         }
 
         /// <summary>

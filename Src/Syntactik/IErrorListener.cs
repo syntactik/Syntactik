@@ -19,8 +19,11 @@ using Syntactik.DOM;
 
 namespace Syntactik
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IErrorListener
     {
-        void SyntaxError(int code, Interval interval, params object[] args);
+        void OnSyntaxError(int code, Interval interval, params object[] args);
     }
 }

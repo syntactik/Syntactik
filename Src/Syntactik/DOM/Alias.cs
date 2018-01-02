@@ -61,7 +61,7 @@ namespace Syntactik.DOM
         /// <summary>
         /// Method is a part the <see href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor pattern</see> implementation.
         /// </summary>
-        /// <param name="visitor">Vistor object.</param>
+        /// <param name="visitor">Visitor object.</param>
         public override void Accept(IDomVisitor visitor)
         {
             visitor.OnAlias(this);

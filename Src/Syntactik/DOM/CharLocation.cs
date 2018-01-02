@@ -15,11 +15,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+
+using System;
 using Syntactik.IO;
 
 namespace Syntactik.DOM
 {
-    public class CharLocation
+    public class CharLocation: IEquatable<CharLocation>, IComparable<CharLocation>
     {
         public CharLocation(int line, int column, int index)
         {
@@ -46,7 +48,7 @@ namespace Syntactik.DOM
         public int Line;
         public int Column;
 
-        protected int CompareTo(CharLocation other)
+        public int CompareTo(CharLocation other)
         {
             int num = Line.CompareTo(other.Line);
             if (num != 0)
@@ -54,6 +56,12 @@ namespace Syntactik.DOM
                 return num;
             }
             return Column.CompareTo(other.Column);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(CharLocation other)
+        {
+            return other != null && Line == other.Line && Column == other.Column;
         }
 
         public override string ToString()

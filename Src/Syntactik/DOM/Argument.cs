@@ -17,16 +17,18 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents an Argument.
+    /// </summary>
     public class Argument : Entity, IContainer
     {
 
-        // Fields
-        protected PairCollection<Entity> _entities;
+        private PairCollection<Entity> _entities;
 
-        // Properties
+        /// <inheritdoc />
         public virtual PairCollection<Entity> Entities
         {
-            get { return _entities ?? (_entities = new PairCollection<Entity>(this)); }
+            get => _entities ?? (_entities = new PairCollection<Entity>(this));
             set
             {
                 if (value == _entities) return;
@@ -36,19 +38,22 @@ namespace Syntactik.DOM
             }
         }
 
-        // Methods
+        /// <summary>
+        /// Method is a part the <see href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor pattern</see> implementation.
+        /// </summary>
+        /// <param name="visitor">Visitor object.</param>
         public override void Accept(IDomVisitor visitor)
         {
             visitor.OnArgument(this);
         }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             Value = null;
             PairValue = null;
 
-            var item = child as Entity;
-            if (item != null)
+            if (child is Entity item)
             {
                 Entities.Add(item);
             }

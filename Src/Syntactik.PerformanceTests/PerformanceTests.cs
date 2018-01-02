@@ -26,8 +26,6 @@ namespace Syntactik.PerformanceTests
             var code = LoadTestCodeRaw();
 
             var parser = new Parser(new InputStream(code), new PairFactory(), new DOM.Module {Name = "Module" });
-            var errorListener = new ErrorListener();
-            parser.ErrorListeners.Add(errorListener);
             var t1 = Environment.TickCount;
             var m = parser.ParseModule("");
             var t2 = Environment.TickCount;
