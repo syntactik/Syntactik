@@ -192,7 +192,7 @@ This is the list of the prefixes and the corresponding language constructs:
 
 The symbols used to define prefix are easy to find on top of the buttons with numbers from 1 to 5:
 
-![prefix symbols](http://syntactik.com/img/prefix.png "prefix symbols")
+![prefix symbols](https://www.syntactik.com/img/prefix.png "prefix symbols")
 
 ### Identifier
 
