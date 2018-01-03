@@ -36,7 +36,7 @@ namespace TestEditor
         {
             public List<string> Errors { get; } = new List<string>();
 
-            public void OnSyntaxError(int code, Interval interval, params object[] args)
+            public void OnError(int code, Interval interval, params object[] args)
             {
                 Errors.Add(ParsingErrors.Format(code, args) + $" ({interval.Begin.Line}:{interval.Begin.Column})-({interval.End.Line}:{interval.End.Column})");
             }
@@ -63,10 +63,9 @@ namespace TestEditor
                 try
                 {
                     var printer = new DomPrinter();
-                    printer.Visit(parser.ParseModule(""));
+                    printer.Visit(parser.ParseModule());
                     domTextBox.Text = printer.Text;
                     errorsTextBox.Text = string.Join(Environment.NewLine, errorListener.Errors.ToArray());
-
                 }
                 catch (Exception exception)
                 {

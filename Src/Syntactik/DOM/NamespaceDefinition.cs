@@ -17,8 +17,12 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents a definition of XML namespace.
+    /// </summary>
     public class NamespaceDefinition : Pair
     {
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
             visitor.OnNamespaceDefinition(this);

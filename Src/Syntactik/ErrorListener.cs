@@ -24,7 +24,7 @@ namespace Syntactik
     {
         public List<string> Errors { get; } = new List<string>();
 
-        public void OnSyntaxError(int code, Interval interval, params object[] args)
+        public void OnError(int code, Interval interval, params object[] args)
         {
             Errors.Add(ParsingErrors.Format(code, args) + $" ({interval.Begin.Line}:{interval.Begin.Column})-({interval.End.Line}:{interval.End.Column})");
         }

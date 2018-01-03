@@ -47,6 +47,9 @@ using System;
 
 namespace Syntactik.Compiler
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ICompilerStep : ICompilerComponent, IDisposable
     {
         void Run();

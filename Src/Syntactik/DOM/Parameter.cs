@@ -19,15 +19,17 @@ using System.Text;
 
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents a Parameter.
+    /// </summary>
     public class Parameter : Entity, IContainer
     {
-        // Fields
-        protected PairCollection<Entity> _entities;
+        private PairCollection<Entity> _entities;
 
-        // Properties
+        /// <inheritdoc />
         public virtual PairCollection<Entity> Entities
         {
-            get { return _entities ?? (_entities = new PairCollection<Entity>(this)); }
+            get => _entities ?? (_entities = new PairCollection<Entity>(this));
             set
             {
                 if (value == _entities) return;
@@ -37,19 +39,20 @@ namespace Syntactik.DOM
             }
         }
 
-        // Methods
+
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
             visitor.OnParameter(this);
         }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             Value = null;
             PairValue = null;
 
-            var item = child as Entity;
-            if (item != null)
+            if (child is Entity item)
             {
                 Entities.Add(item);
             }
@@ -58,6 +61,8 @@ namespace Syntactik.DOM
                 base.AppendChild(child);
             }
         }
+
+        /// <inheritdoc />
         public override string ToString()
         {
             return new StringBuilder().Append("%").Append(Name).ToString();

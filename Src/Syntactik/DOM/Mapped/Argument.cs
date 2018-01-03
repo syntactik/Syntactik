@@ -19,15 +19,33 @@ using System.Collections.Generic;
 
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Represents an Argument mapped to the source code. 
+    /// </summary>
     public class Argument: DOM.Argument, IMappedPair, IPairWithInterpolation
     {
+        /// <inheritdoc />
         public Interval NameInterval { get; set; }
+
+        /// <inheritdoc />
         public Interval ValueInterval { get; set; }
+
+        /// <inheritdoc />
         public Interval DelimiterInterval { get; set; }
+
+        /// <inheritdoc />
         public ValueType ValueType { get; set; }
+
+        /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
+
+        /// <inheritdoc />
         public List<object> InterpolationItems { get; set; }
+
+        /// <inheritdoc />
         public int ValueIndent { get; set; }
+
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             if (Delimiter == DelimiterEnum.EC)

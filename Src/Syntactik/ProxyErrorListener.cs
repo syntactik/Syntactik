@@ -29,12 +29,12 @@ namespace Syntactik
             _listeners = listeners;
         }
 
-        public void OnSyntaxError(int code, Interval interval, params object[] args)
+        public void OnError(int code, Interval interval, params object[] args)
         {
             if (_listeners == null) return;
             foreach (var errorListener in _listeners)
             {
-                errorListener.OnSyntaxError(code, interval, args);
+                errorListener.OnError(code, interval, args);
             }
         }
     }

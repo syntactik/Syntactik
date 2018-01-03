@@ -19,10 +19,22 @@ using System.Collections.Generic;
 
 namespace Syntactik.Compiler
 {
+    /// <summary>
+    /// An ordered list of <see cref="ICompilerStep"/> implementations
+    /// that should be executed in sequence.
+    /// </summary>
     public class CompilerPipeline
     {
-        public List<ICompilerStep> Steps { get; private set; } = new List<ICompilerStep>();
+        /// <summary>
+        /// An ordered list of <see cref="ICompilerStep"/> implementations
+        /// that should be executed in sequence.
+        /// </summary>
+        public List<ICompilerStep> Steps { get; } = new List<ICompilerStep>();
 
+        /// <summary>
+        /// Orderly executes compiler steps of the pipeline.
+        /// </summary>
+        /// <param name="context"></param>
         public virtual void Run(CompilerContext context)
         {
             foreach (ICompilerStep step in Steps)
@@ -32,6 +44,11 @@ namespace Syntactik.Compiler
             }
         }
 
+        /// <summary>
+        /// Adds step to the pipeline.
+        /// </summary>
+        /// <param name="step"></param>
+        /// <returns>Current instance of the pipeline.</returns>
         public CompilerPipeline Add(ICompilerStep step)
         {
             Steps.Add(step);

@@ -23,7 +23,6 @@ namespace Syntactik.Compiler.IO
     /// <summary>
     /// File based compiler input.
     /// </summary>
-    [Serializable]
     public class FileInput : ICompilerInput
     {
         private readonly string _fname;

@@ -19,14 +19,30 @@ using System.Collections.Generic;
 
 namespace Syntactik.DOM.Mapped
 {
-    public class Scope : DOM.Scope, IMappedPair
+    /// <summary>
+    /// Represents <see cref="DOM.Scope"/> mapped to the source code.
+    /// </summary>
+    public class Scope : DOM.Scope, IMappedPair, IPairWithInterpolation
     {
+        /// <inheritdoc />
         public Interval NameInterval { get; set; }
+
+        /// <inheritdoc />
         public Interval ValueInterval { get; set; }
+
+        /// <inheritdoc />
         public Interval DelimiterInterval { get; set; }
+
+        /// <inheritdoc />
         public ValueType ValueType { get; set; }
+
+        /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
+
+        /// <inheritdoc />
         public List<object> InterpolationItems { get; set; }
+
+        /// <inheritdoc />
         public int ValueIndent { get; set; }
     }
 }

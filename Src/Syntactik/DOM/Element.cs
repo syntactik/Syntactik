@@ -17,25 +17,26 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents an Element.
+    /// </summary>
     public class Element : Entity, INsNode, IContainer
     {
-        // Fields
-        protected PairCollection<Entity> _entities;
-        protected string _nsPrefix;
+        private PairCollection<Entity> _entities;
 
-        // Methods
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
             visitor.OnElement(this);
         }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             Value = null;
             PairValue = null;
 
-            var item = child as Entity;
-            if (item != null)
+            if (child is Entity item)
             {
                 Entities.Add(item);
             }
@@ -45,10 +46,11 @@ namespace Syntactik.DOM
             }
         }
 
-        // Properties
+
+        /// <inheritdoc />
         public virtual PairCollection<Entity> Entities
         {
-            get { return _entities ?? (_entities = new PairCollection<Entity>(this)); }
+            get => _entities ?? (_entities = new PairCollection<Entity>(this));
             set
             {
                 if (value == _entities) return;
@@ -58,10 +60,9 @@ namespace Syntactik.DOM
             }
         }
 
-        public virtual string NsPrefix
-        {
-            get { return _nsPrefix; }
-            set { _nsPrefix = value; }
-        }
+        /// <summary>
+        /// Namespace prefix of the element.
+        /// </summary>
+        public virtual string NsPrefix { get; set; }
     }
 }

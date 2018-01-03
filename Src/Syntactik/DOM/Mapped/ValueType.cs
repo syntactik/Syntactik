@@ -42,7 +42,7 @@
         /// </summary>
         Number,
         /// <summary>
-        /// Json boolean literal
+        /// JSON boolean literal
         /// </summary>
         Boolean,
         /// <summary>
@@ -50,7 +50,7 @@
         /// </summary>
         Object,
         /// <summary>
-        /// Concatenaion
+        /// Concatenation
         /// </summary>
         Concatenation,
         /// <summary>

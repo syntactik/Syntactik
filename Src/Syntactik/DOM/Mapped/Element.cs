@@ -21,19 +21,45 @@ using System.Text.RegularExpressions;
 
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Represents an <see cref="DOM.Element"/> mapped to the source code.
+    /// </summary>
     public class Element: DOM.Element, IMappedPair, IPairWithInterpolation, IChoiceNode
     {
+        /// <inheritdoc />
         public Interval NameInterval { get; set; }
+
+        /// <inheritdoc />
         public Interval ValueInterval { get; set; }
+
+        /// <inheritdoc />
         public Interval DelimiterInterval { get; set; }
+
+        /// <inheritdoc />
         public ValueType ValueType { get; set; }
+
+        /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
+
+        /// <inheritdoc />
         public List<object> InterpolationItems { get; set; }
+
+        /// <inheritdoc />
         public int ValueIndent { get; set; }
+
+        /// <inheritdoc />
         public List<object> ChoiceObjects => !IsChoice ? null : InterpolationItems;
 
+        /// <inheritdoc />
         public bool IsChoice { get; private set; }
 
+        /// <summary>
+        /// Splits full name on namespace prefix and name.
+        /// </summary>
+        /// <param name="name">Full name of a pair</param>
+        /// <param name="nameQuotesType">Type of quotes used to define the name. 
+        /// 0 - no quotes, 1 - single quotes, 2 - double quotes.</param>
+        /// <returns>First item of tuple stores namespace prefix. Second item of tuple stores a name.</returns>
         public static Tuple<string, string> GetNameAndNs(string name, int nameQuotesType)
         {
             if (nameQuotesType > 0) return new Tuple<string, string>("", name);
@@ -42,15 +68,17 @@ namespace Syntactik.DOM.Mapped
             return new Tuple<string, string>("", name);
         }
 
+        /// <inheritdoc />
         public override void InitializeParent(Pair parent)
         {
-            if (parent.Delimiter == DelimiterEnum.CC || parent.Delimiter == DelimiterEnum.ECC)
+            if (parent?.Delimiter == DelimiterEnum.CC || parent?.Delimiter == DelimiterEnum.ECC)
             {
                 IsChoice = true;
             }
             base.InitializeParent(parent);
         }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             if (Delimiter == DelimiterEnum.EC)

@@ -19,8 +19,15 @@ using Syntactik.Compiler.Steps;
 
 namespace Syntactik.Compiler.Pipelines
 {
+    /// <summary>
+    /// Compiler pipeline that stores generated output in memory. See <see cref="P:Syntactik.Compiler.CompilerContext.InMemoryOutputObjects" />
+    /// </summary>
     public class CompileToMemory: CompilerPipeline
     {
+        /// <summary>
+        /// Creates instance of the pipeline.
+        /// </summary>
+        /// <param name="generateComments">If true generates XML comments.</param>
         public CompileToMemory(bool generateComments = false)
         {
             Steps.Add(new Parse());

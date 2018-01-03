@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace Syntactik.DOM.Mapped
 {
-    public class MappedPair: Pair, IMappedPair 
+    class MappedPair: Pair, IMappedPair 
     {
         public override void Accept(IDomVisitor visitor)
         {

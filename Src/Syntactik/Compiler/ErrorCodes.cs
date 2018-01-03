@@ -17,7 +17,7 @@
 #endregion
 namespace Syntactik.Compiler
 {
-    public static class ErrorCodes
+    static class ErrorCodes
     {
         public const string MCE0000 = "Fatal error - '{0}'";
         public const string MCE0001 = "Error reading from '{0}': '{1}'.";
@@ -25,7 +25,6 @@ namespace Syntactik.Compiler
         public const string MCE0003 = "Namespace prefix '{0}' is not defined.";
         public const string MCE0004 = "Alias '{0}' is not defined.";
         public const string MCE0005 = "Alias Definition '{0}' has circular reference.";
-        //public const string MCE0006 = "LexerError - '{0}'.";
         public const string MCE0007 = "ParserError - '{0}'.";
         public const string MCE0008 = "Duplicate document name - '{0}'.";
         public const string MCE0009 = "Document '{0}' must have{1} one root element.";

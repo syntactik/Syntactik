@@ -15,27 +15,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
 
 namespace Syntactik.DOM
 {
-    [Serializable]
+    /// <summary>
+    /// Represents a Scope.
+    /// </summary>
     public class Scope : Entity, INsNode, IContainer
     {
-        // Fields
-        protected PairCollection<Entity> _entities;
-        protected string _nsPrefix;
+        private PairCollection<Entity> _entities;
 
-        // Methods
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
             visitor.OnScope(this);
         }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            var item = child as Entity;
-            if (item != null)
+            if (child is Entity item)
             {
                 Entities.Add(item);
             }
@@ -45,11 +44,10 @@ namespace Syntactik.DOM
             }
         }
 
-        // Properties
-
+        /// <inheritdoc />
         public virtual PairCollection<Entity> Entities
         {
-            get { return _entities ?? (_entities = new PairCollection<Entity>(this)); }
+            get => _entities ?? (_entities = new PairCollection<Entity>(this));
             set
             {
                 if (value != _entities)
@@ -60,10 +58,9 @@ namespace Syntactik.DOM
             }
         }
 
-        public virtual string NsPrefix
-        {
-            get { return _nsPrefix; }
-            set { _nsPrefix = value; }
-        }
+        /// <summary>
+        /// Namespace prefix of the attribute.
+        /// </summary>
+        public virtual string NsPrefix { get; set; }
     }
 }

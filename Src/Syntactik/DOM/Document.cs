@@ -19,42 +19,47 @@ using System;
 
 namespace Syntactik.DOM
 {
-    [Serializable]
+    /// <summary>
+    /// Represents Document.
+    /// </summary>
     public class Document : ModuleMember, IContainer
     {
-        // Fields
-        protected PairCollection<Entity> _entities;
 
+        private PairCollection<Entity> _entities;
+
+        /// <summary>
+        /// Root element of the XML document.
+        /// </summary>
         public Entity DocumentElement;
 
-        // Properties
+
+        /// <inheritdoc />
         public virtual PairCollection<Entity> Entities
         {
-            get { return _entities ?? (_entities = new PairCollection<Entity>(this)); }
-            set { throw new NotImplementedException(); }
+            get => _entities ?? (_entities = new PairCollection<Entity>(this));
+            set => throw new NotImplementedException();
         }
 
-        // Methods
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
             visitor.OnDocument(this);
         }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             Value = null;
             PairValue = null;
 
-            var entity = child as Entity;
-            if (entity != null)
+            if (child is Entity entity)
             {
                 DocumentElement = entity;
                 Entities.Add(entity);
                 return;
             }
 
-            var ns = child as NamespaceDefinition;
-            if (ns != null)
+            if (child is NamespaceDefinition ns)
             {
                 NamespaceDefinitions.Add(ns);
                 return;

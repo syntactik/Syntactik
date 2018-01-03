@@ -50,7 +50,7 @@ namespace Syntactik.DOM.Mapped
         public override void InitializeParent(Pair parent)
         {
             base.InitializeParent(parent);
-            IsValueNode = Parent.Delimiter == DelimiterEnum.EC || Parent.Delimiter == DelimiterEnum.CE;
+            IsValueNode = Parent?.Delimiter == DelimiterEnum.EC || Parent?.Delimiter == DelimiterEnum.CE;
         }
         /// <inheritdoc />
         public override void AppendChild(Pair child)

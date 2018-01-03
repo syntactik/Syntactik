@@ -19,8 +19,15 @@ using Syntactik.Compiler.Steps;
 
 namespace Syntactik.Compiler.Pipelines
 {
+    /// <summary>
+    /// Compiler pipeline that saves generated output to files.
+    /// </summary>
     public class CompileToFiles: CompilerPipeline
     {
+        /// <summary>
+        /// Creates instance of pipeline.
+        /// </summary>
+        /// <param name="generateComments">If true generates XML comments.</param>
         public CompileToFiles(bool generateComments = false)
         {
             Steps.Add(new Parse());

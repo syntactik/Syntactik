@@ -50,9 +50,8 @@ using Syntactik.DOM;
 namespace Syntactik.Compiler
 {
     /// <summary>
-    /// A compilation error.
+    /// Represents a compilation error.
     /// </summary>
-    [Serializable]
     public class CompilerError : ApplicationException, IComparable<CompilerError>
     {
         /// <summary>
@@ -66,58 +65,107 @@ namespace Syntactik.Compiler
         /// Initializes a new instance of the CompilerError class.
         /// </summary>
         /// <param name="code">String id of the error.</param>
-        /// <param name="lexicalInfo"></param>
-        /// <param name="cause"></param>
-        /// <param name="args"></param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="lexicalInfo">Location of the source code that caused the error.</param>
+        /// <param name="cause"><see cref="Exception"/> that caused the error.</param>
+        /// <param name="args">Formatting items used to create an error message.</param>
+        /// <exception cref="ArgumentNullException">If parameter lexicalInfo is null.</exception>
         public CompilerError(string code, LexicalInfo lexicalInfo, Exception cause, params object[] args) : base(ErrorCodes.Format(code, args), cause)
         {
             _code = code;
             _lexicalInfo = lexicalInfo ?? throw new ArgumentNullException(nameof(lexicalInfo));
         }
 
+        /// <summary>
+        /// Initializes a new instance of the CompilerError class.
+        /// </summary>
+        /// <param name="code">String id of the error.</param>
+        /// <param name="cause"><see cref="Exception"/> that caused the error.</param>
+        /// <param name="args">Formatting items used to create an error message.</param>
+        /// <exception cref="ArgumentNullException">If parameter lexicalInfo is null.</exception>
         public CompilerError(string code, Exception cause, params object[] args) : this(code, LexicalInfo.Empty, cause, args)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the CompilerError class.
+        /// </summary>
+        /// <param name="code">String id of the error.</param>
+        /// <param name="lexicalInfo">Location of the source code that caused the error.</param>
+        /// <param name="isParserError">True if error was found by <see cref="Parser"/>.</param>
+        /// <param name="args">Formatting items used to create an error message.</param>
+        /// <exception cref="ArgumentNullException">If parameter lexicalInfo is null.</exception>
         public CompilerError(string code, LexicalInfo lexicalInfo, bool isParserError, params object[] args) : base(ErrorCodes.Format(code, args))
         {
+            _lexicalInfo = lexicalInfo ?? throw new ArgumentNullException(nameof(lexicalInfo));
             IsParserError = isParserError;
-            if (null == lexicalInfo)
-                throw new ArgumentNullException(nameof(lexicalInfo));
             _code = code;
-            _lexicalInfo = lexicalInfo;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the CompilerError class.
+        /// </summary>
+        /// <param name="code">String id of the error.</param>
+        /// <param name="lexicalInfo">Location of the source code that caused the error.</param>
+        /// <param name="message">Description of the error.</param>
+        /// <param name="cause"><see cref="Exception"/> that caused the error.</param>
+        /// <exception cref="ArgumentNullException">If parameter lexicalInfo is null.</exception>
         public CompilerError(string code, LexicalInfo lexicalInfo, string message, Exception cause) : base(message, cause)
         {
-            if (null == lexicalInfo)
-                throw new ArgumentNullException(nameof(lexicalInfo));
+            _lexicalInfo = lexicalInfo ?? throw new ArgumentNullException(nameof(lexicalInfo));
             _code = code;
-            _lexicalInfo = lexicalInfo;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the CompilerError class.
+        /// </summary>
+        /// <param name="lexicalInfo">Location of the source code that caused the error.</param>
+        /// <param name="message">Description of the error.</param>
+        /// <param name="cause"><see cref="Exception"/> that caused the error.</param>
+        /// <exception cref="ArgumentNullException">If parameter lexicalInfo is null.</exception>
         public CompilerError(LexicalInfo lexicalInfo, string message, Exception cause) : this("MCE0000", lexicalInfo, message, cause)
         {
         }
 
-
-        public CompilerError(LexicalInfo data, string message) : this(data, message, null)
+        /// <summary>
+        /// Initializes a new instance of the CompilerError class.
+        /// </summary>
+        /// <param name="lexicalInfo">Location of the source code that caused the error.</param>
+        /// <param name="message">Description of the error.</param>
+        /// <exception cref="ArgumentNullException">If parameter lexicalInfo is null.</exception>
+        public CompilerError(LexicalInfo lexicalInfo, string message) : this(lexicalInfo, message, null)
         {
         }
 
-        public CompilerError(LexicalInfo data, Exception cause) : this(data, cause.Message, cause)
+        /// <summary>
+        /// Initializes a new instance of the CompilerError class.
+        /// </summary>
+        /// <param name="lexicalInfo">Location of the source code that caused the error.</param>
+        /// <param name="cause"><see cref="Exception"/> that caused the error.</param>
+        /// <exception cref="ArgumentNullException">If parameter lexicalInfo is null.</exception>
+        public CompilerError(LexicalInfo lexicalInfo, Exception cause) : this(lexicalInfo, cause.Message, cause)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the CompilerError class.
+        /// </summary>
+        /// <param name="message">Description of the error.</param>
+        /// <exception cref="ArgumentNullException">If parameter lexicalInfo is null.</exception>
         public CompilerError(string message) : this(LexicalInfo.Empty, message, null)
         {
         }
 
+        /// <summary>
+        /// String id of the error.
+        /// </summary>
         public string Code => _code;
 
+        /// <summary>
+        /// Location of the error in the source code.
+        /// </summary>
         public LexicalInfo LexicalInfo => _lexicalInfo;
 
+        /// <inheritdoc />
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -128,24 +176,11 @@ namespace Syntactik.Compiler
             }
             sb.Append(_code);
             sb.Append(": ");
-            sb.Append(_verbose ? base.ToString() : Message);
+            sb.Append(Message);
             return sb.ToString();
         }
 
-        public string ToString(bool verbose)
-        {
-            var saved = _verbose;
-            try
-            {
-                _verbose = _verbose || verbose;
-                return ToString();
-            }
-            finally
-            {
-                _verbose = saved;
-            }
-        }
-
+        /// <inheritdoc />
         public int CompareTo(CompilerError other)
         {
             var result = LexicalInfo.CompareTo(other.LexicalInfo);
@@ -157,7 +192,5 @@ namespace Syntactik.Compiler
             return String.CompareOrdinal(Message, other.Message);
         }
 
-        [ThreadStatic]
-        private static bool _verbose;
     }
 }

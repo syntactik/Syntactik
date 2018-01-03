@@ -17,6 +17,9 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Entity is a <see cref="Pair"/> that can be added to <see cref="IContainer"/> node.
+    /// </summary>
     public abstract class Entity : Pair
     {
     }

@@ -19,7 +19,7 @@ using Syntactik.DOM;
 
 namespace Syntactik.IO
 {
-    public static class CharStreamExtensions
+    static class CharStreamExtensions
     {
         public static bool ConsumeNewLine(this ICharStream stream)
         {

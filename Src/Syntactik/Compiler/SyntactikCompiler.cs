@@ -47,19 +47,37 @@ using Syntactik.DOM;
 
 namespace Syntactik.Compiler
 {
+    /// <summary>
+    /// The compiler: a facade to the CompilerParameters/CompilerContext/Pipeline subsystem.
+    /// </summary>
     public class SyntactikCompiler
     {
-        public CompilerParameters Parameters { get; private set; }
+        /// <summary>
+        /// Compiler parameters
+        /// </summary>
+        public CompilerParameters Parameters { get; }
 
+        /// <summary>
+        /// Creates instance of the <see cref="SyntactikCompiler"/> with empty parameters.
+        /// </summary>
         public SyntactikCompiler()
         {
             Parameters = new CompilerParameters();
         }
+        /// <summary>
+        /// Creates instance of the <see cref="SyntactikCompiler"/>.
+        /// </summary>
+        /// <param name="parameters">Compiler parameters.</param>
         public SyntactikCompiler(CompilerParameters parameters)
         {
             Parameters = parameters;
         }
 
+        /// <summary>
+        /// Executes compilation.
+        /// </summary>
+        /// <param name="compileUnit">Compile unit</param>
+        /// <returns>Compiler context.</returns>
         public CompilerContext Run(CompileUnit compileUnit = null)
         {
             if (compileUnit == null)

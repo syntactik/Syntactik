@@ -20,21 +20,18 @@ using System;
 namespace Syntactik.DOM
 {
     /// <summary>
-    /// Root DOM object of the compilation session.
+    /// Root DOM object of the compilation session. Stores list of all compiled <see cref="Module">modules</see>.
     /// </summary>
-    [Serializable]
     public class CompileUnit : Pair
     {
-        // Fields
         private PairCollection<Module> _modules;
-
 
         /// <summary>
         /// List of compiled modules.
         /// </summary>
         public virtual PairCollection<Module> Modules
         {
-            get { return _modules ?? (_modules = new PairCollection<Module>(this)); }
+            get => _modules ?? (_modules = new PairCollection<Module>(this));
             set
             {
                 if (value == _modules) return;
@@ -58,8 +55,7 @@ namespace Syntactik.DOM
         /// <param name="child"></param>
         public override void AppendChild(Pair child)
         {
-            var item = child as Module;
-            if (item != null)
+            if (child is Module item)
             {
                 Modules.Add(item);
             }

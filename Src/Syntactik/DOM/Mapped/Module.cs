@@ -20,16 +20,34 @@ using System.Linq;
 
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Represent a <see cref="Module"/> mapped to the source code.
+    /// </summary>
     public class Module : DOM.Module
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public enum TargetFormats
         {
+            /// <summary>
+            /// Format is not explicitly defined.
+            /// </summary>
             Undefined = 0,
+            /// <summary>
+            /// Format is defined as XML.
+            /// </summary>
             Xml,
+            /// <summary>
+            /// Format is defined as JSON.
+            /// </summary>
             Json
         }
 
         private TargetFormats _targetFormat;
+        /// <summary>
+        /// Target format of the module. XML or JSON, for ex.
+        /// </summary>
         public TargetFormats TargetFormat
         {
             get
@@ -40,9 +58,10 @@ namespace Syntactik.DOM.Mapped
 
                 return _targetFormat = TargetFormats.Xml;
             }
-            set { _targetFormat = value; }
+            set => _targetFormat = value;
         }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             if (child is NamespaceDefinition)

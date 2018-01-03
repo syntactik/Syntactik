@@ -24,6 +24,9 @@ using Pair = Syntactik.DOM.Pair;
 
 namespace Syntactik
 {
+    /// <summary>
+    /// Parses stream of chars, calls methods of <see cref="IPairFactory"/> to create DOM structure of Syntactik document.
+    /// </summary>
     public class Parser
     {
         private readonly ICharStream _input;
@@ -36,12 +39,26 @@ namespace Syntactik
         private readonly IPairFactory _pairFactory;
         private readonly Module _module;
 
+        /// <summary>
+        /// List of error listeners.
+        /// </summary>
         public virtual IList<IErrorListener> ErrorListeners => _errorListeners ?? (_errorListeners = new List<IErrorListener>());
 
+        /// <summary>
+        /// Creates instance of the <see cref="Parser"/>.
+        /// </summary>
+        /// <param name="input">Stream of characters for parsing.</param>
         public Parser(ICharStream input):this(input, new PairFactory(), new DOM.Mapped.Module{ Name = "root", Delimiter = DelimiterEnum.C })
         {
             
         }
+
+        /// <summary>
+        /// Creates instance of the <see cref="Parser"/>.
+        /// </summary>
+        /// <param name="input">Stream of characters for parsing.</param>
+        /// <param name="pairFactory">Pair factory is used to create DOM structure of the Syntactik document.</param>
+        /// <param name="root"><see cref="Module"/> object is used as root of DOM structure.</param>
         public Parser(ICharStream input, IPairFactory pairFactory,  Module root)
         {
             _input = input;
@@ -50,7 +67,12 @@ namespace Syntactik
             _pairStack.Push(new PairIndentInfo { Pair = root });
             _module = root;
         }
-        public virtual Pair ParseModule(string fileName)
+
+        /// <summary>
+        /// Starts parsing.
+        /// </summary>
+        /// <returns>Root object of the parsed DOM structure.</returns>
+        public virtual Module ParseModule()
         {
             ResetState();
 
@@ -65,7 +87,7 @@ namespace Syntactik
             _module.IndentMultiplicity = _indentMultiplicity;
             _module.IndentSymbol = _indentSymbol;
 
-            return _pairStack.Peek().Pair;
+            return (Module)_pairStack.Peek().Pair;
         }
 
         private void EndPair(Interval interval, bool endedByEof = false)
@@ -145,7 +167,7 @@ namespace Syntactik
                 {
                     //Report end of pair
                     var newPair = AppendCurrentPair();
-                    _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair)newPair))/*,false always false because this proc is called after ConsumeEol consuming eol.*/);
+                    _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair)newPair))/*always false because this method is called after ConsumeEol consuming eol.*/);
                     _lineState.CurrentPair = null;
                 }
                 if (pi.Pair.Delimiter == DelimiterEnum.E || pi.Pair.Delimiter == DelimiterEnum.EE || pi.Pair.Delimiter == DelimiterEnum.CE || pi.Pair.Delimiter == DelimiterEnum.None)
@@ -1031,38 +1053,38 @@ namespace Syntactik
         private void ReportInvalidIndentation(Interval interval)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.OnSyntaxError(2, interval);
+            proxy.OnError(2, interval);
         }
 
         private void ReportInvalidIndentationSize(Interval interval)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.OnSyntaxError(6, interval);
+            proxy.OnError(6, interval);
         }
 
         private void ReportMixedIndentation(Interval interval)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.OnSyntaxError(5, interval);
+            proxy.OnError(5, interval);
         }
 
         private void ReportInvalidIndentationMultiplicity(Interval interval)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.OnSyntaxError(4, interval);
+            proxy.OnError(4, interval);
         }
 
         private void ReportBlockIndentationMismatch(Interval interval)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.OnSyntaxError(3, interval);
+            proxy.OnError(3, interval);
         }
 
 
         private void ReportSyntaxError(int code, Interval interval, params object[] args)
         {
             var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.OnSyntaxError(code, interval, args);
+            proxy.OnError(code, interval, args);
         }
 
         private void ReportMLSSyntaxError(int code, Interval interval, int start)
@@ -1071,7 +1093,7 @@ namespace Syntactik
 
             string quoteName = start == '"' ? "Double quote" : "Single quote";
 
-            proxy.OnSyntaxError(code, interval, quoteName);
+            proxy.OnError(code, interval, quoteName);
         }
 
         /// <summary>

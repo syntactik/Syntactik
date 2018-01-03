@@ -38,10 +38,7 @@ namespace Syntactik.DOM
             }
         }
 
-        /// <summary>
-        /// Method is a part the <see href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor pattern</see> implementation.
-        /// </summary>
-        /// <param name="visitor">Visitor object.</param>
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
             visitor.OnArgument(this);
@@ -62,8 +59,5 @@ namespace Syntactik.DOM
                 base.AppendChild(child);
             }
         }
-
-
-
     }
 }

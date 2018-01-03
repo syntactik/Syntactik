@@ -23,7 +23,6 @@ namespace Syntactik.Compiler.IO
     /// <summary>
     /// TextReader based compiler input.
     /// </summary>
-    [Serializable]
     public class ReaderInput : ICompilerInput
     {
         private readonly string _name;

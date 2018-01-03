@@ -42,7 +42,7 @@ namespace Syntactik.Tests
             var errorListener = new ErrorListener();
             parser.ErrorListeners.Add(errorListener);
 
-            var domText = PrintModule(parser.ParseModule(""));
+            var domText = PrintModule(parser.ParseModule());
 
             var recordedDom = GetRecordedDomText(domText);
 

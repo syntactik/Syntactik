@@ -46,11 +46,14 @@
 namespace Syntactik.Compiler
 {
     /// <summary>
-    /// A component that is invoked during the compilation
-    /// process.
+    /// A component that is invoked during the compilation process.
     /// </summary>
     public interface ICompilerComponent
     {
+        /// <summary>
+        /// Initialize compilation component.
+        /// </summary>
+        /// <param name="context">Shared compiler context.</param>
         void Initialize(CompilerContext context);
     }
 }

@@ -392,7 +392,7 @@ namespace Syntactik.Compiler.Steps
         }
 
         /// <summary>
-        /// If choice fails then it adds all error to the parent container,
+        /// If choice fails then it adds all errors to the parent container,
         /// otherwise the choice adds itself to the parent child list.
         /// </summary>
         /// <param name="element"></param>
@@ -417,9 +417,9 @@ namespace Syntactik.Compiler.Steps
         /// Checks if Choice Container should be created and creates it.
         /// </summary>
         /// <param name="pair">Current pair from visitor.</param>
-        /// <param name="entities">Pairs enitities. Empty pair is ignored because there are no choices.</param>
+        /// <param name="entities">Pairs entities. Empty pair is ignored because there are no choices.</param>
         /// <param name="implementationPair">Actual implementation of pair, (AliasDef is implementation of Alias for example )</param>
-        /// <returns>True if Choice Conteiner is found.</returns>
+        /// <returns>True if Choice Container is found.</returns>
         private bool CheckStartOfChoiceContainer(Pair pair, PairCollection<Entity> entities, Pair implementationPair = null)
         {
             if (implementationPair == null) implementationPair = pair;

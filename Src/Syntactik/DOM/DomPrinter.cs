@@ -39,7 +39,7 @@ namespace Syntactik.DOM
         }
 
 
-        public char QuoteTypeToChar(int quoteType)
+        char QuoteTypeToChar(int quoteType)
         {
             switch (quoteType)
             {

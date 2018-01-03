@@ -57,7 +57,7 @@ namespace Syntactik.Compiler.Generator
             _readerDelegate = readerDelegate;
             _generateComments = generateComments;
         }
-        
+
         public override void OnModule(DOM.Module module)
         {
             Visit(module.NamespaceDefinitions);

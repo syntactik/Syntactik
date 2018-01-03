@@ -27,7 +27,7 @@ namespace Syntactik.PerformanceTests
 
             var parser = new Parser(new InputStream(code), new PairFactory(), new DOM.Module {Name = "Module" });
             var t1 = Environment.TickCount;
-            var m = parser.ParseModule("");
+            var m = parser.ParseModule();
             var t2 = Environment.TickCount;
 
             TestContext.WriteLine("ParseModule Time: {0}", t2 - t1);

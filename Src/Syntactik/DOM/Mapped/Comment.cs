@@ -17,18 +17,38 @@
 #endregion
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Represent a <see cref="DOM.Comment"/> node mapped to the source code.
+    /// </summary>
     public class Comment : DOM.Comment, IMappedPair
     {
         /// <summary>
-        /// 1 - singleline comment
-        /// 2 - multiline comment
+        /// Type of the comment:
+        /// 1 - single-line comment,
+        /// 2 - multi-line comment.
         /// </summary>
         public int CommentType { get; set; }
+        /// <summary>
+        /// <see cref="Interval"/> used to define name of the pair. Always empty for <see cref="Comment"/>.
+        /// </summary>
         public Interval NameInterval { get; set; }
+        /// <inheritdoc />
         public Interval ValueInterval { get; set; }
+        /// <summary>
+        /// <see cref="Interval"/> used to define pair delimiter. Always empty for <see cref="Comment"/>.
+        /// </summary>
         public Interval DelimiterInterval { get; set; }
+        /// <summary>
+        /// Type of the pair value. Always <see cref="Mapped.ValueType.None"/> for <see cref="Comment"/>.
+        /// </summary>
         public ValueType ValueType { get; set; }
+        /// <summary>
+        /// True if pair has a literal value or pair value. Always <b>true</b>> for <see cref="Comment"/>.
+        /// </summary>
         public bool IsValueNode => true;
+        /// <summary>
+        /// Indent of pair value. Always 0 for <see cref="Comment"/>.
+        /// </summary>
         public int ValueIndent { get; set; }
     }
 }

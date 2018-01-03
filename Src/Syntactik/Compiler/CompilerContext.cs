@@ -22,13 +22,39 @@ using System.Collections.Generic;
 
 namespace Syntactik.Compiler
 {
+    /// <summary>
+    /// Represent a current state of compilation.
+    /// </summary>
     public class CompilerContext
     {
-        public CompileUnit CompileUnit { get; private set; }
-        public CompilerParameters Parameters { get; private set; }
+        /// <summary>
+        /// Root DOM object of the compilation session. Stores list of all compiled <see cref="Module">modules</see>.
+        /// </summary>
+        public CompileUnit CompileUnit { get; }
+
+        /// <summary>
+        /// Compiler parameters of the session.
+        /// </summary>
+        public CompilerParameters Parameters { get; }
+
+        /// <summary>
+        /// <see cref="Hashtable"/> used to store session variables.
+        /// </summary>
         public Hashtable Properties { get; }
+        /// <summary>
+        /// <see cref="Dictionary{TKey,TValue}"/> used to store output compilation objects.
+        /// </summary>
         public Dictionary<string, object> InMemoryOutputObjects { get; set; }
+        /// <summary>
+        /// List of compiler errors.
+        /// </summary>
         public SortedSet<CompilerError> Errors { get; }
+        /// <summary>
+        /// Creates instance of <see cref="CompilerContext"/>.
+        /// </summary>
+        /// <param name="parameters">Compiler parameters of the session</param>
+        /// <param name="compileUnit">Compiler unit of the session.</param>
+        
         public CompilerContext(CompilerParameters parameters, CompileUnit compileUnit)
         {
             Parameters = parameters;
@@ -36,7 +62,10 @@ namespace Syntactik.Compiler
             Properties = new Hashtable();
             Errors = new SortedSet<CompilerError>();            
         }
-
+        /// <summary>
+        /// Adds <see cref="CompilerError"/> to the <see cref="CompilerContext"/>.
+        /// </summary>
+        /// <param name="error"></param>
         public void AddError(CompilerError error)
         {
             if (Errors.Count >= 1000)

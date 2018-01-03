@@ -68,7 +68,7 @@ namespace Syntactik.Compiler.Steps
                 Parser parser = GetParser(module, new InputStream(reader.ReadToEnd()));
                 var errorListener = new ErrorListener(_context, fileName);
                 parser.ErrorListeners.Add(errorListener);
-                parser.ParseModule(fileName);
+                parser.ParseModule();
             }
             catch (Exception ex)
             {

@@ -19,22 +19,44 @@ using System.Collections.Generic;
 
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Represents <see cref="DOM.Parameter"/> mapped to the source code.
+    /// </summary>
     public class Parameter: DOM.Parameter, IMappedPair, IPairWithInterpolation
     {
+        /// <inheritdoc />
         public Interval NameInterval { get; set; }
+
+        /// <inheritdoc />
         public Interval ValueInterval { get; set; }
+
+        /// <inheritdoc />
         public Interval DelimiterInterval { get; set; }
+
+        /// <inheritdoc />
         public ValueType ValueType { get; set; }
+
+        /// <inheritdoc />
         public virtual bool IsValueNode { get; set; }
+        /// <summary>
+        /// <see cref="AliasDefinition"/> where the parameter is defined.
+        /// </summary>
         public AliasDefinition AliasDefinition { get; set; }
+
+        /// <inheritdoc />
         public List<object> InterpolationItems { get; set; }
+
+        /// <inheritdoc />
         public int ValueIndent { get; set; }
 
+        /// <inheritdoc />
         public override void InitializeParent(Pair parent)
         {
             base.InitializeParent(parent);
-            IsValueNode = Parent.Delimiter == DelimiterEnum.EC || Parent.Delimiter == DelimiterEnum.CE;
+            IsValueNode = Parent?.Delimiter == DelimiterEnum.EC || Parent?.Delimiter == DelimiterEnum.CE;
         }
+
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             if (Delimiter == DelimiterEnum.EC)
