@@ -21,8 +21,17 @@ using Syntactik.IO;
 
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents location of the character in the <see cref="Module"/> (file).
+    /// </summary>
     public class CharLocation: IEquatable<CharLocation>, IComparable<CharLocation>
     {
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="line">Line number (starts from 1).</param>
+        /// <param name="column">Column number (starts from 1).</param>
+        /// <param name="index">Index of character in the file (starts from 0).</param>
         public CharLocation(int line, int column, int index)
         {
             Index = index;
@@ -30,6 +39,10 @@ namespace Syntactik.DOM
             Column = column;
         }
 
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="input">Instance of <see cref="ICharStream"/> used for initialization.</param>
         public CharLocation(ICharStream input)
         {
             Index = input.Index;
@@ -37,17 +50,26 @@ namespace Syntactik.DOM
             Column = input.Column;
         }
 
-        static CharLocation()
-        {
-            Empty = new CharLocation(0, 0, -1);
-        }
 
-        public static CharLocation Empty;
+        /// <summary>
+        /// Singleton instance of <see cref="CharLocation"/> representing "Empty" value.
+        /// </summary>
+        public static readonly CharLocation Empty = new CharLocation(0, 0, -1);
 
+        /// <summary>
+        /// Index of character in the file (starts from 0).
+        /// </summary>
         public int Index;
+        /// <summary>
+        /// Line number (starts from 1).
+        /// </summary>
         public int Line;
+        /// <summary>
+        /// Column number (starts from 1).
+        /// </summary>
         public int Column;
 
+        /// <inheritdoc />
         public int CompareTo(CharLocation other)
         {
             int num = Line.CompareTo(other.Line);
@@ -64,6 +86,7 @@ namespace Syntactik.DOM
             return other != null && Line == other.Line && Column == other.Column;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return $"({Line},{Column},{Index})";

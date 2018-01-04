@@ -21,27 +21,47 @@ using System.Linq;
 
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Represents <see cref="DOM.AliasDefinition"/> mapped to the source code.
+    /// </summary>
     public class AliasDefinition : DOM.AliasDefinition, IMappedPair, IPairWithInterpolation
     {
         private List<Parameter> _parameters;
 
+        /// <inheritdoc />
         public AliasDefinition()
         {
             SyncTime = DateTime.Now.Ticks;
         }
 
+        /// <inheritdoc />
         public Interval NameInterval { get; set; }
-        public Interval ValueInterval { get; set; }
-        public Interval DelimiterInterval { get; set; }
-        public ValueType ValueType { get; set; }
-        public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
-        public List<object> InterpolationItems { get; set; }
-        public int ValueIndent { get; set; }
-        public long SyncTime { get; set; } //This field is used in completion.
 
+        /// <inheritdoc />
+        public Interval ValueInterval { get; set; }
+
+        /// <inheritdoc />
+        public Interval DelimiterInterval { get; set; }
+
+        /// <inheritdoc />
+        public ValueType ValueType { get; set; }
+
+        /// <inheritdoc />
+        public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
+
+        /// <inheritdoc />
+        public List<object> InterpolationItems { get; set; }
+
+        /// <inheritdoc />
+        public int ValueIndent { get; set; }
+        internal long SyncTime { get; set; } //This field is used in completion.
+
+        /// <summary>
+        /// List of <see cref="DOM.Parameter"/> defined in the <see cref="DOM.AliasDefinition"/>
+        /// </summary>
         public List<Parameter> Parameters
         {
-            get { return _parameters ?? (_parameters = new List<Parameter>()); }
+            get => _parameters ?? (_parameters = new List<Parameter>());
             set
             {
                 if (_parameters != null && value != _parameters)
@@ -50,10 +70,21 @@ namespace Syntactik.DOM.Mapped
                 }
             }
         }
+        /// <summary>
+        /// True if <see cref="DOM.AliasDefinition"/> has a default block parameter.
+        /// </summary>
         public bool HasDefaultBlockParameter { get; set; }
+        /// <summary>
+        /// True if <see cref="DOM.AliasDefinition"/> has a default value parameter.
+        /// </summary>
         public bool HasDefaultValueParameter { get; set; }
+
+        /// <summary>
+        /// True if <see cref="DOM.AliasDefinition"/> has a circular reference.
+        /// </summary>
         public bool HasCircularReference { get; set; }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             if (child is NamespaceDefinition)

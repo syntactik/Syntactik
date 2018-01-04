@@ -68,7 +68,7 @@ namespace Syntactik.DOM
         #region  Methods
         public override void Accept(IDomVisitor visitor)
         {
-            visitor.OnModule(this);
+            visitor.Visit(this);
         }
 
         public Module(): base(DelimiterEnum.C)

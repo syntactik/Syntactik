@@ -27,15 +27,22 @@ namespace Syntactik.Compiler.IO
     {
         private readonly string _fname;
 
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="fname">Full path name.</param>
         public FileInput(string fname)
         {
-            if (null == fname)
-                throw new ArgumentNullException(nameof(fname));
-            _fname = fname;
+            _fname = fname ?? throw new ArgumentNullException(nameof(fname));
         }
 
+        /// <summary>
+        /// Full path name.
+        /// </summary>
         public string Name => _fname;
 
+
+        /// <inheritdoc />
         public System.IO.TextReader Open()
         {
             try

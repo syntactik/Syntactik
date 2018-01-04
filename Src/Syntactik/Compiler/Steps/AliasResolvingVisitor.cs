@@ -1,4 +1,5 @@
 ﻿#region license
+
 // Copyright © 2017 Maxim O. Trushin (trushin@gmail.com)
 //
 // This file is part of Syntactik.
@@ -14,6 +15,7 @@
 
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
+
 #endregion
 
 using System;
@@ -23,7 +25,6 @@ using System.Text;
 using Syntactik.DOM;
 using Syntactik.DOM.Mapped;
 using Alias = Syntactik.DOM.Mapped.Alias;
-using Argument = Syntactik.DOM.Argument;
 using Attribute = Syntactik.DOM.Attribute;
 using Document = Syntactik.DOM.Mapped.Document;
 using Element = Syntactik.DOM.Mapped.Element;
@@ -33,15 +34,32 @@ using ValueType = Syntactik.DOM.Mapped.ValueType;
 
 namespace Syntactik.Compiler.Steps
 {
-    public class AliasResolvingVisitor : SyntactikDepthFirstVisitor
+    /// <summary>
+    /// <see cref="AliasResolvingVisitor"/> resolves and visits nodes defined in aliases. Attributes are resolved prior to elements.
+    /// </summary>
+    public abstract class AliasResolvingVisitor : SyntactikDepthFirstVisitor
     {
-
         private Stack<Alias> _aliasContext;
         private Stack<Scope> _scopeContext;
-        protected CompilerContext Context;
-        protected Document _currentDocument;
+
+        /// <summary>
+        /// Provides access to <see cref="CompilerContext"/>.
+        /// </summary>
+        protected CompilerContext Context { get; set; }
+
+        /// <summary>
+        /// Property is used to keep track of current visiting <see cref="DOM.Document"/>.
+        /// </summary>
+        protected Document CurrentDocument { get; set; }
+
+        /// <summary>
+        /// Provides access to services of <see cref="NamespaceResolver"/>.
+        /// </summary>
         protected readonly NamespaceResolver NamespaceResolver;
 
+        /// <summary>
+        /// Keeps track of nested <see cref="Alias">aliases</see>.
+        /// </summary>
         protected Stack<Alias> AliasContext
         {
             get
@@ -50,11 +68,13 @@ namespace Syntactik.Compiler.Steps
 
                 _aliasContext = new Stack<Alias>();
                 _aliasContext.Push(null);
-
                 return _aliasContext;
             }
         }
 
+        /// <summary>
+        /// Keeps track of nested <see cref="Scope">namespace scopes</see>.
+        /// </summary>
         protected Stack<Scope> ScopeContext
         {
             get
@@ -67,34 +87,45 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
-        public AliasResolvingVisitor(CompilerContext context)
+        /// <summary>
+        /// Creates instances of <see cref="AliasResolvingVisitor"/>.
+        /// </summary>
+        /// <param name="context">Instance of <see cref="CompilerContext"/>.</param>
+        protected AliasResolvingVisitor(CompilerContext context)
         {
             Context = context;
-            NamespaceResolver = (NamespaceResolver)context.Properties["NamespaceResolver"];
+            NamespaceResolver = (NamespaceResolver) context.Properties["NamespaceResolver"];
         }
 
-
-        protected string ResolveNodeValue(IMappedPair pair, out ValueType valueType)
+        /// <summary>
+        /// Resolves literal value of the pair.
+        /// </summary>
+        /// <param name="pair"><see cref="Pair"/> with the literal value.</param>
+        /// <param name="valueType">Calculated type of the value.</param>
+        /// <returns>String representing literal value of the pair.</returns>
+        protected string ResolvePairValue(IMappedPair pair, out ValueType valueType)
         {
-            if (pair.ValueType != ValueType.DoubleQuotedString && 
+            if (pair.ValueType != ValueType.DoubleQuotedString &&
                 pair.ValueType != ValueType.Concatenation)
             {
                 if (((Pair) pair).PairValue != null)
                 {
-                    return ResolvePairValue(((Pair)pair).PairValue, out valueType);
+                    return ResolvePairValue(((Pair) pair).PairValue, out valueType);
                 }
                 valueType = pair.ValueType;
                 return ((Pair) pair).Delimiter != DelimiterEnum.None ? ((Pair) pair).Value : ((Pair) pair).Name;
             }
 
             return ResolveValueInInterpolation(pair, out valueType);
-
         }
 
-        protected virtual string ResolveChoiceValue(Pair pair, out ValueType valueType)
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// Method is called for pair with literal choice delimiter <b>=::</b>.
+        /// </summary>
+        /// <param name="pair">Pair with literal choice delimiter</param>
+        /// <param name="valueType">Literal value type of the resolved case.</param>
+        /// <returns>String representing resolved literal value of the pair.</returns>
+        protected abstract string ResolveChoiceValue(Pair pair, out ValueType valueType);
 
         private string ResolveValueInInterpolation(IMappedPair node, out ValueType valueType)
         {
@@ -106,11 +137,9 @@ namespace Syntactik.Compiler.Steps
             {
                 foreach (var item in ((IPairWithInterpolation) node).InterpolationItems)
                 {
-                    var escapeMatch = item as EscapeMatch;
-                    if (escapeMatch != null)
+                    if (item is EscapeMatch escapeMatch)
                     {
-                        var match = escapeMatch as EolEscapeMatch;
-                        if (match != null)
+                        if (escapeMatch is EolEscapeMatch match)
                         {
                             ResolveDqsEol(match, sb, node.ValueIndent, previousLine);
                             eolCount++;
@@ -127,24 +156,21 @@ namespace Syntactik.Compiler.Steps
 
                     if (eolCount == 1) sb.Append(" ");
                     eolCount = 0;
-                    var alias = item as Alias;
-                    if (alias != null)
+                    if (item is Alias alias)
                     {
-                        sb.Append((string) ResolveValueAlias(alias, out valueType));
+                        sb.Append(ResolveValueAlias(alias, out valueType));
                         previousLine = item;
                         continue;
                     }
-                    var param = item as Parameter;
-                    if (param != null)
+                    if (item is Parameter param)
                     {
-                        sb.Append((string) ResolveValueParameter(param, out valueType));
+                        sb.Append(ResolveValueParameter(param, out valueType));
                         previousLine = item;
                         continue;
                     }
-                    var element = item as Element;
-                    if (element != null)
+                    if (item is Element element)
                     {
-                        sb.Append((string) ResolveNodeValue(element, out valueType));
+                        sb.Append(ResolvePairValue(element, out valueType));
                         previousLine = item;
                         continue;
                     }
@@ -152,26 +178,36 @@ namespace Syntactik.Compiler.Steps
                     sb.Append(item);
                     previousLine = item;
                 }
-                if (((IPairWithInterpolation)node).InterpolationItems.Count > 1)
-                    valueType = node.ValueType; //restore default value if there are more then 1 interp. items
+                if (((IPairWithInterpolation) node).InterpolationItems.Count > 1)
+                    valueType = node.ValueType; //restore default value if there are more then 1 interpolation items
             }
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Resolves escape sequence 
+        /// </summary>
+        /// <param name="escapeMatch">Escape sequence wrapper class instance.</param>
+        /// <param name="sb"><see cref="StringBuilder"/> used to build the literal value of the pair.</param>
         protected virtual void ResolveDqsEscape(EscapeMatch escapeMatch, StringBuilder sb)
         {
             char c = ResolveDqsEscapeChar(escapeMatch);
             sb.Append(c);
         }
 
+        /// <summary>
+        /// Converts <see cref="EscapeMatch"/> to <see cref="char"/>.
+        /// </summary>
+        /// <param name="escapeMatch">Escape sequence wrapper class instance.</param>
+        /// <returns>Result char.</returns>
         protected char ResolveDqsEscapeChar(EscapeMatch escapeMatch)
         {
             var text = escapeMatch.Value;
-            if (text[0] == '$') return ResolveDqsEscapeCode(escapeMatch);
 
             //This is EscSeq
             switch (text[1])
-            {   //'$'|'b'|'f'|'n'|'r'|'t'|'v'
+            {
+                //'$'|'b'|'f'|'n'|'r'|'t'|'v'
                 case '"':
                 case '\'':
                 case '\\':
@@ -179,36 +215,31 @@ namespace Syntactik.Compiler.Steps
                 case '$':
                     return text[1];
                 case 'b':
-                    return (char)8;
+                    return (char) 8;
                 case 'f':
-                    return (char)0xC;
+                    return (char) 0xC;
                 case 'n':
-                    return (char)0xA;
+                    return (char) 0xA;
                 case 'r':
-                    return (char)0xD;
+                    return (char) 0xD;
                 case 't':
-                    return (char)0x9;
+                    return (char) 0x9;
                 case 'v':
-                    return (char)0xB;
+                    return (char) 0xB;
                 case 'u':
                     return Convert.ToChar(Convert.ToUInt32(text.Substring(2), 16));
-
             }
-
-            return (char)0;//should never reach this code if lexer works correctly
+            return (char) 0; //should never reach this code if parser works correctly
         }
 
-        protected char ResolveDqsEscapeCode(EscapeMatch escapeMatch)
-        {
-            var code = escapeMatch.Value.TrimStart('$', '(', '\t', ' ').TrimEnd(')', '\t', ' ');
-
-            if (code[0] != '#') return (char)int.Parse(code);
-            return Convert.ToChar(Convert.ToUInt32(code.Substring(1), 16));
-        }
-
+        /// <summary>
+        /// Resolves literal value of <see cref="Alias"/>.
+        /// </summary>
+        /// <param name="alias">Instance of <see cref="Alias"/>.</param>
+        /// <param name="valueType">Value type of the resolved literal.</param>
+        /// <returns>String representing literal value of the <see cref="Alias"/>.</returns>
         protected string ResolveValueAlias(Alias alias, out ValueType valueType)
         {
-            //var aliasDef = NamespaceResolver.GetAliasDefinition(alias.Name);
             var aliasDef = alias.AliasDefinition;
 
             AliasContext.Push(alias);
@@ -219,18 +250,18 @@ namespace Syntactik.Compiler.Steps
                 result = ResolveChoiceValue(alias, out valueType);
             }
             else
-                result = aliasDef.PairValue == null ? ResolveNodeValue(aliasDef, out valueType) : ResolvePairValue(aliasDef.PairValue, out valueType);
+                result = aliasDef.PairValue == null
+                    ? ResolvePairValue(aliasDef, out valueType)
+                    : ResolvePairValue(aliasDef.PairValue, out valueType);
 
             AliasContext.Pop();
 
             return result;
         }
 
-
         private string ResolvePairValue(object pairValue, out ValueType valueType)
         {
-            var value = pairValue as Parameter;
-            if (value != null)
+            if (pairValue is Parameter value)
             {
                 return ResolveValueParameter(value, out valueType);
             }
@@ -240,10 +271,14 @@ namespace Syntactik.Compiler.Steps
             return alias != null ? ResolveValueAlias(alias, out valueType) : null;
         }
 
+        /// <summary>
+        /// Resolves literal value of the <see cref="Pair"/>.
+        /// </summary>
+        /// <param name="pair">Instance of <see cref="Pair"/>.</param>
+        /// <returns>True if literal value was successfully resolved.</returns>
         protected bool ResolveValue(Pair pair)
         {
-            var attr = pair as DOM.Attribute;
-            if (attr != null && attr.NsPrefix == "xsi" && attr.Name == "type")
+            if (pair is Attribute attr && attr.NsPrefix == "xsi" && attr.Name == "type")
             {
                 ResolveTypeAttribute(attr);
                 return true;
@@ -252,26 +287,28 @@ namespace Syntactik.Compiler.Steps
             if (pair.Delimiter == DelimiterEnum.EC)
             {
                 ResolveConcatenation(pair);
-                return true;                
+                return true;
             }
+
+            ValueType valueType;
             //Write element's value
             object value = pair.PairValue as Parameter;
-            ValueType valueType;
+
             if (value != null)
             {
-                OnValue(ResolveValueParameter((Parameter)value, out valueType), valueType);
+                OnValue(ResolveValueParameter((Parameter) value, out valueType), valueType);
                 return true;
             }
 
             value = pair.PairValue as Alias;
             if (value != null)
             {
-                OnValue(ResolveValueAlias((Alias)value, out valueType), valueType);
+                OnValue(ResolveValueAlias((Alias) value, out valueType), valueType);
                 return true;
             }
-            if (((IMappedPair)pair).IsValueNode)
+            if (((IMappedPair) pair).IsValueNode)
             {
-                OnValue(ResolveNodeValue((IMappedPair)pair, out valueType), valueType);
+                OnValue(ResolvePairValue((IMappedPair) pair, out valueType), valueType);
                 return true;
             }
 
@@ -284,7 +321,7 @@ namespace Syntactik.Compiler.Steps
             var typeInfo = attribute.Value?.Split(':');
             if (!(typeInfo?.Length > 1)) return;
             var nsPrefix = typeInfo[0];
-            NamespaceResolver.GetPrefixAndNs(nsPrefix, attribute, _currentDocument, out var prefix, out var _);
+            NamespaceResolver.GetPrefixAndNs(nsPrefix, attribute, CurrentDocument, out var prefix, out var _);
             OnValue($"{prefix}:{typeInfo[1]}", ValueType.FreeOpenString);
         }
 
@@ -304,17 +341,18 @@ namespace Syntactik.Compiler.Steps
                 object value = item as Parameter;
                 if (value != null)
                 {
-                    sb.Append((string) ResolveValueParameter((Parameter) value, out valueType));
+                    sb.Append(ResolveValueParameter((Parameter) value, out valueType));
                 }
                 else
                 {
                     value = item as Alias;
                     if (value != null)
                     {
-                        sb.Append((string) ResolveValueAlias((Alias)value, out valueType));
-                    } else if (((IMappedPair)item).IsValueNode)
+                        sb.Append(ResolveValueAlias((Alias) value, out valueType));
+                    }
+                    else if (((IMappedPair) item).IsValueNode)
                     {
-                        sb.Append((string) ResolveNodeValue((IMappedPair)item, out valueType));
+                        sb.Append(ResolvePairValue((IMappedPair) item, out valueType));
                     }
                 }
                 resultValueType = resultValueType == ValueType.None ? valueType : ValueType.Concatenation;
@@ -323,10 +361,21 @@ namespace Syntactik.Compiler.Steps
             OnValue(sb.ToString(), resultValueType);
         }
 
+        /// <summary>
+        /// Method called when the value of the current pair is resolved.
+        /// </summary>
+        /// <param name="value">String representing the value of the current pair.</param>
+        /// <param name="type">Type of value.</param>
         public virtual void OnValue(string value, ValueType type)
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <param name="valueType"></param>
+        /// <returns></returns>
         protected string ResolveValueParameter(Parameter parameter, out ValueType valueType)
         {
             var aliasContext = GetAliasContextForParameter(parameter);
@@ -338,25 +387,25 @@ namespace Syntactik.Compiler.Steps
                 {
                     return ResolvePairValue(aliasContext.PairValue, out valueType);
                 }
-                return ResolveNodeValue(aliasContext, out valueType);
+                return ResolvePairValue(aliasContext, out valueType);
             }
 
 
-            var argument = Enumerable.FirstOrDefault<Argument>(aliasContext.Arguments, a => a.Name == parameter.Name);
+            var argument = aliasContext.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
             if (argument != null)
             {
                 if (argument.PairValue != null)
                 {
                     return ResolvePairValue(argument.PairValue, out valueType);
                 }
-                valueType = ((IMappedPair)argument).ValueType;
+                valueType = ((IMappedPair) argument).ValueType;
                 return argument.Value;
             }
 
             //if argument is not found lookup default value in the Alias Definition
             //var paramDef = aliasContext.AliasDefinition.Parameters.First(p => p.Name == parameter.Name);
 
-            //If parameteres default value is Parameter or Alias then resolve it
+            //If parameters default value is Parameter or Alias then resolve it
             if (parameter.PairValue != null)
             {
                 return ResolvePairValue(parameter.PairValue, out valueType);
@@ -371,7 +420,7 @@ namespace Syntactik.Compiler.Steps
         /// Go through all entities and resolve attributes for the current node.
         /// </summary>
         /// <param name="entities">List of entities. Looking for alias or parameter because they potentially can hold the attributes.</param>
-        protected void ResolveAttributes(IEnumerable<DOM.Entity> entities)
+        protected void ResolveAttributes(IEnumerable<Entity> entities)
         {
             foreach (var entity in entities)
             {
@@ -390,13 +439,17 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
+        /// <summary>
+        /// Resolves attributes in <see cref="Parameter"/>. Elements are ignored.
+        /// </summary>
+        /// <param name="parameter">Instance of <see cref="Parameter"/>.</param>
         protected void ResolveAttributesInParameter(Parameter parameter)
         {
             var aliasContext = GetAliasContextForParameter(parameter);
 
             if (aliasContext == null) return;
 
-            var argument = Enumerable.FirstOrDefault<Argument>(aliasContext.Arguments, a => a.Name == parameter.Name);
+            var argument = aliasContext.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
             ResolveAttributes(argument != null ? argument.Entities : parameter.Entities);
         }
 
@@ -410,6 +463,10 @@ namespace Syntactik.Compiler.Steps
             return null;
         }
 
+        /// <summary>
+        /// Resolves attributes in <see cref="Alias"/>. Elements are ignored.
+        /// </summary>
+        /// <param name="alias">Instance of <see cref="Alias"/>.</param>
         protected void ResolveAttributesInAlias(Alias alias)
         {
             var aliasDef = alias.AliasDefinition;
@@ -429,9 +486,6 @@ namespace Syntactik.Compiler.Steps
         ///// The first newline symbol is ignored because DQS is "folded" string. 
         ///// If there are only one new line symbol in SQS_EOL then it is ignored.
         ///// </summary>
-        ///// <param name="token"></param>
-        ///// <param name="valueIndent"></param>
-        ///// <returns></returns>
         private static void ResolveDqsEol(EolEscapeMatch escapeMatch, StringBuilder sb, int indent, object previousLine)
         {
             var value = escapeMatch.Value.TrimStart('\r', '\n');
@@ -462,34 +516,36 @@ namespace Syntactik.Compiler.Steps
             return;
         }
 
-
-
-        public override void OnScope(DOM.Scope pair)
+        /// <inheritdoc />
+        public override void Visit(DOM.Scope pair)
         {
             ScopeContext.Push((Scope) pair);
-            base.OnScope(pair);
+            base.Visit(pair);
             ScopeContext.Pop();
         }
 
-        public override void OnElement(DOM.Element pair)
+        /// <inheritdoc />
+        public override void Visit(DOM.Element pair)
         {
             ResolveAttributes(pair.Entities);
             Visit(pair.Entities.Where(e => !(e is DOM.Attribute)));
         }
 
-        public override void OnAlias(DOM.Alias alias)
+        /// <inheritdoc />
+        public override void Visit(DOM.Alias alias)
         {
-            var aliasDef = ((Alias)alias).AliasDefinition;
+            var aliasDef = ((Alias) alias).AliasDefinition;
 
             //Do not resolve alias without AliasDef or having circular reference
             if (aliasDef == null || aliasDef.HasCircularReference) return;
 
             AliasContext.Push((Alias) alias);
-            Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
+            Visit(aliasDef.Entities.Where(e => !(e is Attribute)));
             AliasContext.Pop();
         }
 
-        public override void OnParameter(DOM.Parameter parameter)
+        /// <inheritdoc />
+        public override void Visit(DOM.Parameter parameter)
         {
             var aliasContext = GetAliasContextForParameter((Parameter) parameter);
 
@@ -497,16 +553,18 @@ namespace Syntactik.Compiler.Steps
 
             if (parameter.Name == "_") //Default parameter. Value is passed in the body of the alias
             {
-                Visit(Enumerable.Where<Entity>(aliasContext.Entities, e => !(e is DOM.Attribute) && !(e is DOM.Comment)));
+                Visit(aliasContext.Entities.Where(e => !(e is Attribute) && !(e is DOM.Comment)));
                 return;
             }
 
-            var argument = Enumerable.FirstOrDefault<Argument>(aliasContext.Arguments, a => a.Name == parameter.Name);
+            var argument = aliasContext.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
 
-            Visit(argument?.Entities.Where(e => !(e is DOM.Attribute)) ?? parameter.Entities.Where(e => !(e is DOM.Attribute)));
+            Visit(argument?.Entities.Where(e => !(e is DOM.Attribute)) ??
+                  parameter.Entities.Where(e => !(e is DOM.Attribute)));
         }
 
-        public override void OnAliasDefinition(DOM.AliasDefinition node)
+        /// <inheritdoc />
+        public override void Visit(DOM.AliasDefinition node)
         {
             //Doing nothing for Alias Definition        
         }

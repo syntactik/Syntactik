@@ -54,10 +54,9 @@ namespace Syntactik.Compiler.Generator
         public JsonGenerator(Func<string, JsonWriter> writerDelegate, CompilerContext context):base(context)
         {
             _writerDelegate = writerDelegate;
-            Context = context;
         }
 
-        public override void OnModule(DOM.Module module)
+        public override void Visit(DOM.Module module)
         {
             Visit(module.NamespaceDefinitions);
             Visit(module.Members.Where(
@@ -67,16 +66,16 @@ namespace Syntactik.Compiler.Generator
                 );
         }
 
-        public override void OnDocument(Document document)
+        public override void Visit(Document document)
         {
-            _currentDocument = (DOM.Mapped.Document) document;
-            _choiceStack.Push(_currentDocument.ChoiceInfo);
+            CurrentDocument = (DOM.Mapped.Document) document;
+            _choiceStack.Push(CurrentDocument.ChoiceInfo);
 
             using (_jsonWriter = _writerDelegate(document.Name))
             {
                 _blockStart = true;
                 _blockState = new Stack<BlockState>();
-                base.OnDocument(document);
+                base.Visit(document);
 
                 if (_blockState.Count > 0)
                 {
@@ -105,7 +104,7 @@ namespace Syntactik.Compiler.Generator
                 }
             }
             _choiceStack.Pop();
-            _currentDocument = null;
+            CurrentDocument = null;
         }
 
         protected bool EnterChoiceContainer(DOM.Mapped.Alias alias, PairCollection<Entity> entities)
@@ -150,7 +149,7 @@ namespace Syntactik.Compiler.Generator
             if (choice.Children != null)
             {
                 _choiceStack.Push(choiceInfo.Children[0]);
-                result = ResolveNodeValue((IMappedPair) choiceInfo.Children[0].ChoiceNode, out valueType);
+                result = ResolvePairValue((IMappedPair) choiceInfo.Children[0].ChoiceNode, out valueType);
                 _choiceStack.Pop();
             }
             if (choice.ChoiceNode != pair)
@@ -177,15 +176,13 @@ namespace Syntactik.Compiler.Generator
                 return;
             }
 
-            bool boolValue;
-            if (type == ValueType.Boolean && bool.TryParse(value, out boolValue))
+            if (type == ValueType.Boolean && bool.TryParse(value, out var boolValue))
             {
                 _jsonWriter.WriteValue(boolValue);
             }
             else
             {
-                decimal numberValue;
-                if (type == ValueType.Number && decimal.TryParse(value, out numberValue))
+                if (type == ValueType.Number && decimal.TryParse(value, out var numberValue))
                 {
                     if (numberValue % 1 == 0)
                         _jsonWriter.WriteValue((long) numberValue);
@@ -198,7 +195,7 @@ namespace Syntactik.Compiler.Generator
             }
         }
 
-        public override void OnAttribute(Attribute pair)
+        public override void Visit(Attribute pair)
         {
             CheckBlockStart(pair);
 
@@ -206,7 +203,7 @@ namespace Syntactik.Compiler.Generator
             ResolveValue(pair);
         }
 
-        public override void OnElement(Element element)
+        public override void Visit(Element element)
         {
             CheckBlockStart(element);
 
@@ -218,7 +215,7 @@ namespace Syntactik.Compiler.Generator
             //Working with node's block
             _blockStart = true;
             var prevBlockStateCount = _blockState.Count;
-            base.OnElement(element);
+            base.Visit(element);
 
             _blockStart = false;
 
@@ -247,14 +244,13 @@ namespace Syntactik.Compiler.Generator
             }
         }
 
-        public override void OnAlias(Alias alias)
+        public override void Visit(Alias alias)
         {
             var aliasDef = ((DOM.Mapped.Alias)alias).AliasDefinition;
             if (aliasDef.IsValueNode)
             {
                 CheckBlockStartForAlias();
-                ValueType valueType;
-                OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out valueType), valueType);
+                OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out var valueType), valueType);
             }
 
 

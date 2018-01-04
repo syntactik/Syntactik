@@ -15,7 +15,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+
+using Syntactik.DOM;
 using Syntactik.DOM.Mapped;
+using Alias = Syntactik.DOM.Mapped.Alias;
+using AliasDefinition = Syntactik.DOM.Mapped.AliasDefinition;
+using Document = Syntactik.DOM.Mapped.Document;
+using Element = Syntactik.DOM.Mapped.Element;
+using Parameter = Syntactik.DOM.Mapped.Parameter;
+using Scope = Syntactik.DOM.Mapped.Scope;
 
 namespace Syntactik.Compiler.Steps
 {
@@ -30,50 +38,50 @@ namespace Syntactik.Compiler.Steps
             _namespaceResolver = (NamespaceResolver)context.Properties["NamespaceResolver"];
         }
 
-        public override void OnModule(DOM.Module module)
+        public override void Visit(DOM.Module module)
         {
             _namespaceResolver.EnterModule(module);
-            base.OnModule(module);
+            base.Visit(module);
         }
 
-        public override void OnDocument(DOM.Document document)
+        public override void Visit(DOM.Document document)
         {
             _namespaceResolver.EnterDocument((Document) document);
             ProcessInterpolation((IPairWithInterpolation)document);
-            base.OnDocument(document);
+            base.Visit(document);
             Visit(document.PairValue);
         }
 
-        public override void OnAlias(DOM.Alias alias)
+        public override void Visit(DOM.Alias alias)
         {
             _namespaceResolver.ProcessAlias((Alias)alias);
             _namespaceResolver.AddAlias((Alias)alias);
             ProcessInterpolation((IPairWithInterpolation)alias);
-            base.OnAlias(alias);
+            base.Visit(alias);
             Visit(alias.PairValue);
         }
 
-        public override void OnParameter(DOM.Parameter parameter)
+        public override void Visit(DOM.Parameter parameter)
         {
             _namespaceResolver.ProcessParameter((Parameter) parameter);
             ProcessInterpolation((IPairWithInterpolation)parameter);
-            base.OnParameter(parameter);
+            base.Visit(parameter);
             Visit(parameter.PairValue);
         }
 
-        public override void OnAliasDefinition(DOM.AliasDefinition aliasDefinition)
+        public override void Visit(DOM.AliasDefinition aliasDefinition)
         {
             _namespaceResolver.EnterAliasDef((AliasDefinition) aliasDefinition);
             ProcessInterpolation((IPairWithInterpolation)aliasDefinition);
-            base.OnAliasDefinition(aliasDefinition);
+            base.Visit(aliasDefinition);
             Visit(aliasDefinition.PairValue);
         }
 
-        public override void OnElement(DOM.Element element)
+        public override void Visit(DOM.Element element)
         {
             _namespaceResolver.ProcessNsPrefix((IMappedPair) element);
             ProcessInterpolation((IPairWithInterpolation) element);
-            base.OnElement(element);
+            base.Visit(element);
             Visit(element.PairValue);
         }
 
@@ -86,49 +94,46 @@ namespace Syntactik.Compiler.Steps
             if (pair.InterpolationItems == null || pair.InterpolationItems.Count == 0) return;
             foreach (var item in pair.InterpolationItems)
             {
-                var alias = item as Alias;
-                if (alias != null)
+                if (item is Alias alias)
                 {
                     _namespaceResolver.ProcessAlias(alias);
                     _namespaceResolver.AddAlias(alias);
                     continue;
                 }
 
-                var param = item as DOM.Parameter;
-                if (param != null)
+                if (item is DOM.Parameter param)
                 {
                     _namespaceResolver.ProcessParameter((Parameter) param);
                     continue;
                 }
 
-                var element = item as Element;
-                if (element != null) Visit(element);
+                if (item is Element element) Visit((Pair) element);
             }
         }
 
-        public override void OnAttribute(DOM.Attribute attribute)
+        public override void Visit(DOM.Attribute attribute)
         {
             _namespaceResolver.ProcessNsPrefix((IMappedPair)attribute);
             ProcessInterpolation((IPairWithInterpolation)attribute);
-            base.OnAttribute(attribute);
+            base.Visit(attribute);
             Visit(attribute.PairValue);
         }
 
-        public override void OnArgument(DOM.Argument argument)
+        public override void Visit(DOM.Argument argument)
         {
             ProcessInterpolation((IPairWithInterpolation)argument);
-            base.OnArgument(argument);
+            base.Visit(argument);
             Visit(argument.PairValue);
         }
 
-        public override void OnNamespaceDefinition(DOM.NamespaceDefinition namespaceDefinition)
+        public override void Visit(DOM.NamespaceDefinition namespaceDefinition)
         {
             ProcessInterpolation((IPairWithInterpolation)namespaceDefinition);
-            base.OnNamespaceDefinition(namespaceDefinition);
+            base.Visit(namespaceDefinition);
             Visit(namespaceDefinition.PairValue);
         }
 
-        public override void OnScope(DOM.Scope scope)
+        public override void Visit(DOM.Scope scope)
         {
             _namespaceResolver.ProcessNsPrefix((IMappedPair)scope);
             if (!string.IsNullOrEmpty(scope.Name))
@@ -153,7 +158,7 @@ namespace Syntactik.Compiler.Steps
                 scope.Entities.Add(pair);
                 scope.Name = null;
             }
-            base.OnScope(scope);
+            base.Visit(scope);
             Visit(scope.PairValue);
         }
     }

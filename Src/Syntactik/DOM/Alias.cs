@@ -64,7 +64,7 @@ namespace Syntactik.DOM
         /// <param name="visitor">Visitor object.</param>
         public override void Accept(IDomVisitor visitor)
         {
-            visitor.OnAlias(this);
+            visitor.Visit(this);
         }
 
         /// <summary>

@@ -19,80 +19,107 @@ using System.Collections.Generic;
 
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Depth first implementation of DOM-visitor.
+    /// </summary>
     public class SyntactikDepthFirstVisitor : IDomVisitor
     {
-
-        public virtual void OnAlias(Alias alias)
+        /// <inheritdoc />
+        public virtual void Visit(Alias alias)
         {
             Visit(alias.Arguments);
             Visit(alias.Entities);
         }
 
-        public virtual void OnAliasDefinition(AliasDefinition aliasDefinition)
+        /// <inheritdoc />
+        public virtual void Visit(AliasDefinition aliasDefinition)
         {
             Visit(aliasDefinition.NamespaceDefinitions);
             Visit(aliasDefinition.Entities);
         }
 
-        public virtual void OnArgument(Argument argument)
+        /// <inheritdoc />
+        public virtual void Visit(Argument argument)
         {
             Visit(argument.Entities);
         }
 
-        public virtual void OnAttribute(Attribute attribute)
+        /// <inheritdoc />
+        public virtual void Visit(Attribute attribute)
         {
         }
 
-        public virtual void OnCompileUnit(CompileUnit compileUnit)
+        /// <inheritdoc />
+        public virtual void Visit(CompileUnit compileUnit)
         {
             Visit(compileUnit.Modules);
         }
-        public virtual void OnDocument(Document document)
+
+        /// <inheritdoc />
+        public virtual void Visit(Document document)
         {
             Visit(document.NamespaceDefinitions);
             Visit(document.Entities);
         }
 
-        public virtual void OnElement(Element element)
+        /// <inheritdoc />
+        public virtual void Visit(Element element)
         {
             Visit(element.Entities);
         }
 
-        public virtual void OnModule(Module module)
+        /// <inheritdoc />
+        public virtual void Visit(Module module)
         {
             Visit(module.NamespaceDefinitions);
             Visit(module.Members);
         }
 
-        public virtual void OnNamespaceDefinition(NamespaceDefinition namespaceDefinition)
+        /// <inheritdoc />
+        public virtual void Visit(NamespaceDefinition namespaceDefinition)
         {
         }
 
-        public virtual void OnScope(Scope scope)
+        /// <inheritdoc />
+        public virtual void Visit(Scope scope)
         {
             Visit(scope.Entities);
         }
 
+        /// <inheritdoc />
+        public virtual void Visit(Parameter parameter)
+        {
+            Visit(parameter.Entities);
+        }
+
+        /// <inheritdoc />
+        public virtual void Visit(Comment comment)
+        {
+        }
+
+        /// <summary>
+        /// Method is wrapping call to Accept method of every node.
+        /// </summary>
+        /// <param name="pair">Current visiting pair.</param>
         protected virtual void OnPair(Pair pair)
         {
             pair.Accept(this);
         }
 
-        public virtual void OnParameter(Parameter parameter)
-        {
-            Visit(parameter.Entities);
-        }
-
-        public virtual void OnComment(Comment comment)
-        {
-        }
-
+        /// <summary>
+        /// Tells visitor to visit a pair.
+        /// </summary>
+        /// <param name="pair"><see cref="Pair"/> to visit.</param>
         public void Visit(Pair pair)
         {
             if (pair == null) return;
             OnPair(pair);
         }
 
+        /// <summary>
+        /// Tells visitor to visit each pair in collection.
+        /// </summary>
+        /// <param name="items">Collection of pairs to visit.</param>
         public void Visit<T>(IEnumerable<T> items) where T : Pair
         {
             if (items == null) return;

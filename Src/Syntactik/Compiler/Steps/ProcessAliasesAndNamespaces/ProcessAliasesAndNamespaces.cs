@@ -57,7 +57,7 @@ namespace Syntactik.Compiler.Steps
             try
             {
                 var visitor = new ProcessAliasesAndNamespacesVisitor(context);
-                visitor.OnModule(module);
+                visitor.Visit(module);
             }
             catch (Exception ex)
             {

@@ -58,7 +58,7 @@ namespace Syntactik.Compiler.Generator
             _generateComments = generateComments;
         }
 
-        public override void OnModule(DOM.Module module)
+        public override void Visit(DOM.Module module)
         {
             Visit(module.NamespaceDefinitions);
             Visit(module.Members.Where(
@@ -68,11 +68,11 @@ namespace Syntactik.Compiler.Generator
                 );
         }
 
-        public override void OnDocument(DOM.Document document)
+        public override void Visit(DOM.Document document)
         {
-            _currentDocument = (Document) document;
+            CurrentDocument = (Document) document;
             _currentModuleMember = document;
-            _choiceStack.Push(_currentDocument.ChoiceInfo);
+            _choiceStack.Push(CurrentDocument.ChoiceInfo);
             Encoding encoding = Encoding.UTF8;
             if (_generateComments)
             {
@@ -84,7 +84,7 @@ namespace Syntactik.Compiler.Generator
                 WriteStartDocument(document);
                 _rootElementAdded = false;
                 LocationMap = new List<LexicalInfo>();
-                base.OnDocument(document);
+                base.Visit(document);
                 _xmlTextWriter.WriteEndDocument();
 
             }
@@ -96,7 +96,7 @@ namespace Syntactik.Compiler.Generator
             //var fileName = Path.Combine(_context.Parameters.OutputDirectory, node.Name + ".xml");
             validator.ValidateGeneratedFile(document.Name);
 
-            _currentDocument = null;
+            CurrentDocument = null;
             _currentModuleMember = null;
         }
 
@@ -178,7 +178,7 @@ namespace Syntactik.Compiler.Generator
             if (choice.Children != null)
             {
                 _choiceStack.Push(choiceInfo.Children[0]);
-                result = ResolveNodeValue((IMappedPair) choiceInfo.Children[0].ChoiceNode, out valueType);
+                result = ResolvePairValue((IMappedPair) choiceInfo.Children[0].ChoiceNode, out valueType);
                 _choiceStack.Pop();
             }
             if (choice.ChoiceNode != pair)
@@ -186,13 +186,12 @@ namespace Syntactik.Compiler.Generator
             return result;
         }
 
-        public override void OnElement(Element element)
+        public override void Visit(Element element)
         {
             //Getting namespace and prefix
-            string prefix, ns;
-            NamespaceResolver.GetPrefixAndNs(element, _currentDocument,
+            NamespaceResolver.GetPrefixAndNs(element, CurrentDocument,
                 () => ScopeContext.Peek(),
-                out prefix, out ns);
+                out var prefix, out var ns);
 
             if (string.IsNullOrEmpty(element.NsPrefix)) prefix = null; 
             //Starting Element
@@ -222,7 +221,7 @@ namespace Syntactik.Compiler.Generator
             }
 
             if (!ResolveValue(element) && !EnterChoiceContainer(element, element.Entities))
-                base.OnElement(element);
+                base.Visit(element);
 
             //End Element
             if (!string.IsNullOrEmpty(element.Name))
@@ -239,11 +238,9 @@ namespace Syntactik.Compiler.Generator
 
         private void WriteExplicitArrayItem(Element element)
         {
-            string prefix;
-            string ns;
-            NamespaceResolver.GetPrefixAndNs((INsNode) element.Parent, _currentDocument,
+            NamespaceResolver.GetPrefixAndNs((INsNode) element.Parent, CurrentDocument,
                 () => ScopeContext.Peek(),
-                out prefix, out ns);
+                out var prefix, out var ns);
             if (string.IsNullOrEmpty(element.NsPrefix)) prefix = null;
             _xmlTextWriter.WriteStartElement(prefix, element.Parent.Name, ns);
             AddLocationMapRecord(_currentModuleMember.Module.FileName, (IMappedPair) element);
@@ -255,15 +252,14 @@ namespace Syntactik.Compiler.Generator
                 pair.NameInterval.Begin.Column, pair.NameInterval.Begin.Index));
         }
 
-        public override void OnAlias(Alias alias)
+        public override void Visit(Alias alias)
         {
             var aliasDef = ((DOM.Mapped.Alias)alias).AliasDefinition;
             var prevCurrentModuleMember = _currentModuleMember;
             _currentModuleMember = aliasDef;
             if (aliasDef.IsValueNode)
             {
-                ValueType valueType;
-                OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out valueType), valueType);
+                OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out var valueType), valueType);
             }
             AliasContext.Push((DOM.Mapped.Alias) alias);
             if (!EnterChoiceContainer((DOM.Mapped.Alias) alias, aliasDef.Entities, aliasDef))
@@ -302,12 +298,12 @@ namespace Syntactik.Compiler.Generator
             );
         }
 
-        public override void OnAttribute(DOM.Attribute attribute)
+        public override void Visit(DOM.Attribute attribute)
         {
             string prefix = string.Empty, ns = string.Empty;
             if (!string.IsNullOrEmpty(attribute.NsPrefix))
             {
-                NamespaceResolver.GetPrefixAndNs(attribute, _currentDocument,
+                NamespaceResolver.GetPrefixAndNs(attribute, CurrentDocument,
                     () => ScopeContext.Peek(),
                     out prefix, out ns);
             }
@@ -321,7 +317,7 @@ namespace Syntactik.Compiler.Generator
             AddLocationMapRecord(_currentModuleMember.Module.FileName, (IMappedPair) attribute);
         }
 
-        public override void OnComment(Comment comment)
+        public override void Visit(Comment comment)
         {
             if (_generateComments &&
                  !comment.Value.StartsWith("XmlDeclaration:") &&
@@ -331,7 +327,7 @@ namespace Syntactik.Compiler.Generator
 
         private void WritePendingNamespaceDeclarations(string uri)
         {
-            NsInfo nsInfo = NamespaceResolver.GetNsInfo(_currentDocument);
+            NsInfo nsInfo = NamespaceResolver.GetNsInfo(CurrentDocument);
             if (nsInfo == null) return;
 
             foreach (var ns in nsInfo.Namespaces)

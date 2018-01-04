@@ -46,7 +46,7 @@ namespace Syntactik.DOM
         /// <param name="visitor"></param>
         public override void Accept(IDomVisitor visitor)
         {
-            visitor.OnCompileUnit(this);
+            visitor.Visit(this);
         }
 
         /// <summary>

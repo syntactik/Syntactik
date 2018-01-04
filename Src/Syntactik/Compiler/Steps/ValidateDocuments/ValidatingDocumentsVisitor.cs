@@ -49,7 +49,7 @@ namespace Syntactik.Compiler.Steps
             _namespaceResolver = (NamespaceResolver)Context.Properties["NamespaceResolver"];
         }
 
-        public override void OnModule(DOM.Module module)
+        public override void Visit(DOM.Module module)
         {
             _currentModule = (Module) module;
             _namespaceResolver.EnterModule(module);
@@ -65,22 +65,22 @@ namespace Syntactik.Compiler.Steps
 
         }
 
-        public override void OnDocument(DOM.Document document)
+        public override void Visit(DOM.Document document)
         {
-            _currentDocument = (Document) document;
+            CurrentDocument = (Document) document;
             CheckPairValue(document);
             _blockStateUnknown = true;
 
             CheckDocumentNameDuplicates(document);
             _choiceStack.Push(((Document)document).ChoiceInfo);
-            base.OnDocument(document);
+            base.Visit(document);
             if (_currentModule.TargetFormat == Module.TargetFormats.Xml)
                 CheckDocumentElement(document);
             _choiceStack.Pop();
             if (((Document)document).ChoiceInfo.Errors != null)
                 foreach (var error in ((Document)document).ChoiceInfo.Errors)
                     Context.AddError(error);
-            _currentDocument = null;
+            CurrentDocument = null;
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Syntactik.Compiler.Steps
         }
 
 
-        public override void OnAlias(DOM.Alias alias)
+        public override void Visit(DOM.Alias alias)
         {
             CheckBlockIntegrityForValueAlias(alias);
             CheckPairValue(alias);
@@ -302,7 +302,7 @@ namespace Syntactik.Compiler.Steps
             _blockStateUnknown = false;
         }
 
-        public override void OnAliasDefinition(DOM.AliasDefinition aliasDefinition)
+        public override void Visit(DOM.AliasDefinition aliasDefinition)
         {
             CheckPairValue(aliasDefinition);
 
@@ -340,7 +340,7 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
-        public override void OnElement(DOM.Element element)
+        public override void Visit(DOM.Element element)
         {
             if (!((Element) element).IsChoice)
             {
@@ -358,13 +358,13 @@ namespace Syntactik.Compiler.Steps
             }
             if (CheckStartOfChoiceContainer(element, element.Entities))
             {
-                base.OnElement(element);
+                base.Visit(element);
                 EndChoiceContainer();
             }
             else
             {
                 CheckArrayDelimiter(element);
-                base.OnElement(element);
+                base.Visit(element);
             }
             ExitChoiceNode(element);
             _blockStateUnknown = false;
@@ -494,7 +494,7 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
-        public override void OnAttribute(DOM.Attribute attribute)
+        public override void Visit(DOM.Attribute attribute)
         {
             CheckBlockIntegrity(attribute);
             CheckPairValue(attribute);
@@ -576,20 +576,20 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
-        public override void OnArgument(DOM.Argument argument)
+        public override void Visit(DOM.Argument argument)
         {
             CheckArgumentIntegrity((Argument) argument);
             CheckPairValue(argument);
-            base.OnArgument(argument);
+            base.Visit(argument);
         }
 
-        public override void OnParameter(DOM.Parameter parameter)
+        public override void Visit(DOM.Parameter parameter)
         {
             CheckPairValue(parameter);
             var aliasContext = AliasContext.Peek();
             if (aliasContext != null)
                 ValidateParameter((Parameter) parameter, aliasContext, _currentModule.FileName);
-            base.OnParameter(parameter);
+            base.Visit(parameter);
         }
 
 
@@ -638,18 +638,23 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
-
-        public override void OnNamespaceDefinition(DOM.NamespaceDefinition namespaceDefinition)
+        public override void Visit(DOM.NamespaceDefinition namespaceDefinition)
         {
             CheckNoPairValue(namespaceDefinition);
             CheckNsDefDuplicates((NamespaceDefinition) namespaceDefinition);
-            base.OnNamespaceDefinition(namespaceDefinition);
+            base.Visit(namespaceDefinition);
         }
 
-        public override void OnScope(Scope pair)
+        protected override string ResolveChoiceValue(Pair pair, out ValueType valueType) // todo: Implement choice validation
+        {
+            valueType = ValueType.None;
+            return "";
+        }
+
+        public override void Visit(Scope pair)
         {
             CheckNoPairValue(pair);
-            base.OnScope(pair);
+            base.Visit(pair);
         }
 
         private void CheckArgumentIntegrity(Argument argument)

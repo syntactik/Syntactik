@@ -54,7 +54,7 @@ namespace Syntactik.Compiler.Steps
             {
                 SyntactikDepthFirstVisitor visitor = new ValidatingDocumentsVisitor(context);
 
-                visitor.OnModule(module);
+                visitor.Visit(module);
             }
             catch (Exception ex)
             {

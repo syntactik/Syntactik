@@ -25,7 +25,7 @@ namespace Syntactik.DOM
         /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
-            visitor.OnAttribute(this);
+            visitor.Visit(this);
         }
 
         /// <summary>

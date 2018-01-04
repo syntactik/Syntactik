@@ -20,10 +20,18 @@ using System.Text;
 using Syntactik.DOM;
 using Syntactik.DOM.Mapped;
 using Alias = Syntactik.DOM.Alias;
+using AliasDefinition = Syntactik.DOM.AliasDefinition;
+using Argument = Syntactik.DOM.Argument;
+using Attribute = Syntactik.DOM.Attribute;
+using Document = Syntactik.DOM.Document;
 using Element = Syntactik.DOM.Element;
-using Pair = Syntactik.DOM.Pair;
+using Module = Syntactik.DOM.Module;
+using NamespaceDefinition = Syntactik.DOM.NamespaceDefinition;
+using Parameter = Syntactik.DOM.Parameter;
+using Scope = Syntactik.DOM.Scope;
 
-namespace Syntactik.DOM
+
+namespace TestEditor
 {
     public class DomPrinter: SyntactikDepthFirstVisitor
     {
@@ -53,84 +61,84 @@ namespace Syntactik.DOM
             }
         }
 
-        public override void OnModule(DOM.Module pair)
+        public override void Visit(Module pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnModule(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
-        public override void OnDocument(DOM.Document pair)
+        public override void Visit(Document pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnDocument(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
 
         }
 
-        public override void OnElement(Element pair)
+        public override void Visit(Element pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnElement(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
 
 
-        public override void OnAttribute(DOM.Attribute pair)
+        public override void Visit(Attribute pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnAttribute(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
-        public override void OnAlias(Alias pair)
+        public override void Visit(Alias pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnAlias(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
-        public override void OnArgument(DOM.Argument pair)
+        public override void Visit(Argument pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnArgument(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
-        public override void OnParameter(DOM.Parameter pair)
+        public override void Visit(Parameter pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnParameter(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
-        public override void OnAliasDefinition(DOM.AliasDefinition aliasDefinition)
+        public override void Visit(AliasDefinition aliasDefinition)
         {
             PrintNodeName(aliasDefinition);
             PrintNodeStart(aliasDefinition);
-            base.OnAliasDefinition(aliasDefinition);
+            base.Visit(aliasDefinition);
             PrintNodeEnd(aliasDefinition);
         }
 
-        public override void OnNamespaceDefinition(DOM.NamespaceDefinition pair)
+        public override void Visit(NamespaceDefinition pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnNamespaceDefinition(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
-        public override void OnScope(DOM.Scope pair)
+        public override void Visit(Scope pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnScope(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
@@ -198,7 +206,7 @@ namespace Syntactik.DOM
         {
             if (pair.Value != null)
             {
-                _sb.Append(Pair.DelimiterToString(pair.Delimiter));
+                _sb.Append(DelimiterToString(pair.Delimiter));
                 _sb.Append(" ");
                 _sb.Append(QuoteTypeToChar(pair.ValueQuotesType));
                 PrintValue(pair);
@@ -213,10 +221,38 @@ namespace Syntactik.DOM
             }
             else
             {
-                _sb.AppendLine(Pair.DelimiterToString(pair.Delimiter));
+                _sb.AppendLine(DelimiterToString(pair.Delimiter));
                 _indent++;
             }
             _valueNodeExpected.Push(false);
+        }
+        /// <summary>
+        /// Auxiliary function to convert delimiter value to its string representation.
+        /// </summary>
+        /// <param name="delimiter"></param>
+        /// <returns></returns>
+        internal static string DelimiterToString(DelimiterEnum delimiter)
+        {
+            switch (delimiter)
+            {
+                case DelimiterEnum.C:
+                    return ":";
+                case DelimiterEnum.CC:
+                    return "::";
+                case DelimiterEnum.CCC:
+                    return ":::";
+                case DelimiterEnum.E:
+                    return "=";
+                case DelimiterEnum.EC:
+                    return "=:";
+                case DelimiterEnum.ECC:
+                    return "=::";
+                case DelimiterEnum.EE:
+                    return "==";
+                case DelimiterEnum.CE:
+                    return ":=";
+            }
+            return "";
         }
     }
 }

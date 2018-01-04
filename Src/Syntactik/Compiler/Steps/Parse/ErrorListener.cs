@@ -18,20 +18,33 @@
 using System.Collections.Generic;
 using Syntactik.DOM;
 
-namespace Syntactik.Compiler
+namespace Syntactik.Compiler.Steps
 {
+    /// <summary>
+    /// Default implementation of <see cref="IErrorListener"/> that reports all errors to <see cref="CompilerContext"/>.
+    /// </summary>
     public class ErrorListener : IErrorListener
     {
         private readonly CompilerContext _context;
         private readonly string _fileName;
 
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="context"><see cref="CompilerContext"/> that will be used to report errors.</param>
+        /// <param name="fileName">Source code file name that will be used to report error location.</param>
         public ErrorListener(CompilerContext context, string fileName)
         {
             _context = context;
             _fileName = fileName;
         }
+
+        /// <summary>
+        /// List of reported errors.
+        /// </summary>
         public List<string> Errors { get; } = new List<string>();
 
+        /// <inheritdoc />
         public void OnError(int code, Interval interval, params object[] args)
         {
             _context.AddError(CompilerErrorFactory.ParserError(Syntactik.ParsingErrors.Format(code, args), _fileName, interval.Begin.Line,

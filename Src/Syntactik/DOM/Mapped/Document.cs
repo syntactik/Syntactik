@@ -21,22 +21,46 @@ using System.Linq;
 
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Represents <see cref="DOM.Document"/> mapped to the source code.
+    /// </summary>
     public class Document : DOM.Document, IMappedPair, IPairWithInterpolation
     {
+        /// <inheritdoc />
         public Interval NameInterval { get; set; }
+
+        /// <inheritdoc />
         public Interval ValueInterval { get; set; }
+
+        /// <inheritdoc />
         public Interval DelimiterInterval { get; set; }
+
+        /// <inheritdoc />
         public ValueType ValueType { get; set; }
+
+        /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
+
+        /// <inheritdoc />
         public List<object> InterpolationItems { get; set; }
+
+        /// <inheritdoc />
         public int ValueIndent { get; set; }
+
+        /// <summary>
+        /// Root instance of <see cref="ChoiceInfo"/>.
+        /// </summary>
         public ChoiceInfo ChoiceInfo { get; set; }
 
-
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
         public Document()
         {
             ChoiceInfo = new ChoiceInfo(null, this);
         }
+
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             if (child is NamespaceDefinition)

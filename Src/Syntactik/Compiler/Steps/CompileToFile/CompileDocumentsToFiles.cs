@@ -74,7 +74,7 @@ namespace Syntactik.Compiler.Steps
                     visitor = new XmlGenerator(XmlFileWriterDelegate, XmlFileReaderDelegate, context, _generateComments);
                 else visitor = new JsonGenerator(JsonFileWriterDelegate, context);
 
-                visitor.OnModule(module);
+                visitor.Visit(module);
             }
             catch (Exception ex)
             {

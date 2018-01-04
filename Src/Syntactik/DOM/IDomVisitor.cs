@@ -17,23 +17,70 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Base interface for <see href="https://en.wikipedia.org/wiki/Visitor_pattern#Classic_visitor">visitor</see>.
+    /// </summary>
     public interface IDomVisitor
     {
-        // Methods
-        void OnAlias(Alias alias);
-        void OnAliasDefinition(AliasDefinition aliasDefinition);
-        void OnArgument(Argument argument);
-        void OnAttribute(Attribute attribute);
-        void OnCompileUnit(CompileUnit compileUnit);
-        void OnDocument(Document document);
-        void OnElement(Element element);
-        void OnModule(Module module);
-        void OnNamespaceDefinition(NamespaceDefinition namespaceDefinition);
-        void OnScope(Scope scope);
-        void OnParameter(Parameter parameter);
-        void OnComment(Comment comment);
+        /// <summary>
+        /// Visit method for <see cref="Alias"/>.
+        /// </summary>
+        /// <param name="alias">Calling object.</param>
+        void Visit(Alias alias);
+        /// <summary>
+        /// Visit method for <see cref="AliasDefinition"/>.
+        /// </summary>
+        /// <param name="aliasDefinition">Calling object.</param>
+        void Visit(AliasDefinition aliasDefinition);
+        /// <summary>
+        /// Visit method for <see cref="Argument"/>.
+        /// </summary>
+        /// <param name="argument">Calling object.</param>
+        void Visit(Argument argument);
+        /// <summary>
+        /// Visit method for <see cref="Attribute"/>.
+        /// </summary>
+        /// <param name="attribute">Calling object.</param>
+        void Visit(Attribute attribute);
+        /// <summary>
+        /// Visit method for <see cref="CompileUnit"/>.
+        /// </summary>
+        /// <param name="compileUnit">Calling object.</param>
+        void Visit(CompileUnit compileUnit);
+        /// <summary>
+        /// Visit method for <see cref="Document"/>.
+        /// </summary>
+        /// <param name="document">Calling object.</param>
+        void Visit(Document document);
+        /// <summary>
+        /// Visit method for <see cref="Element"/>.
+        /// </summary>
+        /// <param name="element">Calling object.</param>
+        void Visit(Element element);
+        /// <summary>
+        /// Visit method for <see cref="Module"/>.
+        /// </summary>
+        /// <param name="module">Calling object.</param>
+        void Visit(Module module);
+        /// <summary>
+        /// Visit method for <see cref="NamespaceDefinition"/>.
+        /// </summary>
+        /// <param name="namespaceDefinition">Calling object.</param>
+        void Visit(NamespaceDefinition namespaceDefinition);
+        /// <summary>
+        /// Visit method for <see cref="Scope"/>.
+        /// </summary>
+        /// <param name="scope">Calling object.</param>
+        void Visit(Scope scope);
+        /// <summary>
+        /// Visit method for <see cref="Parameter"/>.
+        /// </summary>
+        /// <param name="parameter">Calling object.</param>
+        void Visit(Parameter parameter);
+        /// <summary>
+        /// Visit method for <see cref="Comment"/>.
+        /// </summary>
+        /// <param name="comment">Calling object.</param>
+        void Visit(Comment comment);
     }
-
-
-
 }

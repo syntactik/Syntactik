@@ -63,7 +63,7 @@ namespace TestEditor
                 try
                 {
                     var printer = new DomPrinter();
-                    printer.Visit(parser.ParseModule());
+                    printer.Visit((Pair) parser.ParseModule());
                     domTextBox.Text = printer.Text;
                     errorsTextBox.Text = string.Join(Environment.NewLine, errorListener.Errors.ToArray());
                 }

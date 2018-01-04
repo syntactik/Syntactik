@@ -17,8 +17,14 @@
 #endregion
 namespace Syntactik.Compiler.Steps
 {
+    /// <summary>
+    /// Wrapper class for escape sequence string.
+    /// </summary>
     public class EscapeMatch
     {
+        /// <summary>
+        /// String representing the escape sequence.
+        /// </summary>
         public string Value;
     }
 }

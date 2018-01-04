@@ -41,7 +41,7 @@ namespace Syntactik.DOM
         /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
-            visitor.OnArgument(this);
+            visitor.Visit(this);
         }
 
         /// <inheritdoc />
