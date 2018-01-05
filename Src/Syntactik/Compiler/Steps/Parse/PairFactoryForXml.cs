@@ -1,4 +1,5 @@
 #region license
+
 // Copyright © 2017 Maxim O. Trushin (trushin@gmail.com)
 //
 // This file is part of Syntactik.
@@ -14,7 +15,9 @@
 
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
+
 #endregion
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,16 +25,23 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Syntactik.DOM;
+using Syntactik.DOM.Mapped;
 using Syntactik.IO;
 using Alias = Syntactik.DOM.Mapped.Alias;
+using AliasDefinition = Syntactik.DOM.Mapped.AliasDefinition;
+using Argument = Syntactik.DOM.Mapped.Argument;
+using Attribute = Syntactik.DOM.Mapped.Attribute;
+using Comment = Syntactik.DOM.Comment;
+using Document = Syntactik.DOM.Mapped.Document;
 using Element = Syntactik.DOM.Mapped.Element;
 using Module = Syntactik.DOM.Module;
+using NamespaceDefinition = Syntactik.DOM.Mapped.NamespaceDefinition;
 using Parameter = Syntactik.DOM.Mapped.Parameter;
+using Scope = Syntactik.DOM.Mapped.Scope;
 using ValueType = Syntactik.DOM.Mapped.ValueType;
 
 namespace Syntactik.Compiler.Steps
 {
-
     public class PairFactoryForXml : IPairFactory
     {
         private readonly CompilerContext _context;
@@ -43,12 +53,13 @@ namespace Syntactik.Compiler.Steps
             _module = module;
         }
 
-        public DOM.Pair CreateMappedPair(ICharStream input, int nameQuotesType, DOM.Interval nameInterval, DOM.DelimiterEnum delimiter,
-                                Interval delimiterInterval, int valueQuotesType, DOM.Interval valueInterval, int valueIndent)
+        public Pair CreateMappedPair(ITextSource textSource, int nameQuotesType, Interval nameInterval,
+            DelimiterEnum delimiter,
+            Interval delimiterInterval, int valueQuotesType, Interval valueInterval, int valueIndent)
         {
-            DOM.Mapped.IMappedPair pair;
-            var nameText = GetNameText(input, nameQuotesType, nameInterval);
-            var value = GetValue(input, delimiter, valueQuotesType, valueInterval, valueIndent, _context, _module);
+            IMappedPair pair;
+            var nameText = GetNameText(textSource, nameQuotesType, nameInterval);
+            var value = GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent, _context, _module);
             if (nameQuotesType > 0)
             {
                 pair = new Element
@@ -64,12 +75,12 @@ namespace Syntactik.Compiler.Steps
                     InterpolationItems = value.Item2,
                     ValueIndent = valueIndent
                 };
-
-            } else if (nameText.StartsWith("@"))
+            }
+            else if (nameText.StartsWith("@"))
             {
                 var tuple = Element.GetNameAndNs(nameText.Substring(1), nameQuotesType);
                 var ns = string.IsNullOrEmpty(tuple.Item1) ? null : tuple.Item1;
-                pair = new DOM.Mapped.Attribute
+                pair = new Attribute
                 {
                     NsPrefix = ns,
                     Name = VerifyName(tuple.Item2, nameInterval, _module),
@@ -82,10 +93,10 @@ namespace Syntactik.Compiler.Steps
                     InterpolationItems = value.Item2,
                     ValueIndent = valueIndent
                 };
-
-            } else if (nameText.StartsWith("!$"))
+            }
+            else if (nameText.StartsWith("!$"))
             {
-                pair = new DOM.Mapped.AliasDefinition
+                pair = new AliasDefinition
                 {
                     Name = VerifyName(nameText.Substring(2), nameInterval, _module),
                     NameInterval = nameInterval,
@@ -97,9 +108,10 @@ namespace Syntactik.Compiler.Steps
                     InterpolationItems = value.Item2,
                     ValueIndent = valueIndent
                 };
-            } else if (nameText.StartsWith("!#"))
+            }
+            else if (nameText.StartsWith("!#"))
             {
-                pair = new DOM.Mapped.NamespaceDefinition
+                pair = new NamespaceDefinition
                 {
                     Name = VerifyNsName(nameText.Substring(2), nameInterval, _module),
                     NameInterval = nameInterval,
@@ -111,7 +123,8 @@ namespace Syntactik.Compiler.Steps
                     InterpolationItems = value.Item2,
                     ValueIndent = valueIndent
                 };
-            } else if (nameText.StartsWith("!%"))
+            }
+            else if (nameText.StartsWith("!%"))
             {
                 pair = new Parameter
                 {
@@ -125,9 +138,10 @@ namespace Syntactik.Compiler.Steps
                     InterpolationItems = value.Item2,
                     ValueIndent = valueIndent
                 };
-            } else if (nameText.StartsWith("!"))
+            }
+            else if (nameText.StartsWith("!"))
             {
-                pair = new DOM.Mapped.Document
+                pair = new Document
                 {
                     Name = VerifyName(nameText.Substring(1), nameInterval, _module),
                     NameInterval = nameInterval,
@@ -139,9 +153,10 @@ namespace Syntactik.Compiler.Steps
                     InterpolationItems = value.Item2,
                     ValueIndent = valueIndent
                 };
-            } else if (nameText.StartsWith("$"))
+            }
+            else if (nameText.StartsWith("$"))
             {
-                pair = new DOM.Mapped.Alias()
+                pair = new Alias
                 {
                     Name = VerifyName(nameText.Substring(1), nameInterval, _module),
                     NameInterval = nameInterval,
@@ -153,10 +168,10 @@ namespace Syntactik.Compiler.Steps
                     InterpolationItems = value.Item2,
                     ValueIndent = valueIndent
                 };
-
-            } else if (nameText.StartsWith("%"))
+            }
+            else if (nameText.StartsWith("%"))
             {
-                pair = new DOM.Mapped.Argument()
+                pair = new Argument
                 {
                     Name = VerifyName(nameText.Substring(1), nameInterval, _module),
                     NameInterval = nameInterval,
@@ -168,14 +183,15 @@ namespace Syntactik.Compiler.Steps
                     InterpolationItems = value.Item2,
                     ValueIndent = valueIndent
                 };
-            } else if (nameText.StartsWith("#"))
+            }
+            else if (nameText.StartsWith("#"))
             {
                 var tuple = Element.GetNameAndNs(nameText.Substring(1), nameQuotesType);
                 var ns = string.IsNullOrEmpty(tuple.Item1) ? null : tuple.Item1;
 
                 if (ns == null)
                 {
-                    pair = new DOM.Mapped.Scope
+                    pair = new Scope
                     {
                         NsPrefix = VerifyScopeName(nameText.Substring(1), nameInterval, _module),
                         NameInterval = nameInterval,
@@ -190,7 +206,7 @@ namespace Syntactik.Compiler.Steps
                 }
                 else
                 {
-                    pair = new DOM.Mapped.Scope
+                    pair = new Scope
                     {
                         NsPrefix = VerifyScopeName(ns, nameInterval, _module),
                         Name = VerifyElementName(tuple.Item2, nameInterval, _module),
@@ -224,27 +240,29 @@ namespace Syntactik.Compiler.Steps
                     InterpolationItems = value.Item2,
                     ValueIndent = valueIndent
                 };
-
             }
             SetValueType(pair, delimiter, value.Item1, valueQuotesType);
             return (Pair) pair;
         }
 
-        internal static string GetNameText(ICharStream input, int nameQuotesType, DOM.Interval nameInterval)
+        internal static string GetNameText(ITextSource input, int nameQuotesType, Interval nameInterval)
         {
             if (nameQuotesType == 0)
-                return ((ITextSource)input).GetText(nameInterval.Begin.Index, nameInterval.End.Index);
-            var c = ((ITextSource)input).GetChar(nameInterval.End.Index);
+                return input.GetText(nameInterval.Begin.Index, nameInterval.End.Index);
+            var c = input.GetChar(nameInterval.End.Index);
             if (nameQuotesType == 1)
-                return c == '\'' ? ((ITextSource)input).GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index - 1) : ((ITextSource)input).GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index);
+                return c == '\''
+                    ? input.GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index - 1)
+                    : input.GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index);
 
-            return c == '"' ? ((ITextSource)input).GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index - 1) : ((ITextSource)input).GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index);
-
+            return c == '"'
+                ? input.GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index - 1)
+                : input.GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index);
         }
 
         private string VerifyElementName(string name, Interval nameInterval, Module module)
         {
-            if(string.IsNullOrEmpty(name)) return name;
+            if (string.IsNullOrEmpty(name)) return name;
             try
             {
                 XmlConvert.VerifyNCName(name);
@@ -282,7 +300,7 @@ namespace Syntactik.Compiler.Steps
             return VerifyNsName(name, nameInterval, module);
         }
 
-        private void SetValueType(DOM.Mapped.IMappedPair pair, DelimiterEnum delimiter, string value, int valueQuotesType)
+        private void SetValueType(IMappedPair pair, DelimiterEnum delimiter, string value, int valueQuotesType)
         {
             switch (delimiter)
             {
@@ -322,9 +340,7 @@ namespace Syntactik.Compiler.Steps
             if (delimiter == DelimiterEnum.EE)
             {
                 pair.ValueType = GetJsonValueType(value, ValueType.OpenString);
-                return;
             }
-                
         }
 
         private ValueType GetJsonValueType(string value, ValueType defaultType)
@@ -333,15 +349,14 @@ namespace Syntactik.Compiler.Steps
             if (value == "null") return ValueType.Null;
             if (Regex.Match(value, @"^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$").Success) return ValueType.Number;
             return defaultType;
-
         }
 
-        internal static Tuple<string, List<object>> GetValue(ICharStream input, DOM.DelimiterEnum delimiter,
-                        int valueQuotesType, DOM.Interval valueInterval, int valueIndent, CompilerContext context, Module module)
+        internal static Tuple<string, List<object>> GetValue(ITextSource input, DelimiterEnum delimiter,
+            int valueQuotesType, Interval valueInterval, int valueIndent, CompilerContext context, Module module)
         {
             if (valueInterval == null)
             {
-                if (delimiter == DOM.DelimiterEnum.E || delimiter == DOM.DelimiterEnum.EE)
+                if (delimiter == DelimiterEnum.E || delimiter == DelimiterEnum.EE)
                     return new Tuple<string, List<object>>(string.Empty, null);
                 return new Tuple<string, List<object>>(null, null);
             }
@@ -349,44 +364,46 @@ namespace Syntactik.Compiler.Steps
             {
                 return new Tuple<string, List<object>>(string.Empty, null);
             }
-            if (valueQuotesType == (int)DOM.QuotesEnum.Single)
+            if (valueQuotesType == (int) QuotesEnum.Single)
             {
                 if (!ValueIsMissingQuote(input, valueQuotesType, valueInterval))
                 {
-                    return new Tuple<string, List<object>>(GetValueFromValueInterval((ITextSource)input, delimiter, valueQuotesType,
+                    return new Tuple<string, List<object>>(GetValueFromValueInterval(input, delimiter,
+                        valueQuotesType,
                         valueInterval.Begin.Index + 1, valueInterval.End.Index - 1, valueIndent), null);
                 }
 
-                return new Tuple<string, List<object>>(GetValueFromValueInterval((ITextSource)input, delimiter, valueQuotesType,
+                return new Tuple<string, List<object>>(GetValueFromValueInterval(input, delimiter,
+                    valueQuotesType,
                     valueInterval.Begin.Index + 1, valueInterval.End.Index, valueIndent), null);
             }
             if (valueQuotesType == (int) QuotesEnum.Double)
             {
-                var ii = GetInterpolationItems((ITextSource) input, valueInterval, context, module);
+                var ii = GetInterpolationItems(input, valueInterval, context, module);
                 string value = (string) (ii.Count == 1 && ii[0] is string ? ii[0] : string.Empty);
                 return new Tuple<string, List<object>>(value, ii);
-
             }
-            return new Tuple<string, List<object>>(GetValueFromValueInterval((ITextSource)input, delimiter, valueQuotesType,
+            return new Tuple<string, List<object>>(GetValueFromValueInterval(input, delimiter,
+                valueQuotesType,
                 valueInterval.Begin.Index, valueInterval.End.Index, valueIndent), null);
         }
 
-        private static bool ValueIsMissingQuote(ICharStream input, int valueQuotesType, Interval valueInterval)
+        private static bool ValueIsMissingQuote(ITextSource input, int valueQuotesType, Interval valueInterval)
         {
-            var c = ((ITextSource)input).GetChar(valueInterval.End.Index);
-            return valueQuotesType == (int)QuotesEnum.Single && c != '\'' ||
-                                    valueQuotesType == (int)QuotesEnum.Double && c != '"';
+            var c = input.GetChar(valueInterval.End.Index);
+            return valueQuotesType == (int) QuotesEnum.Single && c != '\'' ||
+                   valueQuotesType == (int) QuotesEnum.Double && c != '"';
         }
 
         public static string GetValueFromValueInterval(ITextSource charStream, DelimiterEnum delimiter,
-                                int valueQuotesType, int begin, int end, int valueIndent)
+            int valueQuotesType, int begin, int end, int valueIndent)
         {
             var sb = new StringBuilder();
             //Splitting text. Getting array of text lines
-            var lines = charStream.GetText(begin, end).Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            var lines = charStream.GetText(begin, end).Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
 
             bool folded = lines.Length > 1 && delimiter == DelimiterEnum.EE &&
-              (valueQuotesType == (int)QuotesEnum.None || valueQuotesType == (int)QuotesEnum.Double);
+                          (valueQuotesType == (int) QuotesEnum.None || valueQuotesType == (int) QuotesEnum.Double);
 
             var first = true;
             var firstEmptyLine = true; //If true then previous line was not empty therefor newline shouldn't be added
@@ -395,7 +412,7 @@ namespace Syntactik.Compiler.Steps
             foreach (var item in lines)
             {
                 var line = TrimEndOfFoldedStringLine(item, folded);
-                if (checkIfFirstLineIsEmpty)  //ignoring first empty line for open strings
+                if (checkIfFirstLineIsEmpty) //ignoring first empty line for open strings
                 {
                     checkIfFirstLineIsEmpty = false;
                     if (valueQuotesType == (int) QuotesEnum.None && line == string.Empty)
@@ -405,11 +422,16 @@ namespace Syntactik.Compiler.Steps
                     }
                 }
 
-                if (first) { sb.Append(line); first = false; continue; } //adding first line without appending new line symbol
+                if (first)
+                {
+                    sb.Append(line);
+                    first = false;
+                    continue;
+                } //adding first line without appending new line symbol
 
                 if (line.Length <= valueIndent) //this is just empty line
                 {
-                    if (folded)//Folded string
+                    if (folded) //Folded string
                     {
                         if (firstEmptyLine)
                         {
@@ -417,7 +439,8 @@ namespace Syntactik.Compiler.Steps
                             continue; //Ignore first empty line for folded string
                         }
                     }
-                    sb.AppendLine(); continue;
+                    sb.AppendLine();
+                    continue;
                 }
 
                 var lineIndent = line.TakeWhile(c => c == ' ' || c == '\t').Count();
@@ -426,18 +449,18 @@ namespace Syntactik.Compiler.Steps
                     line = line.Substring(lineIndent); //Removing indents
                     if (line.TrimEnd() == "===") sb.AppendLine();
                     break; // this is multiline string terminator ===
-                } 
+                }
 
                 line = line.Substring(valueIndent); //Removing indents
-                if (sb.Length == 0)// If it is first line to be added just add it. No new line or spacing needed.
+                if (sb.Length == 0) // If it is first line to be added just add it. No new line or spacing needed.
                 {
                     sb.Append(line);
                     continue;
-                }  
+                }
                 if (folded && firstEmptyLine) sb.Append(" ");
                 if (!folded || !firstEmptyLine) sb.AppendLine();
                 firstEmptyLine = true; //reseting the flag for folded string logic
-                                  
+
                 sb.Append(line);
             }
             return sb.ToString();
@@ -450,11 +473,12 @@ namespace Syntactik.Compiler.Steps
             return line;
         }
 
-        internal static List<object> GetInterpolationItems(ITextSource input, Interval valueInterval, CompilerContext context, Module module)
+        internal static List<object> GetInterpolationItems(ITextSource input, Interval valueInterval,
+            CompilerContext context, Module module)
         {
             var intItems = new List<object>();
 
-            var i = ValueIsMissingQuote((ICharStream) input, 2, valueInterval)?0:-1;
+            var i = ValueIsMissingQuote(input, 2, valueInterval) ? 0 : -1;
             var value = input.GetText(valueInterval.Begin.Index + 1, valueInterval.End.Index + i);
             var matches = Regex.Matches(value,
                 //Escape characters
@@ -467,41 +491,42 @@ namespace Syntactik.Compiler.Steps
                 @"(?:\$|!%)(?:(?:_|[A-Z]|[a-z]|[\xC0-\xD6]|[\xD8-\xF6]|[\xF8-\u02FF]|[\u0370-\u037D]|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]|[\uF900-\uFDCF]|[\uFDF0-\uFFFD])" +
                 @"(?:[A-Z]|[a-z]|[\xC0-\xD6]|[\xD8-\xF6]|[\xF8-\u02FF]|[\u0370-\u037D]|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]|[\uF900-\uFDCF]|[\uFDF0-\uFFFD]|" +
                 @"-|\.|[0-9]|\xB7|[\u0300-\u036F]|[\u203F-\u2040])*)" +
-                //Incorrect escape, indent, new line, orher characters
+                //Incorrect escape, indent, new line, other characters
                 @"|.?))|(\r?\n[ \t]*)|([^\\\0-\x1F\x7F]+)", RegexOptions.Singleline);
             var line = valueInterval.Begin.Line;
             var column = valueInterval.Begin.Column;
             foreach (var match in matches)
             {
-                if (((Match)match).Value.StartsWith(@"\$"))
-                    intItems.Add(GetAliasInterpolationItem((Match)match, line, column + 1, context, module));
-                else if (((Match)match).Value.StartsWith(@"\!%"))
-                    intItems.Add(GetParameterInterpolationItem((Match)match, line, column + 1, context, module));
-                else if (((Match)match).Value.StartsWith(@"\"))
-                    intItems.Add(GetEscapeInterpolationItem((Match)match, line, column + 1, context, module));
-                else if (((Match)match).Value.StartsWith("\n") || ((Match)match).Value.StartsWith("\r"))
-                    intItems.Add(GetEolEscapeInterpolationItem((Match)match));
+                if (((Match) match).Value.StartsWith(@"\$"))
+                    intItems.Add(GetAliasInterpolationItem((Match) match, line, column + 1, context, module));
+                else if (((Match) match).Value.StartsWith(@"\!%"))
+                    intItems.Add(GetParameterInterpolationItem((Match) match, line, column + 1, context, module));
+                else if (((Match) match).Value.StartsWith(@"\"))
+                    intItems.Add(GetEscapeInterpolationItem((Match) match, line, column + 1, context, module));
+                else if (((Match) match).Value.StartsWith("\n") || ((Match) match).Value.StartsWith("\r"))
+                    intItems.Add(GetEolEscapeInterpolationItem((Match) match));
                 else
-                    intItems.Add(((Match)match).Value);
+                    intItems.Add(((Match) match).Value);
 
-                if (((Match)match).Value.StartsWith("\n"))
+                if (((Match) match).Value.StartsWith("\n"))
                 {
                     line++;
-                    column = ((Match)match).Value.Length;
+                    column = ((Match) match).Value.Length;
                 }
-                else if (((Match)match).Value.StartsWith("\r"))
+                else if (((Match) match).Value.StartsWith("\r"))
                 {
                     line++;
-                    column = ((Match)match).Value.Length + 1;
+                    column = ((Match) match).Value.Length + 1;
                 }
                 else
-                    column += ((Match)match).Value.Length;
+                    column += ((Match) match).Value.Length;
             }
 
             return intItems;
         }
 
-        private static EscapeMatch GetEscapeInterpolationItem(Match match, int line, int column, CompilerContext context, Module module)
+        private static EscapeMatch GetEscapeInterpolationItem(Match match, int line, int column,
+            CompilerContext context, Module module)
         {
             var escape = match.Value;
             if (escape.Length < 2)
@@ -510,7 +535,8 @@ namespace Syntactik.Compiler.Steps
             }
             else
                 switch (escape[1])
-                {   //'b'|'f'|'n'|'r'|'t'|'v'
+                {
+                    //'b'|'f'|'n'|'r'|'t'|'v'
                     case '"':
                     case '\\':
                     case '/':
@@ -535,10 +561,11 @@ namespace Syntactik.Compiler.Steps
 
         private static EscapeMatch GetEolEscapeInterpolationItem(Match match)
         {
-            return new EolEscapeMatch { Value = match.Value };
+            return new EolEscapeMatch {Value = match.Value};
         }
 
-        private static Parameter GetParameterInterpolationItem(Match match, int line, int column, CompilerContext context, Module module)
+        private static Parameter GetParameterInterpolationItem(Match match, int line, int column,
+            CompilerContext context, Module module)
         {
             if (match.Value.StartsWith(@"\!%(") && !match.Value.EndsWith(@")"))
             {
@@ -547,7 +574,8 @@ namespace Syntactik.Compiler.Steps
             var parameter = new Parameter
             {
                 Name = match.Value.TrimStart('\\', '!', '%', '(', '\t', ' ').TrimEnd(')', '\t', ' '),
-                NameInterval = new Interval(new CharLocation(line, column, -1), new CharLocation(line, column + match.Value.Length, -1)),
+                NameInterval = new Interval(new CharLocation(line, column, -1),
+                    new CharLocation(line, column + match.Value.Length, -1)),
                 Delimiter = DelimiterEnum.None,
                 ValueType = ValueType.Empty,
                 IsValueNode = true
@@ -555,16 +583,18 @@ namespace Syntactik.Compiler.Steps
             return parameter;
         }
 
-        private static Alias GetAliasInterpolationItem(Match match, int line, int column, CompilerContext context, Module module)
+        private static Alias GetAliasInterpolationItem(Match match, int line, int column, CompilerContext context,
+            Module module)
         {
             if (match.Value.StartsWith(@"\$(") && !match.Value.EndsWith(@")"))
             {
                 context.Errors.Add(CompilerErrorFactory.ParserError("Missing closing parenthesis.", module.FileName, line, column + match.Length));
             }
-            var alias = new Alias()
+            var alias = new Alias
             {
                 Name = match.Value.TrimStart('\\', '$', '(', '\t', ' ').TrimEnd(')', '\t', ' '),
-                NameInterval = new Interval(new CharLocation(line, column, -1), new CharLocation(line, column + match.Value.Length, -1)),
+                NameInterval = new Interval(new CharLocation(line, column, -1),
+                    new CharLocation(line, column + match.Value.Length, -1)),
                 Delimiter = DelimiterEnum.None,
                 Value = null,
                 ValueType = ValueType.Empty,
@@ -589,10 +619,11 @@ namespace Syntactik.Compiler.Steps
         {
         }
 
-        public DOM.Comment ProcessComment(ICharStream input, int commentType, Interval interval)
+        public Comment ProcessComment(ITextSource textSource, int commentType, Interval interval)
         {
-            var value = GetValueFromValueInterval((ITextSource)input, DelimiterEnum.None, 0, interval.Begin.Index + 3, interval.End.Index - (commentType == 2?3:0), 0);
-            return new DOM.Mapped.Comment() {CommentType = commentType, ValueInterval = interval, Value = value};
+            var value = GetValueFromValueInterval(textSource, DelimiterEnum.None, 0, interval.Begin.Index + 3,
+                interval.End.Index - (commentType == 2 ? 3 : 0), 0);
+            return new DOM.Mapped.Comment {CommentType = commentType, ValueInterval = interval, Value = value};
         }
     }
 }

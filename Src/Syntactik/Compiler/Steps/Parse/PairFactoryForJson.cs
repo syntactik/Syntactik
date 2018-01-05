@@ -38,19 +38,19 @@ namespace Syntactik.Compiler.Steps
             _module = module;
         }
 
-        public Pair CreateMappedPair(ICharStream input, int nameQuotesType, Interval nameInterval, DelimiterEnum delimiter,
+        public Pair CreateMappedPair(ITextSource textSource, int nameQuotesType, Interval nameInterval, DelimiterEnum delimiter,
                                 Interval delimiterInterval, int valueQuotesType, Interval valueInterval, int valueIndent)
         {
             Pair pair;
-            var name = PairFactoryForXml.GetNameText(input, nameQuotesType, nameInterval);
-            var value = PairFactoryForXml.GetValue(input, delimiter, valueQuotesType, valueInterval,
+            var name = PairFactoryForXml.GetNameText(textSource, nameQuotesType, nameInterval);
+            var value = PairFactoryForXml.GetValue(textSource, delimiter, valueQuotesType, valueInterval,
                     valueIndent, _context, (Module) _module);
 
             if (nameQuotesType > 0)
             {
                 if (delimiter == DelimiterEnum.None)
                 {
-                    value = PairFactoryForXml.GetValue(input, delimiter, nameQuotesType, nameInterval,
+                    value = PairFactoryForXml.GetValue(textSource, delimiter, nameQuotesType, nameInterval,
                     0, _context, (Module)_module);
                     valueQuotesType = nameQuotesType;
                 }
@@ -198,7 +198,7 @@ namespace Syntactik.Compiler.Steps
                 };
                 if (delimiter == DelimiterEnum.None)
                 {
-                    value = PairFactoryForXml.GetValue(input, delimiter, nameQuotesType, nameInterval,
+                    value = PairFactoryForXml.GetValue(textSource, delimiter, nameQuotesType, nameInterval,
                     0, _context, (Module)_module);
                     valueQuotesType = nameQuotesType;
                 }
@@ -293,7 +293,7 @@ namespace Syntactik.Compiler.Steps
         {
         }
 
-        public DOM.Comment ProcessComment(ICharStream input, int commentType, Interval commentInterval)
+        public DOM.Comment ProcessComment(ITextSource textSource, int commentType, Interval commentInterval)
         {
             return null;
         }

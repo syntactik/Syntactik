@@ -79,7 +79,7 @@ namespace Syntactik.IO
                 c = stream.Next;
             }
            
-            var comment = pairFactory.ProcessComment(stream,1, new Interval(begin, new CharLocation(stream)));
+            var comment = pairFactory.ProcessComment((ITextSource) stream,1, new Interval(begin, new CharLocation(stream)));
             if (comment != null)
             {
                 pairFactory.AppendChild(parent, comment);
@@ -108,7 +108,7 @@ namespace Syntactik.IO
                 stream.Consume();
                 stream.Consume();
             }
-            var comment = pairFactory.ProcessComment(stream, 2, new Interval(begin, new CharLocation(stream)));
+            var comment = pairFactory.ProcessComment((ITextSource) stream, 2, new Interval(begin, new CharLocation(stream)));
             if (comment != null)
             {
                 pairFactory.AppendChild(parent, comment);

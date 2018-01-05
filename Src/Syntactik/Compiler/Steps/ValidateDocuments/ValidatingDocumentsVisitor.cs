@@ -39,7 +39,7 @@ namespace Syntactik.Compiler.Steps
     class ValidatingDocumentsVisitor: AliasResolvingVisitor
     {   
         private bool _blockStateUnknown;
-        private Stack<JsonGenerator.BlockState> _blockState;
+        private Stack<JsonGenerator.BlockStateEnum> _blockState;
         private Module _currentModule;
         private readonly Stack<ChoiceInfo> _choiceStack = new Stack<ChoiceInfo>();
         private readonly NamespaceResolver _namespaceResolver;
@@ -54,7 +54,7 @@ namespace Syntactik.Compiler.Steps
             _currentModule = (Module) module;
             _namespaceResolver.EnterModule(module);
             _blockStateUnknown = true;
-            _blockState = new Stack<JsonGenerator.BlockState>();
+            _blockState = new Stack<JsonGenerator.BlockStateEnum>();
 
             Visit(module.NamespaceDefinitions);
             Visit(module.Members.Where(
@@ -289,7 +289,7 @@ namespace Syntactik.Compiler.Steps
             if (!_blockStateUnknown)
             {
                 var blockState = _blockState.Peek();
-                if (blockState != JsonGenerator.BlockState.Object) return;
+                if (blockState != JsonGenerator.BlockStateEnum.Object) return;
 
                 ReportErrorForEachNodeInAliasContext(
                     n => CompilerErrorFactory.PropertyIsExpected((IMappedPair)n, _currentModule.FileName));
@@ -298,7 +298,7 @@ namespace Syntactik.Compiler.Steps
             }
 
             //This element is the first element of the block. It decides if the block is array or object
-            _blockState.Push(JsonGenerator.BlockState.Array);
+            _blockState.Push(JsonGenerator.BlockStateEnum.Array);
             _blockStateUnknown = false;
         }
 
@@ -377,7 +377,7 @@ namespace Syntactik.Compiler.Steps
         {
             if (element.Delimiter == DelimiterEnum.CCC)
             {
-                _blockState.Push(JsonGenerator.BlockState.Array);
+                _blockState.Push(JsonGenerator.BlockStateEnum.Array);
                 _blockStateUnknown = false;
             }
         }
@@ -561,7 +561,7 @@ namespace Syntactik.Compiler.Steps
 
         private void CheckStringConcatenation(Pair pair)
         {
-            _blockState.Push(JsonGenerator.BlockState.Array);
+            _blockState.Push(JsonGenerator.BlockStateEnum.Array);
             _blockStateUnknown = false;
             if (((IPairWithInterpolation)pair).InterpolationItems != null) 
                 Visit(((IPairWithInterpolation) pair).InterpolationItems.ConvertAll(i => (Pair)i));
@@ -673,7 +673,7 @@ namespace Syntactik.Compiler.Steps
             if (!_blockStateUnknown)
             {
                 var blockState = _blockState.Peek();
-                if (blockState == JsonGenerator.BlockState.Array)
+                if (blockState == JsonGenerator.BlockStateEnum.Array)
                 {
                     if (string.IsNullOrEmpty(pair.Name) || pair.Delimiter == DelimiterEnum.None) return;
                     ReportErrorForEachNodeInAliasContext(
@@ -696,8 +696,8 @@ namespace Syntactik.Compiler.Steps
 
             //This element is the first element of the block. It decides if the block is array or object
             _blockState.Push(string.IsNullOrEmpty(pair.Name) || pair.Delimiter == DelimiterEnum.None
-                ? JsonGenerator.BlockState.Array
-                : JsonGenerator.BlockState.Object);
+                ? JsonGenerator.BlockStateEnum.Array
+                : JsonGenerator.BlockStateEnum.Object);
             _blockStateUnknown = false;
         }
 
