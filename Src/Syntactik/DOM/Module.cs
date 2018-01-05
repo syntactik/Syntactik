@@ -18,21 +18,28 @@
 
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// DOM object that corresponds to a single source of text, like file, string, stream etc.
+    /// Modules that belong to the same <see cref="CompileUnit"/> must have different names.
+    /// </summary>
     public class Module : Pair
     {
-        #region Fields
-
-        protected PairCollection<ModuleMember> _members;
-        protected PairCollection<NamespaceDefinition> _namespaceDefinitions;
-
         public string FileName;
+        private PairCollection<ModuleMember> _members;
+        private PairCollection<NamespaceDefinition> _namespaceDefinitions;
+        
         protected Document _moduleDocument;
 
-        #endregion
+        /// <summary>
+        /// Number of indent symbol needed to form a single indent.
+        /// </summary>
+        public int IndentMultiplicity { get; internal set; }
 
-        #region Properties
-        public int IndentMultiplicity { get; set; }
-        public char IndentSymbol { get; set; }
+        /// <summary>
+        /// Symbol used for indent (space or tab).
+        /// </summary>
+        public char IndentSymbol { get; internal set; }
+
 
         public virtual PairCollection<ModuleMember> Members
         {
@@ -61,11 +68,8 @@ namespace Syntactik.DOM
         }
         public virtual Document ModuleDocument => _moduleDocument;
 
-        #endregion
 
 
-
-        #region  Methods
         public override void Accept(IDomVisitor visitor)
         {
             visitor.Visit(this);
@@ -80,22 +84,19 @@ namespace Syntactik.DOM
             Value = null;
             PairValue = null;
 
-            var item = child as ModuleMember;
-            if (item != null)
+            if (child is ModuleMember item)
             {
                 Members.Add(item);
                 return;
             }
 
-            var ns = child as NamespaceDefinition;
-            if (ns != null)
+            if (child is NamespaceDefinition ns)
             {
                 NamespaceDefinitions.Add(ns);
                 return;
             }
 
-            var entity = child as Entity;
-            if (entity != null)
+            if (child is Entity entity)
             {
                 AddEntity(entity);
             }
@@ -122,6 +123,5 @@ namespace Syntactik.DOM
             };
             Members.Add(_moduleDocument);
         }
-        #endregion
     }
 }

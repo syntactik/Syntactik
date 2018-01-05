@@ -48,10 +48,13 @@ using System;
 namespace Syntactik.Compiler
 {
     /// <summary>
-    /// 
+    /// Represents a compiler step. <see cref="CompilerPipeline"/> consists of <see cref="ICompilerStep"/>.
     /// </summary>
     public interface ICompilerStep : ICompilerComponent, IDisposable
     {
+        /// <summary>
+        /// Executes a compiler step.
+        /// </summary>
         void Run();
     }
 }

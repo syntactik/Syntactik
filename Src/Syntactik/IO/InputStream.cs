@@ -19,17 +19,23 @@ using System;
 
 namespace Syntactik.IO
 {
+    /// <summary>
+    /// Implementation of <see cref="ICharStream"/> that takes input symbols from <see cref="string"/>.
+    /// </summary>
     public class InputStream: ICharStream, ITextSource, IDisposable
     {
         private int _index;
         private int _line;
         private int _column;
         private readonly int _length;
-        protected string Data;
+        private string Data;
         private int _next;
-        public const int Eof = -1;
+        private const int Eof = -1;
 
-
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="input">String providing characters for the stream.</param>
         public InputStream(string input)
         {
             Data = input;
@@ -40,6 +46,11 @@ namespace Syntactik.IO
             _next = _length > 0 ? Data[0] : -1;
         }
 
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="input">String providing characters for the stream.</param>
+        /// <param name="length">Number of characters that should be taken from the input string.</param>
         public InputStream(string input, int length)
         {
             Data = input;
@@ -50,6 +61,7 @@ namespace Syntactik.IO
             _next = _length > 0 ? Data[0] : -1;
         }
 
+        /// <inheritdoc />
         public void Consume()
         {
             if (_index >= _length)
@@ -86,7 +98,7 @@ namespace Syntactik.IO
         /// If i = -2 then the function returns the character prior to the previously read character, etc.
         /// If i = 1 then the function returns the current character which is the next character to be consumed, etc. 
         /// </param>
-        /// <returns></returns>
+        /// <returns>Result character.</returns>
         public int La(int i)
         {
             if (i > 0)
@@ -119,33 +131,42 @@ namespace Syntactik.IO
             return i  >= _length ? Eof : Data[i];
         }
 
+        /// <inheritdoc />
         public int Index => _index;
 
+        /// <inheritdoc />
         public int Length => _length;
 
+        /// <inheritdoc />
         public int Line => _line;
 
+        /// <inheritdoc />
         public int Column => _column;
 
+        /// <inheritdoc />
         public string GetText(int begin, int end)
         {
             if (begin < 0 || end < begin) return string.Empty;
             return Data.Substring(begin, end - begin + 1);
         }
 
+        /// <inheritdoc />
         public char GetChar(int index)
         {
             return Data[index];
         }
 
+        /// <inheritdoc />
         public void Reset()
         {
             _index = -1;
             _next = _length > 0 ? Data[0] : -1;
         }
 
+        /// <inheritdoc />
         public int Next => _next;
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Data = null;

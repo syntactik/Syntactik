@@ -22,7 +22,7 @@ using Syntactik.IO;
 namespace Syntactik.DOM
 {
     /// <summary>
-    /// Represents location of the character in the <see cref="Module"/> (file).
+    /// Represents immutable location of the character.
     /// </summary>
     public class CharLocation: IEquatable<CharLocation>, IComparable<CharLocation>
     {
@@ -59,15 +59,15 @@ namespace Syntactik.DOM
         /// <summary>
         /// Index of character in the file (starts from 0).
         /// </summary>
-        public int Index;
+        public readonly int Index;
         /// <summary>
         /// Line number (starts from 1).
         /// </summary>
-        public int Line;
+        public readonly int Line;
         /// <summary>
         /// Column number (starts from 1).
         /// </summary>
-        public int Column;
+        public readonly int Column;
 
         /// <inheritdoc />
         public int CompareTo(CharLocation other)

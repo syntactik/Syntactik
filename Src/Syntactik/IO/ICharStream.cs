@@ -17,15 +17,50 @@
 #endregion
 namespace Syntactik.IO
 {
+    /// <summary>
+    /// Represents base interface for stream of Unicode characters.
+    /// </summary>
     public interface ICharStream
     {
+        /// <summary>
+        /// Consumes one character.
+        /// </summary>
         void Consume();
+        /// <summary>
+        /// Initializes/resets state of the stream. 
+        /// </summary>
         void Reset();
+        /// <summary>
+        /// Implements look-ahead logic that allows to read characters without changing the current position of the stream.
+        /// </summary>
+        /// <param name="i">
+        /// if i = 0 then result is undefined.
+        /// if i = -1 then the function returns the previously read character. 
+        /// If i = -2 then the function returns the character prior to the previously read character, etc.
+        /// If i = 1 then the function returns the current character which is the next character to be consumed, etc. 
+        /// </param>
+        /// <returns>Result character.</returns>
         int La(int i);
+        /// <summary>
+        /// Current character. <b>Next</b> symbol to be consumed.
+        /// </summary>
         int Next { get; }
+        /// <summary>
+        /// Index of the last consumed character. -1 if input is in the initial state.
+        /// </summary>
         int Index { get; }
+        /// <summary>
+        /// Current line. Starts from 1.
+        /// </summary>
         int Line { get; }
+        /// <summary>
+        /// Number of consumed character since property Line changed the value. 0 if no characters 
+        /// has been consumed in the current line.
+        /// </summary>
         int Column { get; }
+        /// <summary>
+        /// Total number of symbols in the stream.
+        /// </summary>
         int Length { get; }
         
     }

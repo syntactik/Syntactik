@@ -17,9 +17,23 @@
 #endregion
 namespace Syntactik.IO
 {
+    /// <summary>
+    /// A source of characters or strings.
+    /// </summary>
     public interface ITextSource
     {
+        /// <summary>
+        /// Returns a string.
+        /// </summary>
+        /// <param name="begin">Start index.</param>
+        /// <param name="end">End index.</param>
+        /// <returns>Result string</returns>
         string GetText(int begin, int end);
+        /// <summary>
+        /// Returns a character.
+        /// </summary>
+        /// <param name="index">Index of character in the string, stream etc.</param>
+        /// <returns>Result character.</returns>
         char GetChar(int index);
     }
 }
