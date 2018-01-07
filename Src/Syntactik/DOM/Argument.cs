@@ -22,7 +22,6 @@ namespace Syntactik.DOM
     /// </summary>
     public class Argument : Entity, IContainer
     {
-
         private PairCollection<Entity> _entities;
 
         /// <inheritdoc />
@@ -38,6 +37,13 @@ namespace Syntactik.DOM
             }
         }
 
+        /// <summary>
+        /// Creates a new instance of <see cref="Argument"/>.
+        /// </summary>
+        public Argument(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null) : base(name, delimiter, value)
+        {
+        }
+
         /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
@@ -47,8 +53,11 @@ namespace Syntactik.DOM
         /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            Value = null;
-            PairValue = null;
+            if (Delimiter == DelimiterEnum.CE)
+            {
+                base.AppendChild(child);
+                return;
+            }
 
             if (child is Entity item)
             {

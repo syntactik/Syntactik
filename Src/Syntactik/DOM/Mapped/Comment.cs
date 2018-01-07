@@ -27,28 +27,55 @@ namespace Syntactik.DOM.Mapped
         /// 1 - single-line comment,
         /// 2 - multi-line comment.
         /// </summary>
-        public int CommentType { get; set; }
+        public int CommentType { get; }
         /// <summary>
         /// <see cref="Interval"/> used to define name of the pair. Always empty for <see cref="Comment"/>.
         /// </summary>
-        public Interval NameInterval { get; set; }
+        public Interval NameInterval { get; }
+
         /// <inheritdoc />
-        public Interval ValueInterval { get; set; }
+        public int NameQuotesType { get; }
+
+        /// <inheritdoc />
+        public Interval ValueInterval { get; }
+
+        /// <inheritdoc />
+        public int ValueQuotesType { get; }
+
         /// <summary>
         /// <see cref="Interval"/> used to define pair delimiter. Always empty for <see cref="Comment"/>.
         /// </summary>
-        public Interval DelimiterInterval { get; set; }
+        public Interval DelimiterInterval { get; }
+
         /// <summary>
         /// Type of the pair value. Always <see cref="Mapped.ValueType.None"/> for <see cref="Comment"/>.
         /// </summary>
-        public ValueType ValueType { get; set; }
+        public ValueType ValueType => ValueType.None;
+
         /// <summary>
         /// True if pair has a literal value or pair value. Always <b>true</b>> for <see cref="Comment"/>.
         /// </summary>
         public bool IsValueNode => true;
+
         /// <summary>
         /// Indent of pair value. Always 0 for <see cref="Comment"/>.
         /// </summary>
-        public int ValueIndent { get; set; }
+        public int ValueIndent => 0;
+
+        /// <summary>
+        /// Creates a new instance of <see cref="Comment"/>.
+        /// </summary>
+        public Comment(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null,
+            Interval nameInterval = null, Interval valueInterval = null, Interval delimiterInterval = null,
+            int nameQuotesType = 0, int valueQuotesType = 0, int commentType = 0) : base(name, delimiter, value)
+        {
+            ValueInterval = valueInterval;
+            DelimiterInterval = delimiterInterval;
+            NameInterval = nameInterval;
+            NameQuotesType = nameQuotesType;
+            ValueQuotesType = valueQuotesType;
+            CommentType = commentType;
+        }
+
     }
 }

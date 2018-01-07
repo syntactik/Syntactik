@@ -22,5 +22,11 @@ namespace Syntactik.DOM
     /// </summary>
     public abstract class Entity : Pair
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="Entity"/>.
+        /// </summary>
+        protected Entity(string name, DelimiterEnum delimiter, string value) : base(name, delimiter, value)
+        {
+        }
     }
 }

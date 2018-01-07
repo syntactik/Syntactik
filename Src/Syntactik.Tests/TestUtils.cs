@@ -24,6 +24,7 @@ using System.Text;
 using Syntactik.IO;
 using NUnit.Framework;
 using Syntactik.DOM;
+using Module = Syntactik.DOM.Mapped.Module;
 
 namespace Syntactik.Tests
 {
@@ -38,7 +39,7 @@ namespace Syntactik.Tests
             PrintCode(code);
 #endif
 
-            var parser = new Parser(new InputStream(code), new PairFactory(), new DOM.Module { Name = "Module" });
+            var parser = new Parser(new InputStream(code), new PairFactory(), new Module("Module"));
             var errorListener = new ErrorListener();
             parser.ErrorListeners.Add(errorListener);
 

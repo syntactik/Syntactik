@@ -146,10 +146,10 @@ namespace Syntactik.Tests
                 _sb.Append("\t");
                 _sb.Append(pair.GetType().Name);
                 _sb.Append(" ");
-                _sb.Append(QuoteTypeToChar(pair.NameQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
                 PrintNsPrefix(pair);
                 _sb.Append(pair.Name);
-                _sb.Append(QuoteTypeToChar(pair.NameQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
             }
             else
             {
@@ -161,10 +161,10 @@ namespace Syntactik.Tests
                 _sb.Append("\t");
                 _sb.Append(pair.GetType().Name);
                 _sb.Append(" ");
-                _sb.Append(QuoteTypeToChar(pair.NameQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
                 PrintNsPrefix(pair);
                 _sb.Append(pair.Name);
-                _sb.Append(QuoteTypeToChar(pair.NameQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
             }
         }
 
@@ -200,9 +200,9 @@ namespace Syntactik.Tests
             {
                 _sb.Append(Pair.DelimiterToString(pair.Delimiter));
                 _sb.Append(" ");
-                _sb.Append(QuoteTypeToChar(pair.ValueQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).ValueQuotesType));
                 PrintValue(pair);
-                _sb.Append(QuoteTypeToChar(pair.ValueQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).ValueQuotesType));
             }
             else if (pair.PairValue != null)
             {

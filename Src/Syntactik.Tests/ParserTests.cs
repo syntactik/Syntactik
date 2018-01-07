@@ -441,15 +441,15 @@ namespace Syntactik.Tests
             var pf = new PairFactory();
             const string code = @"el1:
     ";
-            var parser = new Parser(new InputStream(code), pf, new Module { Name = "Module" });
-            var m = (Module) parser.ParseModule();
+            var parser = new Parser(new InputStream(code), pf, new Module("Module", "" ));
+            var m = parser.ParseModule();
             var mp = (IMappedPair) m.ModuleDocument.Entities[0];
             Assert.AreEqual(1, mp.ValueIndent);
         }
 
 
         /// <summary>
-        /// Testing that closing paren is reported as end of pair.
+        /// Testing that closing parent is reported as end of pair.
         /// </summary>
         [Test]
         public void OnEndPairEvent()
@@ -462,14 +462,14 @@ namespace Syntactik.Tests
                     endInterval = interval;
             };
             var code = @"el1:(     )";
-            var parser = new Parser(new InputStream(code), pf, new Module {Name = "Module"});
+            var parser = new Parser(new InputStream(code), pf, new Module("Module"));
 
             parser.ParseModule();
             if (endInterval != null) Assert.AreEqual(')', code[endInterval.End.Index]);
         }
 
         /// <summary>
-        /// Testing that closing paren is reported as end of pair.
+        /// Testing that closing parent is reported as end of pair.
         /// </summary>
         [Test]
         public void OnEndPairEvent2()
@@ -478,7 +478,7 @@ namespace Syntactik.Tests
             var i = new List<int>();
             pf.OnEndPair += (pair, interval, endedByEof) => { i.Add(interval.Begin.Column); };
             var code = @"(1:(2=3)))";
-            var parser = new Parser(new InputStream(code), pf, new Module {Name = "Module"});
+            var parser = new Parser(new InputStream(code), pf, new Module("Module"));
 
             parser.ParseModule();
             Assert.AreEqual(4, i.Count);
@@ -495,7 +495,7 @@ namespace Syntactik.Tests
             pf.OnEndPair += (pair, interval, endedByEof) => { ebf = endedByEof; };
             var code = @"el1:
     ";
-            var parser = new Parser(new InputStream(code), pf, new Module {Name = "Module"});
+            var parser = new Parser(new InputStream(code), pf, new Module("Module"));
 
             parser.ParseModule();
             Assert.AreEqual(true, ebf);
@@ -512,7 +512,7 @@ namespace Syntactik.Tests
             pf.OnEndPair += (pair, interval, endedByEof) => { ebf = endedByEof; };
             var code = @"el1:
 ";
-            var parser = new Parser(new InputStream(code), pf, new Module {Name = "Module"});
+            var parser = new Parser(new InputStream(code), pf, new Module("Module"));
 
             parser.ParseModule();
             Assert.AreEqual(false, ebf);
@@ -528,7 +528,7 @@ namespace Syntactik.Tests
             var ebf = false;
             pf.OnEndPair += (pair, interval, endedByEof) => { ebf = endedByEof; };
             var code = @"el1:";
-            var parser = new Parser(new InputStream(code), pf, new Module {Name = "Module"});
+            var parser = new Parser(new InputStream(code), pf, new Module("Module"));
 
             parser.ParseModule();
             Assert.AreEqual(true, ebf);
@@ -544,7 +544,7 @@ namespace Syntactik.Tests
             var ebf = false;
             pf.OnEndPair += (pair, interval, endedByEof) => { ebf = endedByEof; };
             var code = @"el1";
-            var parser = new Parser(new InputStream(code), pf, new Module {Name = "Module"});
+            var parser = new Parser(new InputStream(code), pf, new Module("Module"));
 
             parser.ParseModule();
             Assert.AreEqual(true, ebf);
@@ -571,7 +571,7 @@ namespace Syntactik.Tests
 
 
 		";
-            var parser = new Parser(new InputStream(code), pf, new Module {Name = "Module"});
+            var parser = new Parser(new InputStream(code), pf, new Module("Module"));
 
             parser.ParseModule();
             Assert.IsNotNull(t);
@@ -599,7 +599,7 @@ namespace Syntactik.Tests
             };
             var code = @"el1:el2
 ";
-            var parser = new Parser(new InputStream(code), pf, new Module { Name = "Module" });
+            var parser = new Parser(new InputStream(code), pf, new Module("Module"));
 
             parser.ParseModule();
             Assert.IsNull(t);
@@ -622,7 +622,7 @@ namespace Syntactik.Tests
                 }
             };
             var code = @"el1:el2";
-            var parser = new Parser(new InputStream(code), pf, new Module { Name = "Module" });
+            var parser = new Parser(new InputStream(code), pf, new Module("Module"));
 
             parser.ParseModule();
             Assert.IsNotNull(t);
@@ -649,7 +649,7 @@ namespace Syntactik.Tests
                 }
             };
             var code = @"el=";
-            var parser = new Parser(new InputStream(code), pf, new Module { Name = "Module" });
+            var parser = new Parser(new InputStream(code), pf, new Module ("Module" ));
 
             parser.ParseModule();
             Assert.IsNotNull(t);
@@ -673,7 +673,7 @@ namespace Syntactik.Tests
               t = new Tuple<Pair, Interval, bool>(pair, interval, endedByEof);
             };
             var code = "el=text\r\n";
-            var parser = new Parser(new InputStream(code), pf, new Module { Name = "Module" });
+            var parser = new Parser(new InputStream(code), pf, new Module("Module"));
 
             parser.ParseModule();
             Assert.IsNotNull(t);
@@ -692,8 +692,8 @@ namespace Syntactik.Tests
         {
             var pf = new PairFactory();
             var code = "line 1\n\t\t\n\t\t";
-            var parser = new Parser(new InputStream(code), pf, new Module {Name = "Module"});
-            var module = (Module) parser.ParseModule();
+            var parser = new Parser(new InputStream(code), pf, new Module("Module"));
+            var module = parser.ParseModule();
             Assert.AreEqual(0, module.IndentMultiplicity);
             Assert.AreEqual('\t', module.IndentSymbol);
         }

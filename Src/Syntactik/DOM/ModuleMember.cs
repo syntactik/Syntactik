@@ -23,9 +23,13 @@ namespace Syntactik.DOM
 
         public virtual Module Module => (Parent as Module);
 
+        protected ModuleMember(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null):base(name, delimiter, value)
+        {
+        }
+
         public virtual PairCollection<NamespaceDefinition> NamespaceDefinitions
         {
-            get { return _namespaces ?? (_namespaces = new PairCollection<NamespaceDefinition>(this)); }
+            get => _namespaces ?? (_namespaces = new PairCollection<NamespaceDefinition>(this));
             set
             {
                 if (value != _namespaces)

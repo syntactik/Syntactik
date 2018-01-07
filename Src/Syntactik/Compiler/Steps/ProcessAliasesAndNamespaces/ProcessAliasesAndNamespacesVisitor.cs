@@ -140,23 +140,24 @@ namespace Syntactik.Compiler.Steps
             {
                 var mapped = (Scope) scope;
                 var pair = new Element
-                {
-                    Name = scope.Name,
-                    NameQuotesType = scope.NameQuotesType,
-                    NameInterval = mapped.NameInterval,
-                    Delimiter = scope.Delimiter,
-                    DelimiterInterval = mapped.DelimiterInterval,
-                    Value = scope.Value,
-                    ValueQuotesType = scope.ValueQuotesType,
-                    ValueInterval = mapped.ValueInterval,
-                    InterpolationItems = mapped.InterpolationItems,
-                    ValueIndent = mapped.ValueIndent,
-                    ValueType = mapped.ValueType
-                };
-                pair.Entities.AddRange(scope.Entities);
+                (
+                    scope.Name,
+                    nameQuotesType: mapped.NameQuotesType,
+                    nameInterval: mapped.NameInterval,
+                    delimiter: scope.Delimiter,
+                    delimiterInterval: mapped.DelimiterInterval,
+                    value: scope.Value,
+                    valueQuotesType: mapped.ValueQuotesType,
+                    valueInterval: mapped.ValueInterval,
+                    interpolationItems: mapped.InterpolationItems,
+                    valueIndent: mapped.ValueIndent,
+                    valueType: mapped.ValueType
+                );
+
+                pair.Entities.AddRangeOverrideParent(scope.Entities);
                 scope.Entities.Clear();
                 scope.Entities.Add(pair);
-                scope.Name = null;
+                ((Scope)scope).OverrideName(null);
             }
             base.Visit(scope);
             Visit(scope.PairValue);

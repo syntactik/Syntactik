@@ -149,7 +149,7 @@ namespace Syntactik.Compiler.Steps
 
                 var prefix = FindFreePrefix(ns.Name, destNsInfo.Namespaces);
 
-                destNsInfo.Namespaces.Add(new DOM.NamespaceDefinition{Name = prefix, Delimiter = DelimiterEnum.E, Value = ns.Value, ValueQuotesType = 0});
+                destNsInfo.Namespaces.Add(new NamespaceDefinition(prefix, DelimiterEnum.E, ns.Value));
             }
         }
 
@@ -316,7 +316,7 @@ namespace Syntactik.Compiler.Steps
         /// <param name="pair"></param>
         internal void ProcessNsPrefix(IMappedPair pair)
         {
-            var nsPrefix = ((DOM.INsNode) pair).NsPrefix;
+            var nsPrefix = ((INsNode) pair).NsPrefix;
 
             if (!string.IsNullOrEmpty(nsPrefix) && !nsPrefix.StartsWith("xml", StringComparison.OrdinalIgnoreCase))
             {
@@ -333,9 +333,9 @@ namespace Syntactik.Compiler.Steps
                     CurrentModuleMemberNsInfo.Namespaces.Add(ns);
                 else
                     //If namespace is already defined with different prefix then changing prefix on pair
-                    if (foundNs.Name != nsPrefix) ((INsNode) pair).NsPrefix = foundNs.Name;
+                    if (foundNs.Name != nsPrefix) ((INsNodeOverridable) pair).OverrideNsPrefix(foundNs.Name);
 
-                if (pair is Attribute attribute && attribute.Name == "type" && nsPrefix == "xsi")
+                if (pair is DOM.Mapped.Attribute attribute && attribute.Name == "type" && nsPrefix == "xsi")
                 {
                     var typeInfo = attribute.Value?.Split(':');
                     if (typeInfo?.Length > 1)
@@ -351,8 +351,10 @@ namespace Syntactik.Compiler.Steps
 
                         if (foundNs == null)
                             CurrentModuleMemberNsInfo.Namespaces.Add(ns);
-                        else
-                            if (foundNs.Name != nsPrefix) attribute.Value = $"{foundNs.Name}:{typeInfo[1]}";
+                        else if (foundNs.Name != nsPrefix)
+                        {
+                            attribute.OverrideValue($"{foundNs.Name}:{typeInfo[1]}");
+                        }
                     }
                 }
             }

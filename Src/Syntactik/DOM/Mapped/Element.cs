@@ -24,34 +24,59 @@ namespace Syntactik.DOM.Mapped
     /// <summary>
     /// Represents an <see cref="DOM.Element"/> mapped to the source code.
     /// </summary>
-    public class Element: DOM.Element, IMappedPair, IPairWithInterpolation, IChoiceNode
+    public class Element: DOM.Element, IMappedPair, IPairWithInterpolation, IChoiceNode, INsNodeOverridable
     {
         /// <inheritdoc />
-        public Interval NameInterval { get; set; }
+        public Interval NameInterval { get; }
 
         /// <inheritdoc />
-        public Interval ValueInterval { get; set; }
+        public int NameQuotesType { get; }
 
         /// <inheritdoc />
-        public Interval DelimiterInterval { get; set; }
+        public Interval ValueInterval { get; }
 
         /// <inheritdoc />
-        public ValueType ValueType { get; set; }
+        public int ValueQuotesType { get; }
+
+        /// <inheritdoc />
+        public Interval DelimiterInterval { get; }
+
+        /// <inheritdoc />
+        public ValueType ValueType { get; }
 
         /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
 
         /// <inheritdoc />
-        public List<object> InterpolationItems { get; set; }
+        public List<object> InterpolationItems { get; private set; }
 
         /// <inheritdoc />
-        public int ValueIndent { get; set; }
+        public int ValueIndent { get; }
 
         /// <inheritdoc />
         public List<object> ChoiceObjects => !IsChoice ? null : InterpolationItems;
 
         /// <inheritdoc />
         public bool IsChoice { get; private set; }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="Element"/>.
+        /// </summary>
+        public Element(string name = null, string nsPrefix = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null,
+            Interval nameInterval = null, Interval valueInterval = null, Interval delimiterInterval = null,
+            int nameQuotesType = 0, int valueQuotesType = 0, ValueType valueType = ValueType.None, List<object> interpolationItems = null,
+            int valueIndent = 0
+            ):base(name, delimiter, value, nsPrefix)
+        {
+            ValueInterval = valueInterval;
+            DelimiterInterval = delimiterInterval;
+            NameInterval = nameInterval;
+            NameQuotesType = nameQuotesType;
+            ValueQuotesType = valueQuotesType;
+            ValueType = valueType;
+            InterpolationItems = interpolationItems;
+            ValueIndent = valueIndent;
+        }
 
         /// <summary>
         /// Splits full name on namespace prefix and name.
@@ -90,5 +115,12 @@ namespace Syntactik.DOM.Mapped
             else
                 base.AppendChild(child);
         }
+
+        /// <inheritdoc />
+        public void OverrideNsPrefix(string nsPrefix)
+        {
+            _nsPrefix = nsPrefix;
+        }
+
     }
 }

@@ -29,31 +29,37 @@ namespace Syntactik.DOM.Mapped
         private List<Parameter> _parameters;
 
         /// <inheritdoc />
-        public AliasDefinition()
+        public AliasDefinition(string name, DelimiterEnum delimiter, string value) : base(name, delimiter, value)
         {
             SyncTime = DateTime.Now.Ticks;
         }
 
         /// <inheritdoc />
-        public Interval NameInterval { get; set; }
+        public Interval NameInterval { get; }
 
         /// <inheritdoc />
-        public Interval ValueInterval { get; set; }
+        public int NameQuotesType { get; }
 
         /// <inheritdoc />
-        public Interval DelimiterInterval { get; set; }
+        public Interval ValueInterval { get; }
 
         /// <inheritdoc />
-        public ValueType ValueType { get; set; }
+        public int ValueQuotesType { get; }
+
+        /// <inheritdoc />
+        public Interval DelimiterInterval { get; }
+
+        /// <inheritdoc />
+        public ValueType ValueType { get; }
 
         /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
 
         /// <inheritdoc />
-        public List<object> InterpolationItems { get; set; }
+        public List<object> InterpolationItems { get; private set; }
 
         /// <inheritdoc />
-        public int ValueIndent { get; set; }
+        public int ValueIndent { get; }
         internal long SyncTime { get; set; } //This field is used in completion.
 
         /// <summary>
@@ -83,6 +89,26 @@ namespace Syntactik.DOM.Mapped
         /// True if <see cref="DOM.AliasDefinition"/> has a circular reference.
         /// </summary>
         public bool HasCircularReference { get; set; }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="AliasDefinition"/>.
+        /// </summary>
+        public AliasDefinition(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null,
+            Interval nameInterval = null, Interval valueInterval = null, Interval delimiterInterval = null,
+            int nameQuotesType = 0, int valueQuotesType = 0, ValueType valueType = ValueType.None, List<object> interpolationItems = null,
+            int valueIndent = 0
+        ) : base(name, delimiter, value)
+        {
+            ValueInterval = valueInterval;
+            DelimiterInterval = delimiterInterval;
+            NameInterval = nameInterval;
+            NameQuotesType = nameQuotesType;
+            ValueQuotesType = valueQuotesType;
+            ValueType = valueType;
+            InterpolationItems = interpolationItems;
+            ValueIndent = valueIndent;
+        }
+
 
         /// <inheritdoc />
         public override void AppendChild(Pair child)

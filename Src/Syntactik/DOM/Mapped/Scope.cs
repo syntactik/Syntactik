@@ -22,27 +22,63 @@ namespace Syntactik.DOM.Mapped
     /// <summary>
     /// Represents <see cref="DOM.Scope"/> mapped to the source code.
     /// </summary>
-    public class Scope : DOM.Scope, IMappedPair, IPairWithInterpolation
+    public class Scope : DOM.Scope, IMappedPair, IPairWithInterpolation, INsNodeOverridable
     {
         /// <inheritdoc />
-        public Interval NameInterval { get; set; }
+        public Interval NameInterval { get; }
 
         /// <inheritdoc />
-        public Interval ValueInterval { get; set; }
+        public int NameQuotesType { get; }
 
         /// <inheritdoc />
-        public Interval DelimiterInterval { get; set; }
+        public Interval ValueInterval { get; }
 
         /// <inheritdoc />
-        public ValueType ValueType { get; set; }
+        public int ValueQuotesType { get; }
+
+        /// <inheritdoc />
+        public Interval DelimiterInterval { get; }
+
+        /// <inheritdoc />
+        public ValueType ValueType { get; }
 
         /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
 
         /// <inheritdoc />
-        public List<object> InterpolationItems { get; set; }
+        public List<object> InterpolationItems { get; }
 
         /// <inheritdoc />
-        public int ValueIndent { get; set; }
+        public int ValueIndent { get; }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="Scope"/>.
+        /// </summary>
+        public Scope(string name = null, string nsPrefix = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null,
+            Interval nameInterval = null, Interval valueInterval = null, Interval delimiterInterval = null,
+            int nameQuotesType = 0, int valueQuotesType = 0, ValueType valueType = ValueType.None, List<object> interpolationItems = null,
+            int valueIndent = 0
+        ) : base(name, delimiter, value, nsPrefix)
+        {
+            ValueInterval = valueInterval;
+            DelimiterInterval = delimiterInterval;
+            NameInterval = nameInterval;
+            NameQuotesType = nameQuotesType;
+            ValueQuotesType = valueQuotesType;
+            ValueType = valueType;
+            InterpolationItems = interpolationItems;
+            ValueIndent = valueIndent;
+        }
+
+        internal void OverrideName(string name)
+        {
+            _name = name;
+        }
+
+        /// <inheritdoc />
+        public void OverrideNsPrefix(string nsPrefix)
+        {
+            _nsPrefix = nsPrefix;
+        }
     }
 }

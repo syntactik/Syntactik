@@ -41,134 +41,134 @@ namespace Syntactik.DOM
         {
             var name = GetName(textSource, nameQuotesType, nameInterval);
             if (nameQuotesType > 0)
-                return new Mapped.Element()
-                {
-                    Name = name,
-                    NameQuotesType = nameQuotesType,
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = null,
-                    ValueIndent = valueIndent
-                };
+                return new Mapped.Element
+                (
+                    name,
+                    nameQuotesType: nameQuotesType,
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value : GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: null,
+                    valueIndent: valueIndent
+                );
             if (name.StartsWith("@"))
                 return new Mapped.Attribute
-                {
-                    NsPrefix = null,
-                    Name = name.Substring(1),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = null,
-                    ValueIndent = valueIndent
-                };
+                (
+                    name.Substring(1),
+                    null,
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: null,
+                    valueIndent: valueIndent
+                );
             if (name.StartsWith("!$"))
                 return new Mapped.AliasDefinition
-                {
-                    Name = name.Substring(2),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = null,
-                    ValueIndent = valueIndent
-                };
+                (
+                    name.Substring(2),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: null,
+                    valueIndent: valueIndent
+                );
             if (name.StartsWith("!#"))
                 return new Mapped.NamespaceDefinition
-                {
-                    Name = name.Substring(2),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = null,
-                    ValueIndent = valueIndent
-                };
+                (
+                    name.Substring(2),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: null,
+                    valueIndent: valueIndent
+                );
             if (name.StartsWith("!%"))
                 return new Mapped.Parameter
-                {
-                    Name = name.Substring(2),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = null,
-                    ValueIndent = valueIndent
-                };
+                (
+                    name.Substring(2),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: null,
+                    valueIndent: valueIndent
+                );
             if (name.StartsWith("!"))
                 return new Mapped.Document
-                {
-                    Name = name.Substring(1),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = null,
-                    ValueIndent = valueIndent
-                };
+                (
+                     name.Substring(1),
+                     nameInterval: nameInterval,
+                     delimiter: delimiter,
+                     delimiterInterval: delimiterInterval,
+                     value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                     valueQuotesType: valueQuotesType,
+                     valueInterval: valueInterval,
+                     interpolationItems: null,
+                     valueIndent: valueIndent
+                );
             if (name.StartsWith("$"))
-                return new Mapped.Alias()
-                {
-                    Name = name.Substring(1),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = null,
-                    ValueIndent = valueIndent
-                };
+                return new Mapped.Alias
+                (
+                    name.Substring(1),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: null,
+                    valueIndent: valueIndent
+                );
             if (name.StartsWith("%"))
-                return new Mapped.Argument()
-                {
-                    Name = name.Substring(1),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = null,
-                    ValueIndent = valueIndent
-                };
+                return new Mapped.Argument
+                (
+                    name.Substring(1),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: null,
+                    valueIndent: valueIndent
+                );
             if (name.StartsWith("#"))
                 return new Mapped.Scope
-                {
-                    NsPrefix = name.Substring(1),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval
-                };
+                ( 
+                    nsPrefix: name.Substring(1),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval
+                );
             var tuple = Mapped.Element.GetNameAndNs(name, nameQuotesType);
-            return new Mapped.Element()
-            {
-                NsPrefix = string.IsNullOrEmpty(tuple.Item1) ? null : tuple.Item1,
-                Name = tuple.Item2,
-                NameQuotesType = nameQuotesType,
-                NameInterval = nameInterval,
-                Delimiter = delimiter,
-                DelimiterInterval = delimiterInterval,
-                Value = GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
-                ValueQuotesType = valueQuotesType,
-                ValueInterval = valueInterval,
-                InterpolationItems = null,
-                ValueIndent = valueIndent
-            };
+            return new Mapped.Element
+            (
+                tuple.Item2,
+                string.IsNullOrEmpty(tuple.Item1) ? null : tuple.Item1,
+                nameQuotesType: nameQuotesType,
+                nameInterval: nameInterval,
+                delimiter: delimiter,
+                delimiterInterval: delimiterInterval,
+                value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                valueQuotesType: valueQuotesType,
+                valueInterval: valueInterval,
+                interpolationItems: null,
+                valueIndent: valueIndent
+            );
         }
 
         private static string GetName(ITextSource input, int nameQuotesType, Interval nameInterval)

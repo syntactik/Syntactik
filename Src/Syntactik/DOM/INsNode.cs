@@ -25,6 +25,6 @@ namespace Syntactik.DOM
         /// <summary>
         /// Namespace prefix.
         /// </summary>
-        string NsPrefix { get; set; }
+        string NsPrefix { get; }
     }
 }

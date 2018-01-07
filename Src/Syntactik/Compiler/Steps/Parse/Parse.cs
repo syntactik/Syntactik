@@ -78,7 +78,7 @@ namespace Syntactik.Compiler.Steps
 
         protected virtual Module CreateModule(string fileName)
         {
-            return new DOM.Mapped.Module { Name = Path.GetFileNameWithoutExtension(fileName), Value = null, FileName = fileName };
+            return new DOM.Mapped.Module(name: Path.GetFileNameWithoutExtension(fileName), fileName: fileName);
         }
 
         protected virtual Parser GetParser(Module module, ICharStream input)

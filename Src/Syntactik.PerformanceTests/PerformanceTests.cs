@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Syntactik.DOM;
 using YamlDotNet.RepresentationModel;
+using Module = Syntactik.DOM.Module;
 
 namespace Syntactik.PerformanceTests
 {
@@ -25,7 +26,7 @@ namespace Syntactik.PerformanceTests
             TestContext.WriteLine("Starting BigFile2");
             var code = LoadTestCodeRaw();
 
-            var parser = new Parser(new InputStream(code), new PairFactory(), new DOM.Module {Name = "Module" });
+            var parser = new Parser(new InputStream(code), new PairFactory(), new Module("Module"));
             var t1 = Environment.TickCount;
             var m = parser.ParseModule();
             var t2 = Environment.TickCount;

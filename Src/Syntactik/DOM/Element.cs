@@ -23,6 +23,20 @@ namespace Syntactik.DOM
     public class Element : Entity, INsNode, IContainer
     {
         private PairCollection<Entity> _entities;
+        internal string _nsPrefix;
+
+        /// <summary>
+        /// Namespace prefix of the element.
+        /// </summary>
+        public virtual string NsPrefix => _nsPrefix;
+
+        /// <summary>
+        /// Creates a new instance of <see cref="Element"/>.
+        /// </summary>
+        public Element(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null, string nsPrefix = null) : base(name, delimiter, value)
+        {
+            _nsPrefix = nsPrefix;
+        }
 
         /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
@@ -33,8 +47,11 @@ namespace Syntactik.DOM
         /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            Value = null;
-            PairValue = null;
+            if (Delimiter == DelimiterEnum.CE)
+            {
+                base.AppendChild(child);
+                return;
+            }
 
             if (child is Entity item)
             {
@@ -45,7 +62,6 @@ namespace Syntactik.DOM
                 base.AppendChild(child);
             }
         }
-
 
         /// <inheritdoc />
         public virtual PairCollection<Entity> Entities
@@ -59,10 +75,5 @@ namespace Syntactik.DOM
                 _entities = value;
             }
         }
-
-        /// <summary>
-        /// Namespace prefix of the element.
-        /// </summary>
-        public virtual string NsPrefix { get; set; }
     }
 }

@@ -25,29 +25,56 @@ namespace Syntactik.DOM.Mapped
     public class Parameter: DOM.Parameter, IMappedPair, IPairWithInterpolation
     {
         /// <inheritdoc />
-        public Interval NameInterval { get; set; }
+        public Interval NameInterval { get; }
 
         /// <inheritdoc />
-        public Interval ValueInterval { get; set; }
+        public int NameQuotesType { get; }
 
         /// <inheritdoc />
-        public Interval DelimiterInterval { get; set; }
+        public Interval ValueInterval { get; }
 
         /// <inheritdoc />
-        public ValueType ValueType { get; set; }
+        public int ValueQuotesType { get; }
 
         /// <inheritdoc />
-        public virtual bool IsValueNode { get; set; }
+        public Interval DelimiterInterval { get; }
+
+        /// <inheritdoc />
+        public ValueType ValueType { get; }
+
+        /// <inheritdoc />
+        public virtual bool IsValueNode { get; private set; }
+
+        /// <inheritdoc />
+        public List<object> InterpolationItems { get; private set; }
+
+        /// <inheritdoc />
+        public int ValueIndent { get; }
+
         /// <summary>
         /// <see cref="AliasDefinition"/> where the parameter is defined.
         /// </summary>
-        public AliasDefinition AliasDefinition { get; set; }
+        public AliasDefinition AliasDefinition { get; protected internal set; }
 
-        /// <inheritdoc />
-        public List<object> InterpolationItems { get; set; }
-
-        /// <inheritdoc />
-        public int ValueIndent { get; set; }
+        /// <summary>
+        /// Creates a new instance of <see cref="Parameter"/>.
+        /// </summary>
+        public Parameter(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null,
+            Interval nameInterval = null, Interval valueInterval = null, Interval delimiterInterval = null,
+            int nameQuotesType = 0, int valueQuotesType = 0, ValueType valueType = ValueType.None, List<object> interpolationItems = null,
+            int valueIndent = 0, bool isValueNode = false
+        ) : base(name, delimiter, value)
+        {
+            ValueInterval = valueInterval;
+            DelimiterInterval = delimiterInterval;
+            NameInterval = nameInterval;
+            NameQuotesType = nameQuotesType;
+            ValueQuotesType = valueQuotesType;
+            ValueType = valueType;
+            InterpolationItems = interpolationItems;
+            ValueIndent = valueIndent;
+            IsValueNode = isValueNode;
+        }
 
         /// <inheritdoc />
         public override void InitializeParent(Pair parent)

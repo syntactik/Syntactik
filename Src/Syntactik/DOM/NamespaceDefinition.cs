@@ -23,6 +23,11 @@ namespace Syntactik.DOM
     public class NamespaceDefinition : Pair
     {
         /// <inheritdoc />
+        public NamespaceDefinition(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null) : base(name, delimiter, value)
+        {
+        }
+
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
             visitor.Visit(this);

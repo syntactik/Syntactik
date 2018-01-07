@@ -19,16 +19,19 @@ using System.Collections.Generic;
 
 namespace Syntactik.DOM.Mapped
 {
-    class MappedPair: Pair, IMappedPair 
+    internal class MappedPair: IMappedPair 
     {
-        public override void Accept(IDomVisitor visitor)
-        {
-        }
+        public string Name { get; set; }
+        public Pair PairValue { get; set; }
+        public string Value { get; set; }
+        public DelimiterEnum Delimiter { get; set; }
 
-        public static Pair EmptyPair { get; } = new MappedPair {Name = "EmptyPair"};
+        public static MappedPair EmptyPair { get; } = new MappedPair{ Name = "EmptyPair" };
 
         public Interval NameInterval { get; set; }
+        public int NameQuotesType { get; set; }
         public Interval ValueInterval { get; set; }
+        public int ValueQuotesType { get; set; }
         public Interval DelimiterInterval { get; set; }
         public ValueType ValueType { get; set; }
         public bool IsValueNode { get; set; }

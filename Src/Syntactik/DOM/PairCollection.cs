@@ -23,11 +23,9 @@ namespace Syntactik.DOM
 {
     public class PairCollection<T> : ICollection<T> where T : Pair
     {
-        // Fields
         private readonly List<T> _list;
         private Pair _parent;
 
-        // Methods
         public PairCollection()
         {
             _list = new List<T>();
@@ -51,6 +49,17 @@ namespace Syntactik.DOM
             foreach (T local in items)
             {
                 Add(local);
+            }
+            return this;
+        }
+
+        internal PairCollection<T> AddRangeOverrideParent(IEnumerable<T> items)
+        {
+            if (items == null) return this;
+            foreach (T local in items)
+            {
+                local.InitializeOverrideParent(_parent);
+                _list.Add(local);
             }
             return this;
         }
@@ -146,7 +155,7 @@ namespace Syntactik.DOM
             }
             set
             {
-                if (_list != null && _list[index] != value)
+                if (_list != null && !ReferenceEquals(_list[index], value))
                 {
                     _list[index] = value;
                 }
@@ -155,7 +164,6 @@ namespace Syntactik.DOM
 
         public Pair Parent => _parent;
 
-        public PairCollection<T> SyncRoot => this;
     }
 
 

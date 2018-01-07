@@ -23,8 +23,32 @@ namespace Syntactik.DOM.Mapped
     /// <summary>
     /// Represent a <see cref="Module"/> mapped to the source code.
     /// </summary>
-    public class Module : DOM.Module
+    public class Module : DOM.Module, IMappedPair
     {
+        /// <inheritdoc />
+        public Interval NameInterval => Interval.Empty;
+
+        /// <inheritdoc />
+        public int NameQuotesType => 0;
+
+        /// <inheritdoc />
+        public Interval ValueInterval => Interval.Empty;
+
+        /// <inheritdoc />
+        public int ValueQuotesType => 0;
+
+        /// <inheritdoc />
+        public Interval DelimiterInterval => Interval.Empty;
+
+        /// <inheritdoc />
+        public ValueType ValueType => ValueType.None;
+
+        /// <inheritdoc />
+        public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
+
+        /// <inheritdoc />
+        public int ValueIndent => 0;
+
         /// <summary>
         /// 
         /// </summary>
@@ -45,6 +69,12 @@ namespace Syntactik.DOM.Mapped
         }
 
         private TargetFormats _targetFormat;
+
+
+        public Module(string name, string fileName = null):base(name, fileName)
+        {
+        }
+
         /// <summary>
         /// Target format of the module. XML or JSON, for ex.
         /// </summary>

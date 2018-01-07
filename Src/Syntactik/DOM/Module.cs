@@ -16,6 +16,8 @@
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 
+using System;
+
 namespace Syntactik.DOM
 {
     /// <summary>
@@ -24,7 +26,6 @@ namespace Syntactik.DOM
     /// </summary>
     public class Module : Pair
     {
-        public string FileName;
         private PairCollection<ModuleMember> _members;
         private PairCollection<NamespaceDefinition> _namespaceDefinitions;
         
@@ -40,10 +41,12 @@ namespace Syntactik.DOM
         /// </summary>
         public char IndentSymbol { get; internal set; }
 
+        public string FileName { get; }
+
 
         public virtual PairCollection<ModuleMember> Members
         {
-            get { return _members ?? (_members = new PairCollection<ModuleMember>(this)); }
+            get => _members ?? (_members = new PairCollection<ModuleMember>(this));
             set
             {
                 if (value != _members)
@@ -56,7 +59,7 @@ namespace Syntactik.DOM
 
         public virtual PairCollection<NamespaceDefinition> NamespaceDefinitions
         {
-            get { return _namespaceDefinitions ?? (_namespaceDefinitions = new PairCollection<NamespaceDefinition>(this)); }
+            get => _namespaceDefinitions ?? (_namespaceDefinitions = new PairCollection<NamespaceDefinition>(this));
             set
             {
                 if (value != _namespaceDefinitions)
@@ -75,14 +78,13 @@ namespace Syntactik.DOM
             visitor.Visit(this);
         }
 
-        public Module(): base(DelimiterEnum.C)
+        public Module(string name, string fileName = null): base(name, DelimiterEnum.C)
         {
+            FileName = fileName;
         }
 
         public override void AppendChild(Pair child)
         {
-            Value = null;
-            PairValue = null;
 
             if (child is ModuleMember item)
             {
@@ -116,11 +118,10 @@ namespace Syntactik.DOM
         protected void CreateModuleDocument()
         {
             _moduleDocument = new Mapped.Document
-            {
-                Name = Name,
-                NameInterval = new Interval(new CharLocation(1,1,1), new CharLocation(1, 1, 1)),
-                Delimiter = DelimiterEnum.None
-            };
+            (
+                Name,
+                nameInterval : new Interval(new CharLocation(1,1,1), new CharLocation(1, 1, 1))
+            );
             Members.Add(_moduleDocument);
         }
     }

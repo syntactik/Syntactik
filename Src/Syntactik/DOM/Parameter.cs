@@ -39,6 +39,10 @@ namespace Syntactik.DOM
             }
         }
 
+        /// <inheritdoc />
+        public Parameter(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null) : base(name, delimiter, value)
+        {
+        }
 
         /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
@@ -49,8 +53,11 @@ namespace Syntactik.DOM
         /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            Value = null;
-            PairValue = null;
+            if (Delimiter == DelimiterEnum.CE)
+            {
+                base.AppendChild(child);
+                return;
+            }
 
             if (child is Entity item)
             {

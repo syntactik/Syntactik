@@ -63,126 +63,134 @@ namespace Syntactik.Compiler.Steps
             if (nameQuotesType > 0)
             {
                 pair = new Element
-                {
-                    Name = VerifyElementName(nameText, nameInterval, _module),
-                    NameQuotesType = nameQuotesType,
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyElementName(nameText, nameInterval, _module),
+                    nameQuotesType: nameQuotesType,
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                );
             }
             else if (nameText.StartsWith("@"))
             {
                 var tuple = Element.GetNameAndNs(nameText.Substring(1), nameQuotesType);
                 var ns = string.IsNullOrEmpty(tuple.Item1) ? null : tuple.Item1;
                 pair = new Attribute
-                {
-                    NsPrefix = ns,
-                    Name = VerifyName(tuple.Item2, nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyName(tuple.Item2, nameInterval, _module),
+                    ns,
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                );
             }
             else if (nameText.StartsWith("!$"))
             {
                 pair = new AliasDefinition
-                {
-                    Name = VerifyName(nameText.Substring(2), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyName(nameText.Substring(2), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                );
             }
             else if (nameText.StartsWith("!#"))
             {
                 pair = new NamespaceDefinition
-                {
-                    Name = VerifyNsName(nameText.Substring(2), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyNsName(nameText.Substring(2), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                );
             }
             else if (nameText.StartsWith("!%"))
             {
                 pair = new Parameter
-                {
-                    Name = VerifyNsName(nameText.Substring(2), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyNsName(nameText.Substring(2), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                );
             }
             else if (nameText.StartsWith("!"))
             {
                 pair = new Document
-                {
-                    Name = VerifyName(nameText.Substring(1), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyName(nameText.Substring(1), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                );
             }
             else if (nameText.StartsWith("$"))
             {
                 pair = new Alias
-                {
-                    Name = VerifyName(nameText.Substring(1), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyName(nameText.Substring(1), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                );
             }
             else if (nameText.StartsWith("%"))
             {
                 pair = new Argument
-                {
-                    Name = VerifyName(nameText.Substring(1), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyName(nameText.Substring(1), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                );
             }
             else if (nameText.StartsWith("#"))
             {
@@ -192,33 +200,36 @@ namespace Syntactik.Compiler.Steps
                 if (ns == null)
                 {
                     pair = new Scope
-                    {
-                        NsPrefix = VerifyScopeName(nameText.Substring(1), nameInterval, _module),
-                        NameInterval = nameInterval,
-                        Delimiter = delimiter,
-                        DelimiterInterval = delimiterInterval,
-                        Value = value.Item1,
-                        ValueQuotesType = valueQuotesType,
-                        ValueInterval = valueInterval,
-                        InterpolationItems = value.Item2,
-                        ValueIndent = valueIndent
-                    };
+                    (
+                        null,
+                        VerifyScopeName(nameText.Substring(1), nameInterval, _module),
+                        nameInterval: nameInterval,
+                        delimiter: delimiter,
+                        delimiterInterval: delimiterInterval,
+                        value: value.Item1,
+                        valueQuotesType: valueQuotesType,
+                        valueInterval: valueInterval,
+                        interpolationItems: value.Item2,
+                        valueIndent: valueIndent,
+                        valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                    );
                 }
                 else
                 {
                     pair = new Scope
-                    {
-                        NsPrefix = VerifyScopeName(ns, nameInterval, _module),
-                        Name = VerifyElementName(tuple.Item2, nameInterval, _module),
-                        NameInterval = nameInterval,
-                        Delimiter = delimiter,
-                        DelimiterInterval = delimiterInterval,
-                        Value = value.Item1,
-                        ValueQuotesType = valueQuotesType,
-                        ValueInterval = valueInterval,
-                        InterpolationItems = value.Item2,
-                        ValueIndent = valueIndent
-                    };
+                    (
+                        VerifyElementName(tuple.Item2, nameInterval, _module),
+                        VerifyScopeName(ns, nameInterval, _module),
+                        nameInterval: nameInterval,
+                        delimiter: delimiter,
+                        delimiterInterval: delimiterInterval,
+                        value: value.Item1,
+                        valueQuotesType: valueQuotesType,
+                        valueInterval: valueInterval,
+                        interpolationItems: value.Item2,
+                        valueIndent: valueIndent,
+                        valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                    );
                 }
             }
             else
@@ -227,21 +238,20 @@ namespace Syntactik.Compiler.Steps
                 var ns = string.IsNullOrEmpty(tuple.Item1) ? null : tuple.Item1;
 
                 pair = new Element
-                {
-                    NsPrefix = VerifyScopeName(ns, nameInterval, _module),
-                    Name = VerifyElementName(tuple.Item2, nameInterval, _module),
-                    NameQuotesType = nameQuotesType,
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyElementName(tuple.Item2, nameInterval, _module),
+                    VerifyScopeName(ns, nameInterval, _module),
+                    nameInterval: nameInterval,
+                    delimiter: delimiter,
+                    delimiterInterval: delimiterInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                );
             }
-            SetValueType(pair, delimiter, value.Item1, valueQuotesType);
             return (Pair) pair;
         }
 
@@ -300,47 +310,41 @@ namespace Syntactik.Compiler.Steps
             return VerifyNsName(name, nameInterval, module);
         }
 
-        private void SetValueType(IMappedPair pair, DelimiterEnum delimiter, string value, int valueQuotesType)
+        private ValueType GetValueType(DelimiterEnum delimiter, string value, int valueQuotesType)
         {
             switch (delimiter)
             {
                 case DelimiterEnum.CE:
-                    pair.ValueType = ValueType.PairValue;
-                    return;
+                    return ValueType.PairValue;
                 case DelimiterEnum.EC:
-                    pair.ValueType = ValueType.Concatenation;
-                    return;
+                    return ValueType.Concatenation;
                 case DelimiterEnum.ECC:
-                    pair.ValueType = ValueType.LiteralChoice;
-                    return;
+                    return ValueType.LiteralChoice;
                 case DelimiterEnum.C:
                 case DelimiterEnum.CC:
                 case DelimiterEnum.CCC:
-                    pair.ValueType = ValueType.Object;
-                    return;
+                    return ValueType.Object;
             }
-            if (value == null) return;
+            if (value == null) return ValueType.None;
 
             if (valueQuotesType == 1)
             {
-                pair.ValueType = ValueType.SingleQuotedString;
-                return;
+                return ValueType.SingleQuotedString;
             }
             if (valueQuotesType == 2)
             {
-                pair.ValueType = ValueType.DoubleQuotedString;
-                return;
+                return ValueType.DoubleQuotedString;
             }
             if (delimiter == DelimiterEnum.E)
             {
-                pair.ValueType = GetJsonValueType(value, ValueType.FreeOpenString);
-                return;
+                return GetJsonValueType(value, ValueType.FreeOpenString);
             }
 
             if (delimiter == DelimiterEnum.EE)
             {
-                pair.ValueType = GetJsonValueType(value, ValueType.OpenString);
+                return GetJsonValueType(value, ValueType.OpenString);
             }
+            return ValueType.None;
         }
 
         private ValueType GetJsonValueType(string value, ValueType defaultType)
@@ -572,14 +576,14 @@ namespace Syntactik.Compiler.Steps
                 context.Errors.Add(CompilerErrorFactory.ParserError("Missing closing parenthesis.", module.FileName, line, column + match.Length));
             }
             var parameter = new Parameter
-            {
-                Name = match.Value.TrimStart('\\', '!', '%', '(', '\t', ' ').TrimEnd(')', '\t', ' '),
-                NameInterval = new Interval(new CharLocation(line, column, -1),
+            (
+                name : match.Value.TrimStart('\\', '!', '%', '(', '\t', ' ').TrimEnd(')', '\t', ' '),
+                nameInterval : new Interval(new CharLocation(line, column, -1),
                     new CharLocation(line, column + match.Value.Length, -1)),
-                Delimiter = DelimiterEnum.None,
-                ValueType = ValueType.Empty,
-                IsValueNode = true
-            };
+                delimiter : DelimiterEnum.None,
+                valueType : ValueType.Empty,
+                isValueNode : true
+            );
             return parameter;
         }
 
@@ -591,15 +595,15 @@ namespace Syntactik.Compiler.Steps
                 context.Errors.Add(CompilerErrorFactory.ParserError("Missing closing parenthesis.", module.FileName, line, column + match.Length));
             }
             var alias = new Alias
-            {
-                Name = match.Value.TrimStart('\\', '$', '(', '\t', ' ').TrimEnd(')', '\t', ' '),
-                NameInterval = new Interval(new CharLocation(line, column, -1),
+            (
+                name : match.Value.TrimStart('\\', '$', '(', '\t', ' ').TrimEnd(')', '\t', ' '),
+                nameInterval : new Interval(new CharLocation(line, column, -1),
                     new CharLocation(line, column + match.Value.Length, -1)),
-                Delimiter = DelimiterEnum.None,
-                Value = null,
-                ValueType = ValueType.Empty,
-                IsValueNode = true
-            };
+                delimiter : DelimiterEnum.None,
+                value : null,
+                valueType : ValueType.Empty,
+                isValueNode : true
+            );
             return alias;
         }
 
@@ -623,7 +627,11 @@ namespace Syntactik.Compiler.Steps
         {
             var value = GetValueFromValueInterval(textSource, DelimiterEnum.None, 0, interval.Begin.Index + 3,
                 interval.End.Index - (commentType == 2 ? 3 : 0), 0);
-            return new DOM.Mapped.Comment {CommentType = commentType, ValueInterval = interval, Value = value};
+            return new DOM.Mapped.Comment(
+                commentType: commentType,
+                value: value,
+                valueInterval: interval
+            );
         }
     }
 }

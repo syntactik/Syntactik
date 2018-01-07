@@ -23,59 +23,32 @@ namespace Syntactik.DOM
     /// <summary>
     /// Base class for all DOM classes. 
     /// </summary>
-    public abstract class Pair{
-        private string _value;
-        private Pair _pairValue;
+    public abstract class Pair
+    {
         private Pair _parent;
+        internal string _name;
         private DelimiterEnum _delimiter;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Pair"/> class.
-        /// </summary>
-        protected Pair()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Pair"/> class.
-        /// This constructor is used if pair descendant has default value of delimiter.
-        /// </summary>
-        /// <param name="delimiter"></param>
-        protected Pair(DelimiterEnum delimiter)
-        {
-            _delimiter = delimiter;
-        }
+        internal string _value;
 
         /// <summary>
         /// Name of the pair.
         /// </summary>
-        public virtual string Name { get; set; }
+        public virtual string Name => _name;
 
         /// <summary>
-        /// Pair value of the pair.
+        /// Gets or sets a value of pair assignment.
         /// </summary>
-        public virtual Pair PairValue
-        {
-            get => _pairValue;
-            set
-            {
-                _pairValue = value;
-                _value = null;
-            }
-        }
+        public virtual DelimiterEnum Delimiter => _delimiter;
+
+        /// <summary>
+        /// Pair value of the pair. Use method <see cref="AppendChild"/> to set value of this property.
+        /// </summary>
+        public virtual Pair PairValue { get; private set; }
 
         /// <summary>
         /// Literal value of the pair.
         /// </summary>
-        public virtual string Value
-        {
-            get => _value;
-            set
-            {
-                _value = value;
-                _pairValue = null;
-            }
-        }
+        public virtual string Value => _value;
 
         /// <summary>
         /// If true then the pair has either literal value or pair value.
@@ -87,35 +60,68 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
-        /// Gets or sets a value of pair delimiter.
+        /// Creates a new instance of the <see cref="Pair"/> class.
         /// </summary>
-        public virtual DelimiterEnum Delimiter
+        protected Pair(string name, DelimiterEnum delimiter, string value)
         {
-            get => _delimiter;
-            set => _delimiter = value;
+            _name = name;
+            _delimiter = delimiter;
+            _value = value;
         }
 
         /// <summary>
-        /// Stores info about quotes used to define name of the pair.
-        /// 0 - no quotes
-        /// 1 - single quotes
-        /// 2 - double quotes
+        /// Creates a new instance of the <see cref="Pair"/> class.
         /// </summary>
-        public virtual int NameQuotesType { get; set; }
+        protected Pair(string name, DelimiterEnum delimiter)
+        {
+            _name = name;
+            _delimiter = delimiter;
+        }
 
         /// <summary>
-        /// Stores info about quotes used to define value of the pair.
-        /// 0 - no quotes
-        /// 1 - single quotes
-        /// 2 - double quotes
+        /// Creates a new instance of the <see cref="Pair"/> class.
         /// </summary>
-        public virtual int ValueQuotesType { get; set; }
+        protected Pair(DelimiterEnum delimiter, string value)
+        {
+            _delimiter = delimiter;
+            _value = value;
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="Pair"/> class.
+        /// </summary>
+        protected Pair(string name)
+        {
+            _name = name;
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="Pair"/> class.
+        /// </summary>
+        protected Pair(DelimiterEnum delimiter)
+        {
+            _delimiter = delimiter;
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="Pair"/> class.
+        /// </summary>
+        protected Pair()
+        {
+        }
 
         /// <summary>
         /// This method is called when the pair is added as child to another pair.
         /// </summary>
         /// <param name="parent">Parent of the pair.</param>
         public virtual void InitializeParent(Pair parent)
+        {
+            if (_parent != null)
+                throw new InvalidOperationException("Parent is already initialized.");
+            _parent = parent;
+        }
+
+        internal void InitializeOverrideParent(Pair parent)
         {
             _parent = parent;
         }
@@ -126,18 +132,23 @@ namespace Syntactik.DOM
         public virtual Pair Parent => _parent;
 
         /// <summary>
-        /// Method is a part the <see href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor pattern</see> implementation.
+        /// Method is a part of the <see href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor pattern</see> implementation.
         /// </summary>
         /// <param name="visitor">Visitor object</param>
         public abstract void Accept(IDomVisitor visitor);
 
         /// <summary>
-        /// Adds another pair as a child.
+        /// Adds another pair as a child. If pair has "pair assignment" <b>:=</b> then the method initializes property PairValue.
         /// </summary>
         /// <param name="child">Child pair to be added</param>
         public virtual void AppendChild(Pair child)
         {
-            throw new NotSupportedException(new StringBuilder("Cannot add ").Append(child.GetType().Name).Append(" in ").Append(GetType().Name).ToString());
+            if (Delimiter != DelimiterEnum.CE)
+                throw new NotSupportedException(new StringBuilder("Cannot add ").Append(child.GetType().Name)
+                    .Append(" in ").Append(GetType().Name).ToString());
+            if (PairValue != null) throw new InvalidOperationException("PairValue is already initialized.");
+            PairValue = child;
+            child.InitializeParent(this);
         }
 
         /// <summary>

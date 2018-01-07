@@ -52,15 +52,6 @@ namespace Syntactik
         /// Creates instance of the <see cref="Parser"/>.
         /// </summary>
         /// <param name="input">Stream of characters for parsing.</param>
-        public Parser(ICharStream input) : this(input, new PairFactory(),
-            new DOM.Mapped.Module {Name = "root", Delimiter = DelimiterEnum.C})
-        {
-        }
-
-        /// <summary>
-        /// Creates instance of the <see cref="Parser"/>.
-        /// </summary>
-        /// <param name="input">Stream of characters for parsing.</param>
         /// <param name="pairFactory">Pair factory is used to create DOM structure of the Syntactik document.</param>
         /// <param name="root"><see cref="Module"/> object is used as root of DOM structure.</param>
         public Parser(ICharStream input, IPairFactory pairFactory, Module root)
@@ -241,7 +232,7 @@ namespace Syntactik
                 {
                     //Quoted ML string ended
                     _input.Consume();
-                    ((IMappedPair) p).ValueInterval =
+                    p.ValueInterval =
                         new Interval(((IMappedPair) p).ValueInterval.Begin, new CharLocation(_input));
                     AssignValueToCurrentPair(((IMappedPair) p).ValueInterval.Begin,
                         ((IMappedPair) p).ValueInterval.End);
@@ -261,14 +252,14 @@ namespace Syntactik
 
                 if (c.IsNewLineCharacter())
                 {
-                    ((IMappedPair) p).ValueInterval =
+                    p.ValueInterval =
                         new Interval(((IMappedPair) p).ValueInterval.Begin, new CharLocation(_input));
                     return true;
                 }
 
                 if (c == -1)
                 {
-                    ((IMappedPair) p).ValueInterval =
+                    p.ValueInterval =
                         new Interval(((IMappedPair) p).ValueInterval.Begin, new CharLocation(_input));
                     if (valueStart > 0)
                     {
@@ -286,7 +277,7 @@ namespace Syntactik
                 _input.Consume();
                 if (((IMappedPair) p).ValueInterval == null || ((IMappedPair) p).ValueInterval.Begin.Index == -1)
                 {
-                    ((IMappedPair) p).ValueInterval = new Interval(new CharLocation(_input), new CharLocation(_input));
+                    p.ValueInterval = new Interval(new CharLocation(_input), new CharLocation(_input));
                 }
                 c = _input.Next;
             }
@@ -304,8 +295,8 @@ namespace Syntactik
                 _pairFactory.AppendChild(_pairStack.Peek().Pair, newPair);
             else
             {
-                _pairStack.Peek().Pair.PairValue = newPair;
-                newPair.InitializeParent(_pairStack.Peek().Pair);
+                _pairStack.Peek().Pair.AppendChild(newPair);
+                //newPair.InitializeParent(_pairStack.Peek().Pair);
                 _lineState.ChainingStarted = false;
             }
             return newPair;
@@ -344,7 +335,7 @@ namespace Syntactik
         /// </summary>
         /// <param name="mappedPair"></param>
         /// <returns></returns>
-        private static int GetValueStart(Pair mappedPair)
+        private static int GetValueStart(MappedPair mappedPair)
         {
             if (mappedPair.ValueQuotesType == (int) QuotesEnum.Double) return '"';
             if (mappedPair.ValueQuotesType == (int) QuotesEnum.Single) return '\'';
@@ -429,9 +420,9 @@ namespace Syntactik
         private void AssignValueToCurrentPair(CharLocation begin, CharLocation end, bool missingQuote = false)
         {
             var pair = _lineState.CurrentPair;
-            ((IMappedPair) pair).ValueInterval =
+            pair.ValueInterval =
                 begin == CharLocation.Empty ? Interval.Empty : new Interval(begin, end);
-            ((MappedPair) pair).MissingValueQuote = missingQuote;
+            pair.MissingValueQuote = missingQuote;
         }
 
         /// <summary>
@@ -588,14 +579,14 @@ namespace Syntactik
                     }
                     else delimiter = DelimiterEnum.C;
                 }
-                ((IMappedPair) _lineState.CurrentPair).DelimiterInterval =
+                _lineState.CurrentPair.DelimiterInterval =
                     new Interval(begin, new CharLocation(_input));
             }
             else // =
             {
                 _input.Consume();
                 var begin = new CharLocation(_input);
-                ((IMappedPair) _lineState.CurrentPair).DelimiterInterval = new Interval(_input);
+                _lineState.CurrentPair.DelimiterInterval = new Interval(_input);
                 if (_input.Next == '=')
                 {
                     _input.Consume();
@@ -618,7 +609,7 @@ namespace Syntactik
                 {
                     delimiter = DelimiterEnum.E;
                 }
-                ((IMappedPair) _lineState.CurrentPair).DelimiterInterval =
+                _lineState.CurrentPair.DelimiterInterval =
                     new Interval(begin, new CharLocation(_input));
             }
 
@@ -641,10 +632,10 @@ namespace Syntactik
             {
                 if (_lineState.ChainingStarted)
                 {
-                    _pairStack.Peek().Pair.PairValue = _pairFactory.CreateMappedPair((ITextSource) _input, pair.NameQuotesType,
+                    _pairStack.Peek().Pair.AppendChild(_pairFactory.CreateMappedPair((ITextSource) _input, pair.NameQuotesType,
                         ((IMappedPair) pair).NameInterval, pair.Delimiter, ((IMappedPair) pair).DelimiterInterval,
                         pair.ValueQuotesType, ((IMappedPair) pair).ValueInterval,
-                        _lineState.Indent + (_indentMultiplicity > 0 ? _indentMultiplicity : 1));
+                        _lineState.Indent + (_indentMultiplicity > 0 ? _indentMultiplicity : 1)));
 
                     _lineState.ChainingStarted = false;
                     EndPair(new Interval(_input));
@@ -1201,9 +1192,9 @@ namespace Syntactik
                     else
                     {
                         _input.Consume();
-                        if (((IMappedPair) p).ValueInterval == null ||
-                            ((IMappedPair) p).ValueInterval.Begin.Index == -1)
-                            ((IMappedPair) p).ValueInterval =
+                        if (p.ValueInterval == null ||
+                            p.ValueInterval.Begin.Index == -1)
+                            p.ValueInterval =
                                 new Interval(new CharLocation(_input), new CharLocation(_input));
                     }
                 }
@@ -1239,9 +1230,9 @@ namespace Syntactik
             Pair newPair;
             if (valueStart > 0)
             {
-                ((MappedPair) _lineState.CurrentPair).MissingValueQuote = true;
+                _lineState.CurrentPair.MissingValueQuote = true;
                 newPair = AppendCurrentPair();
-                var valueEnd = ((IMappedPair) p).ValueInterval.End;
+                var valueEnd = p.ValueInterval.End;
                 ReportMLSSyntaxError(1, new Interval(valueEnd, valueEnd), valueStart);
             }
             else
@@ -1251,7 +1242,7 @@ namespace Syntactik
                     _input.Consume();
                     _input.Consume();
                     _input.Consume();
-                    var cp = (IMappedPair) _lineState.CurrentPair;
+                    var cp = _lineState.CurrentPair;
                     cp.ValueInterval = new Interval(cp.ValueInterval.Begin, new CharLocation(_input));
                 }
                 newPair = AppendCurrentPair();

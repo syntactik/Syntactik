@@ -18,21 +18,14 @@
 namespace Syntactik.DOM
 {
     /// <summary>
-    /// Represent comment in the Syntactik document.
+    /// Represents node that can override its namespace prefix.
     /// </summary>
-    public class Comment: Entity
+    public interface INsNodeOverridable
     {
-        /// <inheritdoc />
-        public override void Accept(IDomVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
         /// <summary>
-        /// Creates a new instance of <see cref="Scope"/>.
+        /// Overrides namespace prefix of the node.
         /// </summary>
-        public Comment(string name, DelimiterEnum delimiter, string value) : base(name, delimiter, value)
-        {
-        }
+        /// <param name="nsPrefix"></param>
+        void OverrideNsPrefix(string nsPrefix);
     }
 }

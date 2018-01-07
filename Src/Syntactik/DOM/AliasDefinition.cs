@@ -24,6 +24,14 @@ namespace Syntactik.DOM
     {
         private PairCollection<Entity> _entities;
 
+        /// <summary>
+        /// Creates a new instance of <see cref="AliasDefinition"/>.
+        /// </summary>
+        public AliasDefinition(string name, DelimiterEnum delimiter, string value) : base(name, delimiter, value)
+        {
+        }
+
+
         /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
@@ -33,8 +41,11 @@ namespace Syntactik.DOM
         /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            Value = null;
-            PairValue = null;
+            if (Delimiter == DelimiterEnum.CE)
+            {
+                base.AppendChild(child);
+                return;
+            }
 
             if (child is Entity entity)
             {

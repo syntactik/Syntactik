@@ -24,25 +24,7 @@ namespace Syntactik.DOM
     public class Scope : Entity, INsNode, IContainer
     {
         private PairCollection<Entity> _entities;
-
-        /// <inheritdoc />
-        public override void Accept(IDomVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
-        /// <inheritdoc />
-        public override void AppendChild(Pair child)
-        {
-            if (child is Entity item)
-            {
-                Entities.Add(item);
-            }
-            else
-            {
-                base.AppendChild(child);
-            }
-        }
+        internal string _nsPrefix;
 
         /// <inheritdoc />
         public virtual PairCollection<Entity> Entities
@@ -59,8 +41,42 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
+        /// Creates a new instance of <see cref="Scope"/>.
+        /// </summary>
+        public Scope(string name, DelimiterEnum delimiter, string value, string nsPrefix) : base(name, delimiter, value)
+        {
+            _nsPrefix = nsPrefix;
+        }
+
+        /// <summary>
         /// Namespace prefix of the attribute.
         /// </summary>
-        public virtual string NsPrefix { get; set; }
+        public virtual string NsPrefix => _nsPrefix;
+
+
+        /// <inheritdoc />
+        public override void Accept(IDomVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
+        /// <inheritdoc />
+        public override void AppendChild(Pair child)
+        {
+            if (Delimiter == DelimiterEnum.CE)
+            {
+                base.AppendChild(child);
+                return;
+            }
+
+            if (child is Entity item)
+            {
+                Entities.Add(item);
+            }
+            else
+            {
+                base.AppendChild(child);
+            }
+        }
     }
 }

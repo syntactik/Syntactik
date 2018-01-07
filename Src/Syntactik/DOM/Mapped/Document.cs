@@ -26,37 +26,55 @@ namespace Syntactik.DOM.Mapped
     /// </summary>
     public class Document : DOM.Document, IMappedPair, IPairWithInterpolation
     {
-        /// <inheritdoc />
-        public Interval NameInterval { get; set; }
 
         /// <inheritdoc />
-        public Interval ValueInterval { get; set; }
+        public Interval NameInterval { get; }
 
         /// <inheritdoc />
-        public Interval DelimiterInterval { get; set; }
+        public int NameQuotesType { get; }
 
         /// <inheritdoc />
-        public ValueType ValueType { get; set; }
+        public Interval ValueInterval { get; }
+
+        /// <inheritdoc />
+        public int ValueQuotesType { get; }
+
+        /// <inheritdoc />
+        public Interval DelimiterInterval { get; }
+
+        /// <inheritdoc />
+        public ValueType ValueType { get; }
 
         /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
 
         /// <inheritdoc />
-        public List<object> InterpolationItems { get; set; }
+        public List<object> InterpolationItems { get; private set; }
 
         /// <inheritdoc />
-        public int ValueIndent { get; set; }
+        public int ValueIndent { get; }
 
         /// <summary>
         /// Root instance of <see cref="ChoiceInfo"/>.
         /// </summary>
-        public ChoiceInfo ChoiceInfo { get; set; }
+        public ChoiceInfo ChoiceInfo { get; protected set; }
 
         /// <summary>
         /// Creates instance of the class.
         /// </summary>
-        public Document()
+        public Document(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null, 
+                Interval nameInterval = null, Interval valueInterval = null, Interval delimiterInterval = null,
+                int nameQuotesType = 0, int valueQuotesType = 0, ValueType valueType = ValueType.None, List<object> interpolationItems = null, 
+                int valueIndent = 0):base(name, delimiter, value)
         {
+            ValueInterval = valueInterval;
+            DelimiterInterval = delimiterInterval;
+            NameInterval = nameInterval;
+            NameQuotesType = nameQuotesType;
+            ValueQuotesType = valueQuotesType;
+            ValueType = valueType;
+            InterpolationItems = interpolationItems;
+            ValueIndent = valueIndent;
             ChoiceInfo = new ChoiceInfo(null, this);
         }
 

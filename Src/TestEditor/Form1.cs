@@ -54,7 +54,7 @@ namespace TestEditor
 
             if (modeStripDropDownButton.Text == @"PAIR")
             {
-                var module = new Module {Name = "Module", Value = null, FileName = ""};
+                var module = new Module("Module", "");
                 var parser = new Parser(new InputStream(sourceTextBox.Text), new PairFactory(), module);
                 //var parser = new Parser(new InputStream(((RichTextBox) sender).Text));
                 var errorListener = new ErrorListener();

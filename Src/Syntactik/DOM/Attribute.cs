@@ -22,6 +22,8 @@ namespace Syntactik.DOM
     /// </summary>
     public class Attribute : Entity, INsNode
     {
+        internal string _nsPrefix;
+
         /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
@@ -29,8 +31,16 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
+        /// Creates a new instance of <see cref="Attribute"/>.
+        /// </summary>
+        public Attribute(string name, DelimiterEnum delimiter, string value, string nsPrefix) : base(name, delimiter, value)
+        {
+            _nsPrefix = nsPrefix;
+        }
+
+        /// <summary>
         /// Namespace prefix of the attribute.
         /// </summary>
-        public virtual string NsPrefix { get; set; }
+        public virtual string NsPrefix => _nsPrefix;
     }
 }

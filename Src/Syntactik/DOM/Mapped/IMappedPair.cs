@@ -26,23 +26,44 @@ namespace Syntactik.DOM.Mapped
         /// <summary>
         /// <see cref="Interval"/> used to define name of the pair.
         /// </summary>
-        Interval NameInterval { get; set; }
+        Interval NameInterval { get; }
+
+        /// <summary>
+        /// Stores info about quotes used to define name of the pair.
+        /// 0 - no quotes
+        /// 1 - single quotes
+        /// 2 - double quotes
+        /// </summary>
+        int NameQuotesType { get; }
+
         /// <summary>
         /// <see cref="Interval"/> used to define literal value of the pair.
         /// </summary>
-        Interval ValueInterval { get; set; }
+        Interval ValueInterval { get; }
+
+        /// <summary>
+        /// Stores info about quotes used to define value of the pair.
+        /// 0 - no quotes
+        /// 1 - single quotes
+        /// 2 - double quotes
+        /// </summary>
+        int ValueQuotesType { get; }
+
         /// <summary>
         /// <see cref="Interval"/> used to define pair delimiter.
         /// </summary>
-        Interval DelimiterInterval { get; set; }
+        Interval DelimiterInterval { get; }
+
         /// <summary>
         /// Type of the pair value.
         /// </summary>
-        ValueType ValueType { get; set; }
+        ValueType ValueType { get; }
+
         /// <summary>
         /// True if pair has a literal value or pair value.
         /// </summary>
         bool IsValueNode { get; }
+
         /// <summary>
         /// Indent of pair value.
         /// </summary>

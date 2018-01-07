@@ -57,6 +57,12 @@ namespace Syntactik.DOM
             }
         }
 
+        /// <summary>
+        /// Creates a new instance of <see cref="Alias"/>.
+        /// </summary>
+        public Alias(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null) : base(name, delimiter, value)
+        {
+        }
 
         /// <summary>
         /// Method is a part the <see href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor pattern</see> implementation.
@@ -73,9 +79,11 @@ namespace Syntactik.DOM
         /// <param name="child">Child pair to be added</param>
         public override void AppendChild(Pair child)
         {
-            Value = null;
-            PairValue = null;
-            if (child is Argument item)
+            if (Delimiter == DelimiterEnum.CE)
+            {
+                base.AppendChild(child);
+            }
+            else if (child is Argument item)
             {
                 Arguments.Add(item);
             }
