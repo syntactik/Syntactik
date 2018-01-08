@@ -91,7 +91,8 @@ namespace Syntactik.DOM
 
         public void Initialize(T item)
         {
-            item.InitializeParent(_parent);
+            if (_parent != null)
+                item.InitializeParent(_parent);
         }
 
         internal void InitializeParent(Pair parent)

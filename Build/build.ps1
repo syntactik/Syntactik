@@ -1,13 +1,13 @@
 ﻿properties {
-  $zipFileName = "Syntactik10r0.zip"
-  $majorVersion = "0.1"
-  $majorWithReleaseVersion = "0.1.0"
+  $zipFileName = "Syntactik.0.2.0.zip"
+  $majorVersion = "0.2"
+  $majorWithReleaseVersion = "0.2.0"
   $nugetPrerelease = "beta1"
   $version = GetVersion $majorWithReleaseVersion
   $packageId = "Syntactik"
   $signAssemblies = $false
   #$signKeyPath = "C:\Development\Releases\syntactik.snk"
-  $buildDocumentation = $true
+  $buildDocumentation = $false
   $buildNuGet = $true
   $msbuildVerbosity = 'normal'
   $treatWarningsAsErrors = $false
@@ -143,7 +143,7 @@ task Package -depends Build {
   robocopy $docDir $workingDir\Package\Source\Doc /MIR /NFL /NDL /NJS /NC /NS /NP | Out-Default
   robocopy $toolsDir $workingDir\Package\Source\Tools /MIR /NFL /NDL /NJS /NC /NS /NP | Out-Default
 
-  Compress-Archive -Path $workingDir\Package\* -DestinationPath $workingDir\$zipFileName
+  # Compress-Archive -Path $workingDir\Package\* -DestinationPath $workingDir\$zipFileName
 }
 
 task Test -depends Build {
