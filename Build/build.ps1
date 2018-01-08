@@ -1,7 +1,7 @@
 ﻿properties {
-  $zipFileName = "Syntactik.0.2.0.zip"
+  $zipFileName = "Syntactik.0.2.1.zip"
   $majorVersion = "0.2"
-  $majorWithReleaseVersion = "0.2.0"
+  $majorWithReleaseVersion = "0.2.1"
   $nugetPrerelease = "beta1"
   $version = GetVersion $majorWithReleaseVersion
   $packageId = "Syntactik"
