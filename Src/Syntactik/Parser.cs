@@ -112,8 +112,8 @@ namespace Syntactik
                     case ParserStateEnum.Name:
                         ParseName();
                         break;
-                    case ParserStateEnum.Delimiter:
-                        ParseDelimiter();
+                    case ParserStateEnum.Assignment:
+                        ParseAssignment();
                         break;
                     case ParserStateEnum.Value:
                         ParseValue();
@@ -169,8 +169,8 @@ namespace Syntactik
                                 (IMappedPair) newPair)) /*endedByEof is always false because this method is called after ConsumeEol consuming eol.*/);
                     _lineState.CurrentPair = null;
                 }
-                if (pi.Pair.Delimiter == DelimiterEnum.E || pi.Pair.Delimiter == DelimiterEnum.EE ||
-                    pi.Pair.Delimiter == DelimiterEnum.CE || pi.Pair.Delimiter == DelimiterEnum.None)
+                if (pi.Pair.Assignment == AssignmentEnum.E || pi.Pair.Assignment == AssignmentEnum.EE ||
+                    pi.Pair.Assignment == AssignmentEnum.CE || pi.Pair.Assignment == AssignmentEnum.None)
                 {
                     EndPair(new Interval(_input));
                 }
@@ -194,7 +194,7 @@ namespace Syntactik
         private void ParseValue()
         {
             var p = _lineState.CurrentPair;
-            if (p.Delimiter != DelimiterEnum.E && p.Delimiter != DelimiterEnum.EE)
+            if (p.Assignment != AssignmentEnum.E && p.Assignment != AssignmentEnum.EE)
                 return;
             _input.ConsumeSpaces();
             if (_input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair))
@@ -209,7 +209,7 @@ namespace Syntactik
             {
                 ParseDQValue();
             }
-            else if (p.Delimiter == DelimiterEnum.E && _wsaStack.Count == 0)
+            else if (p.Assignment == AssignmentEnum.E && _wsaStack.Count == 0)
             {
                 ParseFreeOpenString();
             }
@@ -287,7 +287,7 @@ namespace Syntactik
         {
             var pair = _lineState.CurrentPair;
             var newPair = _pairFactory.CreateMappedPair((ITextSource) _input, pair.NameQuotesType,
-                ((IMappedPair) pair).NameInterval, pair.Delimiter, ((IMappedPair) pair).DelimiterInterval,
+                ((IMappedPair) pair).NameInterval, pair.Assignment, ((IMappedPair) pair).AssignmentInterval,
                 pair.ValueQuotesType, ((IMappedPair) pair).ValueInterval,
                 _lineState.Indent + (_indentMultiplicity > 0 ? _indentMultiplicity : 1));
 
@@ -514,31 +514,31 @@ namespace Syntactik
         }
 
         /// <summary>
-        /// Recognizes the following delimiters:
+        /// Recognizes the following assignments:
         ///  `:`  `::`  `=`  `==`  `=:`  `=::`  `:::` `:=`
         /// </summary>
-        /// <returns>True if delimiter found.</returns>
-        private void ParseDelimiter()
+        /// <returns>True if assignment found.</returns>
+        private void ParseAssignment()
         {
-            if (!ConsumeTillDelimiter())
+            if (!ConsumeTillAssignment())
             {
                 _lineState.State = ParserStateEnum.PairDelimiter;
                 return;
             }
-            var delimiter = GetDelimiter();
+            var assignment = GetAssignment();
 
-            if (delimiter == DelimiterEnum.CE)
+            if (assignment == AssignmentEnum.CE)
             {
                 AppendAndPushCurrentPair();
                 _lineState.ChainingStarted = true;
                 _lineState.State = ParserStateEnum.PairDelimiter;
             }
-            else if (delimiter == DelimiterEnum.E || delimiter == DelimiterEnum.EE || delimiter == DelimiterEnum.None
-            ) //Delimiters followed by literal or chained pair
+            else if (assignment == AssignmentEnum.E || assignment == AssignmentEnum.EE || assignment == AssignmentEnum.None
+            ) //Assignments followed by literal or chained pair
             {
                 _lineState.State = ParserStateEnum.Value;
             }
-            else // Delimiters followed by block
+            else // Assignments followed by block
             {
                 AppendAndPushCurrentPair();
                 _lineState.ChainingStarted = false;
@@ -552,9 +552,9 @@ namespace Syntactik
         /// This function is called only if next character is : or =
         /// </summary>
         /// <returns></returns>
-        private DelimiterEnum GetDelimiter()
+        private AssignmentEnum GetAssignment()
         {
-            DelimiterEnum delimiter;
+            AssignmentEnum assignment;
             if (_input.Next == ':')
             {
                 _input.Consume();
@@ -566,31 +566,31 @@ namespace Syntactik
                     if (_input.Next == ':')
                     {
                         _input.Consume();
-                        delimiter = DelimiterEnum.CCC;
+                        assignment = AssignmentEnum.CCC;
                     }
-                    else delimiter = DelimiterEnum.CC;
+                    else assignment = AssignmentEnum.CC;
                 }
                 else
                 {
                     if (_input.Next == '=')
                     {
                         _input.Consume();
-                        delimiter = DelimiterEnum.CE;
+                        assignment = AssignmentEnum.CE;
                     }
-                    else delimiter = DelimiterEnum.C;
+                    else assignment = AssignmentEnum.C;
                 }
-                _lineState.CurrentPair.DelimiterInterval =
+                _lineState.CurrentPair.AssignmentInterval =
                     new Interval(begin, new CharLocation(_input));
             }
             else // =
             {
                 _input.Consume();
                 var begin = new CharLocation(_input);
-                _lineState.CurrentPair.DelimiterInterval = new Interval(_input);
+                _lineState.CurrentPair.AssignmentInterval = new Interval(_input);
                 if (_input.Next == '=')
                 {
                     _input.Consume();
-                    delimiter = DelimiterEnum.EE;
+                    assignment = AssignmentEnum.EE;
                 }
                 else if (_input.Next == ':') // =:
                 {
@@ -598,25 +598,25 @@ namespace Syntactik
                     if (_input.Next == ':') // =::
                     {
                         _input.Consume();
-                        delimiter = DelimiterEnum.ECC;
+                        assignment = AssignmentEnum.ECC;
                     }
                     else
                     {
-                        delimiter = DelimiterEnum.EC;
+                        assignment = AssignmentEnum.EC;
                     }
                 }
                 else
                 {
-                    delimiter = DelimiterEnum.E;
+                    assignment = AssignmentEnum.E;
                 }
-                _lineState.CurrentPair.DelimiterInterval =
+                _lineState.CurrentPair.AssignmentInterval =
                     new Interval(begin, new CharLocation(_input));
             }
 
-            _lineState.CurrentPair.Delimiter = delimiter;
+            _lineState.CurrentPair.Assignment = assignment;
 
-            EnsureDelimiterEnds();
-            return delimiter;
+            EnsureAssignmentEnds();
+            return assignment;
         }
 
         private void ExitPair()
@@ -633,7 +633,7 @@ namespace Syntactik
                 if (_lineState.ChainingStarted)
                 {
                     _pairStack.Peek().Pair.AppendChild(_pairFactory.CreateMappedPair((ITextSource) _input, pair.NameQuotesType,
-                        ((IMappedPair) pair).NameInterval, pair.Delimiter, ((IMappedPair) pair).DelimiterInterval,
+                        ((IMappedPair) pair).NameInterval, pair.Assignment, ((IMappedPair) pair).AssignmentInterval,
                         pair.ValueQuotesType, ((IMappedPair) pair).ValueInterval,
                         _lineState.Indent + (_indentMultiplicity > 0 ? _indentMultiplicity : 1)));
 
@@ -654,7 +654,7 @@ namespace Syntactik
             _lineState.CurrentPair = null;
         }
 
-        private void EnsureDelimiterEnds()
+        private void EnsureAssignmentEnds()
         {
             var c = _input.Next;
             while (c == ':' || c == '=')
@@ -666,11 +666,11 @@ namespace Syntactik
         }
 
         /// <summary>
-        /// Consumes input till delimiter is met or till end of pair is found.
+        /// Consumes input till assignment is met or till end of pair is found.
         /// Everything else is reported as unexpected character.
         /// </summary>
-        /// <returns>If was able to find delimiter.</returns>
-        private bool ConsumeTillDelimiter()
+        /// <returns>If was able to find assignment.</returns>
+        private bool ConsumeTillAssignment()
         {
             var c = _input.Next;
             while (c != ':' && c != '=')
@@ -752,7 +752,7 @@ namespace Syntactik
         }
 
         /// <summary>
-        /// ParseName is called after Indent and PairDelimiter.
+        /// ParseName is called after Indent and PairAssignment.
         /// 
         /// </summary>
         /// <returns>true if eof is not reached</returns>
@@ -764,13 +764,13 @@ namespace Syntactik
                 if (c == '\'')
                 {
                     ParseSQName();
-                    _lineState.State = ParserStateEnum.Delimiter;
+                    _lineState.State = ParserStateEnum.Assignment;
                     break;
                 }
                 else if (c == '"')
                 {
                     ParseDQName();
-                    _lineState.State = ParserStateEnum.Delimiter;
+                    _lineState.State = ParserStateEnum.Assignment;
                     break;
                 }
                 else if (c == '(' || c == ')' || c == ',')
@@ -786,9 +786,9 @@ namespace Syntactik
                         NameQuotesType = 0,
                         NameInterval = new Interval(new CharLocation(_input),
                             new CharLocation(_input.Line, _input.Column, _input.Index - 1)),
-                        Delimiter = DelimiterEnum.None
+                        Assignment = AssignmentEnum.None
                     };
-                    _lineState.State = ParserStateEnum.Delimiter;
+                    _lineState.State = ParserStateEnum.Assignment;
                     break;
                 }
                 else if (_input.ConsumeSpaces() || _input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair))
@@ -807,7 +807,7 @@ namespace Syntactik
                 else
                 {
                     ParseOpenName();
-                    _lineState.State = ParserStateEnum.Delimiter;
+                    _lineState.State = ParserStateEnum.Assignment;
                     break;
                 }
                 c = _input.Next;
@@ -844,7 +844,7 @@ namespace Syntactik
                 _lineState.CurrentPair = new MappedPair
                 {
                     NameInterval = begin == CharLocation.Empty ? Interval.Empty : new Interval(begin, end),
-                    Delimiter = DelimiterEnum.None,
+                    Assignment = AssignmentEnum.None,
                     NameQuotesType = 0
                 };
             }
@@ -853,7 +853,7 @@ namespace Syntactik
                 _lineState.CurrentPair = new MappedPair
                 {
                     NameInterval = new Interval(begin, end),
-                    Delimiter = DelimiterEnum.None,
+                    Assignment = AssignmentEnum.None,
                     NameQuotesType = 0
                 };
             }
@@ -885,7 +885,7 @@ namespace Syntactik
                 _lineState.CurrentPair = new MappedPair
                 {
                     NameInterval = new Interval(begin, new CharLocation(_input)),
-                    Delimiter = DelimiterEnum.None,
+                    Assignment = AssignmentEnum.None,
                     NameQuotesType = 2
                 };
             }
@@ -894,7 +894,7 @@ namespace Syntactik
                 _lineState.CurrentPair = new MappedPair
                 {
                     NameInterval = new Interval(begin, new CharLocation(_input)),
-                    Delimiter = DelimiterEnum.None,
+                    Assignment = AssignmentEnum.None,
                     NameQuotesType = 2
                 };
             }
@@ -924,7 +924,7 @@ namespace Syntactik
             _lineState.CurrentPair = new MappedPair
             {
                 NameInterval = new Interval(begin, new CharLocation(_input)),
-                Delimiter = DelimiterEnum.None,
+                Assignment = AssignmentEnum.None,
                 NameQuotesType = 1
             };
         }
@@ -1023,9 +1023,9 @@ namespace Syntactik
                     var p = _lineState.CurrentPair;
                     if (p == null) break;
                     _lineState.Inline = true;
-                    if (p.Delimiter == DelimiterEnum.E ||
-                        p.Delimiter == DelimiterEnum.EE /*|| p.Delimiter == DelimiterEnum.CE*/ ||
-                        p.Delimiter == DelimiterEnum.None)
+                    if (p.Assignment == AssignmentEnum.E ||
+                        p.Assignment == AssignmentEnum.EE ||
+                        p.Assignment == AssignmentEnum.None)
                     {
                         ExitPair();
 
@@ -1332,7 +1332,7 @@ namespace Syntactik
         private CharLocation GetPairEnd(IMappedPair child)
         {
             if (child.ValueInterval != null) return child.ValueInterval.End;
-            if (child.DelimiterInterval != null) return child.DelimiterInterval.End;
+            if (child.AssignmentInterval != null) return child.AssignmentInterval.End;
             return child.NameInterval.End;
         }
     }

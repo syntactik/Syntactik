@@ -256,9 +256,9 @@ namespace Syntactik.Compiler
         {
             return Instantiate("MCE0030", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), false);
         }
-        internal static CompilerError InvalidDelimiter(Interval nameInterval, string fileName, string delimiter)
+        internal static CompilerError InvalidAssignment(Interval nameInterval, string fileName, string assignment)
         {
-            return Instantiate("MCE0031", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), false, delimiter);
+            return Instantiate("MCE0031", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), false, assignment);
         }
         internal static CompilerError CantAppendChild(Interval nameInterval, string fileName, string message)
         {

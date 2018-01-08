@@ -206,7 +206,7 @@ namespace TestEditor
         {
             if (pair.Value != null)
             {
-                _sb.Append(DelimiterToString(pair.Delimiter));
+                _sb.Append(AssignmentToString(pair.Assignment));
                 _sb.Append(" ");
                 _sb.Append(QuoteTypeToChar(((IMappedPair)pair).ValueQuotesType));
                 PrintValue(pair);
@@ -221,35 +221,35 @@ namespace TestEditor
             }
             else
             {
-                _sb.AppendLine(DelimiterToString(pair.Delimiter));
+                _sb.AppendLine(AssignmentToString(pair.Assignment));
                 _indent++;
             }
             _valueNodeExpected.Push(false);
         }
         /// <summary>
-        /// Auxiliary function to convert delimiter value to its string representation.
+        /// Auxiliary function to convert assignment value to its string representation.
         /// </summary>
-        /// <param name="delimiter"></param>
+        /// <param name="assignment"></param>
         /// <returns></returns>
-        internal static string DelimiterToString(DelimiterEnum delimiter)
+        internal static string AssignmentToString(AssignmentEnum assignment)
         {
-            switch (delimiter)
+            switch (assignment)
             {
-                case DelimiterEnum.C:
+                case AssignmentEnum.C:
                     return ":";
-                case DelimiterEnum.CC:
+                case AssignmentEnum.CC:
                     return "::";
-                case DelimiterEnum.CCC:
+                case AssignmentEnum.CCC:
                     return ":::";
-                case DelimiterEnum.E:
+                case AssignmentEnum.E:
                     return "=";
-                case DelimiterEnum.EC:
+                case AssignmentEnum.EC:
                     return "=:";
-                case DelimiterEnum.ECC:
+                case AssignmentEnum.ECC:
                     return "=::";
-                case DelimiterEnum.EE:
+                case AssignmentEnum.EE:
                     return "==";
-                case DelimiterEnum.CE:
+                case AssignmentEnum.CE:
                     return ":=";
             }
             return "";

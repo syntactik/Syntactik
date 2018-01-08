@@ -144,7 +144,7 @@ namespace Syntactik.Compiler.Generator
         protected bool EnterChoiceContainer(Pair pair, PairCollection<Entity> entities, Pair implementationPair = null)
         {
             if (implementationPair == null) implementationPair = pair;
-            if (implementationPair.Delimiter != DelimiterEnum.CC && implementationPair.Delimiter != DelimiterEnum.ECC 
+            if (implementationPair.Assignment != AssignmentEnum.CC && implementationPair.Assignment != AssignmentEnum.ECC 
                     || entities == null || entities.Count == 0)
                 return false;
 
@@ -197,7 +197,7 @@ namespace Syntactik.Compiler.Generator
             //Starting Element
             if (!string.IsNullOrEmpty(element.Name))
             {
-                if (element.Delimiter != DelimiterEnum.CCC)
+                if (element.Assignment != AssignmentEnum.CCC)
                 {
                     //not text node
                     _xmlTextWriter.WriteStartElement(prefix, element.Name, ns);
@@ -213,7 +213,7 @@ namespace Syntactik.Compiler.Generator
             }
             else
             {
-                if (element.Parent.Delimiter == DelimiterEnum.CCC && (element.Delimiter == DelimiterEnum.C || element.Delimiter == DelimiterEnum.CC))
+                if (element.Parent.Assignment == AssignmentEnum.CCC && (element.Assignment == AssignmentEnum.C || element.Assignment == AssignmentEnum.CC))
                 {
                     // This is item of explicit array (:::)
                     WriteExplicitArrayItem(element);
@@ -226,12 +226,12 @@ namespace Syntactik.Compiler.Generator
             //End Element
             if (!string.IsNullOrEmpty(element.Name))
             {
-                if (element.Delimiter != DelimiterEnum.CCC) //not text node and not explicit array
+                if (element.Assignment != AssignmentEnum.CCC) //not text node and not explicit array
                     _xmlTextWriter.WriteEndElement();
             }
             else
             {
-                if (element.Parent.Delimiter == DelimiterEnum.CCC && (element.Delimiter == DelimiterEnum.C || element.Delimiter == DelimiterEnum.CC))
+                if (element.Parent.Assignment == AssignmentEnum.CCC && (element.Assignment == AssignmentEnum.C || element.Assignment == AssignmentEnum.CC))
                     _xmlTextWriter.WriteEndElement();
             }
         }

@@ -149,7 +149,7 @@ namespace Syntactik.Compiler.Steps
 
                 var prefix = FindFreePrefix(ns.Name, destNsInfo.Namespaces);
 
-                destNsInfo.Namespaces.Add(new NamespaceDefinition(prefix, DelimiterEnum.E, ns.Value));
+                destNsInfo.Namespaces.Add(new NamespaceDefinition(prefix, AssignmentEnum.E, ns.Value));
             }
         }
 

@@ -17,13 +17,25 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Member of the module: <see cref="Document"/> or <see cref="AliasDefinition"/>.
+    /// </summary>
     public abstract class ModuleMember : Pair
     {
         private PairCollection<NamespaceDefinition> _namespaces;
 
+        /// <summary>
+        /// Parent <see cref="Module"/> of the <see cref="ModuleMember"/>.
+        /// </summary>
         public virtual Module Module => (Parent as Module);
 
-        protected ModuleMember(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null):base(name, delimiter, value)
+        /// <summary>
+        /// Creates an instance of <see cref="ModuleMember"/>.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="assignment"></param>
+        /// <param name="value"></param>
+        protected ModuleMember(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null):base(name, assignment, value)
         {
         }
 

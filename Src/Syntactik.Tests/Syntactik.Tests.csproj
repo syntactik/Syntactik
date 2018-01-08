@@ -52,7 +52,7 @@
     <Compile Include="TestUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Scenarios\PairParser\ArrayDelimiter.s4x" />
+    <None Include="Scenarios\PairParser\ArrayAssignment.s4x" />
     <None Include="Scenarios\PairParser\Comma.s4x" />
     <None Include="Scenarios\PairParser\ChainedPairs.s4x" />
     <None Include="Scenarios\PairParser\ChainedPairs2.s4x" />
@@ -71,7 +71,7 @@
     <None Include="Scenarios\PairParser\EmptyValue3.s4x" />
     <None Include="Scenarios\PairParser\EmptyWsaBlock.s4x" />
     <None Include="Scenarios\PairParser\ErrorOpenParenthesis.s4x" />
-    <None Include="Scenarios\PairParser\ExtraDelimiter.s4x" />
+    <None Include="Scenarios\PairParser\ExtraAssignment.s4x" />
     <None Include="Scenarios\PairParser\InlineBlock2.s4x" />
     <None Include="Scenarios\PairParser\InlineBlock.s4x" />
     <None Include="Scenarios\PairParser\InvalidIndent.s4x" />
@@ -89,7 +89,7 @@
     <None Include="Scenarios\PairParser\MultilineSqString2.s4x" />
     <None Include="Scenarios\PairParser\OpenStringComment.s4x" />
     <None Include="Scenarios\PairParser\MultilineStringIndentMismatch.s4x" />
-    <None Include="Scenarios\PairParser\PairDelimiter.s4x" />
+    <None Include="Scenarios\PairParser\PairAssignment.s4x" />
     <None Include="Scenarios\PairParser\SimpleBlock.s4x" />
     <None Include="Scenarios\PairParser\SimpleBlock1.s4x" />
     <None Include="Scenarios\PairParser\SimpleBlock2.s4x" />

@@ -16,8 +16,6 @@
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 
-using System;
-
 namespace Syntactik.DOM
 {
     /// <summary>
@@ -28,8 +26,8 @@ namespace Syntactik.DOM
     {
         private PairCollection<ModuleMember> _members;
         private PairCollection<NamespaceDefinition> _namespaceDefinitions;
-        
-        protected Document _moduleDocument;
+
+        private Document _moduleDocument;
 
         /// <summary>
         /// Number of indent symbol needed to form a single indent.
@@ -41,9 +39,14 @@ namespace Syntactik.DOM
         /// </summary>
         public char IndentSymbol { get; internal set; }
 
+        /// <summary>
+        /// Path to the module file.
+        /// </summary>
         public string FileName { get; }
 
-
+        /// <summary>
+        /// Collection of <see cref="Document"/> and <see cref="AliasDefinition"/>.
+        /// </summary>
         public virtual PairCollection<ModuleMember> Members
         {
             get => _members ?? (_members = new PairCollection<ModuleMember>(this));
@@ -57,6 +60,9 @@ namespace Syntactik.DOM
             }
         }
 
+        /// <summary>
+        /// Collection of <see cref="NamespaceDefinition"/>.
+        /// </summary>
         public virtual PairCollection<NamespaceDefinition> NamespaceDefinitions
         {
             get => _namespaceDefinitions ?? (_namespaceDefinitions = new PairCollection<NamespaceDefinition>(this));
@@ -69,20 +75,29 @@ namespace Syntactik.DOM
                 }
             }
         }
+
+        /// <summary>
+        /// <see cref="Document"/> of module is implicitly declared by added <see cref="Entity"/> as module child.
+        /// </summary>
         public virtual Document ModuleDocument => _moduleDocument;
 
 
-
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
             visitor.Visit(this);
         }
 
-        public Module(string name, string fileName = null): base(name, DelimiterEnum.C)
+        /// <summary>
+        /// Creates an instance of <see cref="Module"/>.
+        /// </summary>
+        /// 
+        public Module(string name, string fileName = null): base(name, AssignmentEnum.C)
         {
             FileName = fileName;
         }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
 
@@ -108,14 +123,21 @@ namespace Syntactik.DOM
             }
         }
 
-        protected void AddEntity(Entity entity)
+        /// <summary>
+        /// Adds entity to the <see cref="ModuleDocument"/>.
+        /// </summary>
+        /// <param name="entity"><see cref="Entity"/> to be added to the block of <see cref="ModuleDocument"/>.</param>
+        protected virtual void AddEntity(Entity entity)
         {
             if (_moduleDocument == null) CreateModuleDocument();
             _moduleDocument.AppendChild(entity);
 
         }
 
-        protected void CreateModuleDocument()
+        /// <summary>
+        /// Creates an empty <see cref="ModuleDocument"/>.
+        /// </summary>
+        protected virtual void CreateModuleDocument()
         {
             _moduleDocument = new Mapped.Document
             (

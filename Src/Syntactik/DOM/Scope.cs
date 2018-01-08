@@ -43,7 +43,7 @@ namespace Syntactik.DOM
         /// <summary>
         /// Creates a new instance of <see cref="Scope"/>.
         /// </summary>
-        public Scope(string name, DelimiterEnum delimiter, string value, string nsPrefix) : base(name, delimiter, value)
+        public Scope(string name, AssignmentEnum assignment, string value, string nsPrefix) : base(name, assignment, value)
         {
             _nsPrefix = nsPrefix;
         }
@@ -63,7 +63,7 @@ namespace Syntactik.DOM
         /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            if (Delimiter == DelimiterEnum.CE)
+            if (Assignment == AssignmentEnum.CE)
             {
                 base.AppendChild(child);
                 return;

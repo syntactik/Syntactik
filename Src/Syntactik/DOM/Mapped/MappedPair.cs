@@ -24,7 +24,7 @@ namespace Syntactik.DOM.Mapped
         public string Name { get; set; }
         public Pair PairValue { get; set; }
         public string Value { get; set; }
-        public DelimiterEnum Delimiter { get; set; }
+        public AssignmentEnum Assignment { get; set; }
 
         public static MappedPair EmptyPair { get; } = new MappedPair{ Name = "EmptyPair" };
 
@@ -32,7 +32,7 @@ namespace Syntactik.DOM.Mapped
         public int NameQuotesType { get; set; }
         public Interval ValueInterval { get; set; }
         public int ValueQuotesType { get; set; }
-        public Interval DelimiterInterval { get; set; }
+        public Interval AssignmentInterval { get; set; }
         public ValueType ValueType { get; set; }
         public bool IsValueNode { get; set; }
         public bool MissingNameQuote { get; set; }

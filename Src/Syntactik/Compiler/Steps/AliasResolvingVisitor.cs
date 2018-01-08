@@ -113,16 +113,16 @@ namespace Syntactik.Compiler.Steps
                     return ResolvePairValue(((Pair) pair).PairValue, out valueType);
                 }
                 valueType = pair.ValueType;
-                return ((Pair) pair).Delimiter != DelimiterEnum.None ? ((Pair) pair).Value : ((Pair) pair).Name;
+                return ((Pair) pair).Assignment != AssignmentEnum.None ? ((Pair) pair).Value : ((Pair) pair).Name;
             }
 
             return ResolveValueInInterpolation(pair, out valueType);
         }
 
         /// <summary>
-        /// Method is called for pair with literal choice delimiter <b>=::</b>.
+        /// Method is called for pair with literal choice assignment <b>=::</b>.
         /// </summary>
-        /// <param name="pair">Pair with literal choice delimiter</param>
+        /// <param name="pair">Pair with literal choice assignment</param>
         /// <param name="valueType">Literal value type of the resolved case.</param>
         /// <returns>String representing resolved literal value of the pair.</returns>
         protected abstract string ResolveChoiceValue(Pair pair, out ValueType valueType);
@@ -284,7 +284,7 @@ namespace Syntactik.Compiler.Steps
                 return true;
             }
 
-            if (pair.Delimiter == DelimiterEnum.EC)
+            if (pair.Assignment == AssignmentEnum.EC)
             {
                 ResolveConcatenation(pair);
                 return true;

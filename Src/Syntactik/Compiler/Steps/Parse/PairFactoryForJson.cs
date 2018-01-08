@@ -38,19 +38,19 @@ namespace Syntactik.Compiler.Steps
             _module = module;
         }
 
-        public Pair CreateMappedPair(ITextSource textSource, int nameQuotesType, Interval nameInterval, DelimiterEnum delimiter,
-                                Interval delimiterInterval, int valueQuotesType, Interval valueInterval, int valueIndent)
+        public Pair CreateMappedPair(ITextSource textSource, int nameQuotesType, Interval nameInterval, AssignmentEnum assignment,
+                                Interval assignmentInterval, int valueQuotesType, Interval valueInterval, int valueIndent)
         {
             Pair pair;
             var name = PairFactoryForXml.GetNameText(textSource, nameQuotesType, nameInterval);
-            var value = PairFactoryForXml.GetValue(textSource, delimiter, valueQuotesType, valueInterval,
+            var value = PairFactoryForXml.GetValue(textSource, assignment, valueQuotesType, valueInterval,
                     valueIndent, _context, (Module) _module);
 
             if (nameQuotesType > 0)
             {
-                if (delimiter == DelimiterEnum.None)
+                if (assignment == AssignmentEnum.None)
                 {
-                    value = PairFactoryForXml.GetValue(textSource, delimiter, nameQuotesType, nameInterval,
+                    value = PairFactoryForXml.GetValue(textSource, assignment, nameQuotesType, nameInterval,
                     0, _context, (Module)_module);
                     valueQuotesType = nameQuotesType;
                 }
@@ -58,14 +58,14 @@ namespace Syntactik.Compiler.Steps
                     name, 
                     nameQuotesType : nameQuotesType,
                     nameInterval : nameInterval,
-                    delimiter : delimiter,
-                    delimiterInterval : delimiterInterval,
+                    assignment : assignment,
+                    assignmentInterval : assignmentInterval,
                     value : value.Item1,
                     valueQuotesType : valueQuotesType,
                     valueInterval : valueInterval,
                     interpolationItems : value.Item2,
                     valueIndent : valueIndent,
-                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
                 );
                 
             } else if (name.StartsWith("@"))
@@ -73,14 +73,14 @@ namespace Syntactik.Compiler.Steps
                 pair = new DOM.Mapped.Attribute(
                     name.Substring(1),
                     nameInterval : nameInterval,
-                    delimiter : delimiter,
-                    delimiterInterval : delimiterInterval,
+                    assignment : assignment,
+                    assignmentInterval : assignmentInterval,
                     value : value.Item1,
                     valueQuotesType : valueQuotesType,
                     valueInterval : valueInterval,
                     interpolationItems : value.Item2,
                     valueIndent : valueIndent,
-                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
                 );
             } else if (name.StartsWith("!$"))
             {
@@ -88,14 +88,14 @@ namespace Syntactik.Compiler.Steps
                 (
                     VerifyName(name.Substring(2), nameInterval, _module),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
                     value: value.Item1,
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: value.Item2,
                     valueIndent: valueIndent,
-                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
                 );
             } else if (name.StartsWith("!#"))
             {
@@ -103,14 +103,14 @@ namespace Syntactik.Compiler.Steps
                 (
                     VerifyNsName(name.Substring(2), nameInterval, _module),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
                     value: value.Item1,
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: value.Item2,
                     valueIndent: valueIndent,
-                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
                 );
             } else if (name.StartsWith("!%"))
             {
@@ -118,14 +118,14 @@ namespace Syntactik.Compiler.Steps
                 (
                     VerifyNsName(name.Substring(2), nameInterval, _module),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
                     value: value.Item1,
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: value.Item2,
                     valueIndent: valueIndent,
-                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
                 );
             } else if (name.StartsWith("!"))
             {
@@ -133,14 +133,14 @@ namespace Syntactik.Compiler.Steps
                 (
                     VerifyName(name.Substring(1), nameInterval, _module),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
                     value: value.Item1,
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: value.Item2,
                     valueIndent: valueIndent,
-                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
                 );
             } else if (name.StartsWith("$"))
             {
@@ -148,14 +148,14 @@ namespace Syntactik.Compiler.Steps
                 (
                     VerifyName(name.Substring(1), nameInterval, _module),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
                     value: value.Item1,
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: value.Item2,
                     valueIndent: valueIndent,
-                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
                 );
             } else if (name.StartsWith("%"))
             {
@@ -163,14 +163,14 @@ namespace Syntactik.Compiler.Steps
                 (
                     VerifyName(name.Substring(1), nameInterval, _module),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
                     value: value.Item1,
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: value.Item2,
                     valueIndent: valueIndent,
-                    valueType: GetValueType(delimiter, value.Item1, valueQuotesType)
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
                 );
                 
             }
@@ -180,10 +180,10 @@ namespace Syntactik.Compiler.Steps
             //    {
             //        NsPrefix = VerifyScopeName(name.Substring(1), nameInterval, _module),
             //        NameInterval = nameInterval,
-            //        Delimiter = delimiter,
-            //        DelimiterInterval = delimiterInterval
+            //        Assignment = assignment,
+            //        AssignmentInterval = assignmentInterval
             //    };
-            //    SetValueType((IMappedPair) pair, delimiter, value.Item1, valueQuotesType);
+            //    SetValueType((IMappedPair) pair, assignment, value.Item1, valueQuotesType);
             //}
             else
             {
@@ -191,36 +191,36 @@ namespace Syntactik.Compiler.Steps
                 (
                     name,
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
                     value: value.Item1,
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: value.Item2,
                     valueIndent: valueIndent,
-                    valueType: GetValueType(delimiter, 
-                        (delimiter == DelimiterEnum.None? PairFactoryForXml.GetValue(textSource, delimiter, nameQuotesType, nameInterval,
+                    valueType: GetValueType(assignment, 
+                        (assignment == AssignmentEnum.None? PairFactoryForXml.GetValue(textSource, assignment, nameQuotesType, nameInterval,
                             0, _context, (Module)_module).Item1:value.Item1),
-                        delimiter == DelimiterEnum.None ? nameQuotesType: valueQuotesType)
+                        assignment == AssignmentEnum.None ? nameQuotesType: valueQuotesType)
                 );
             }
             
             return pair;
         }
 
-        private ValueType GetValueType(DelimiterEnum delimiter, string value, int valueQuotesType)
+        private ValueType GetValueType(AssignmentEnum assignment, string value, int valueQuotesType)
         {
-            switch (delimiter)
+            switch (assignment)
             {
-                case DelimiterEnum.CE:
+                case AssignmentEnum.CE:
                     return ValueType.PairValue;
-                case DelimiterEnum.EC:
+                case AssignmentEnum.EC:
                     return ValueType.Concatenation;
-                case DelimiterEnum.ECC:
+                case AssignmentEnum.ECC:
                     return ValueType.LiteralChoice;
-                case DelimiterEnum.C:
-                case DelimiterEnum.CC:
-                case DelimiterEnum.CCC:
+                case AssignmentEnum.C:
+                case AssignmentEnum.CC:
+                case AssignmentEnum.CCC:
                     return ValueType.Object;
             }
             if (value == null) return ValueType.None;
@@ -233,9 +233,9 @@ namespace Syntactik.Compiler.Steps
             {
                 return ValueType.DoubleQuotedString;
             }
-            if (delimiter == DelimiterEnum.E)
+            if (assignment == AssignmentEnum.E)
                 return GetJsonValueType(value, ValueType.FreeOpenString); 
-            if (delimiter == DelimiterEnum.EE || delimiter == DelimiterEnum.None)
+            if (assignment == AssignmentEnum.EE || assignment == AssignmentEnum.None)
                 return GetJsonValueType(value, ValueType.OpenString);
             return ValueType.None;
         }

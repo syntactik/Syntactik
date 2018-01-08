@@ -29,7 +29,7 @@ namespace Syntactik.DOM.Mapped
         private List<Parameter> _parameters;
 
         /// <inheritdoc />
-        public AliasDefinition(string name, DelimiterEnum delimiter, string value) : base(name, delimiter, value)
+        public AliasDefinition(string name, AssignmentEnum assignment, string value) : base(name, assignment, value)
         {
             SyncTime = DateTime.Now.Ticks;
         }
@@ -47,7 +47,7 @@ namespace Syntactik.DOM.Mapped
         public int ValueQuotesType { get; }
 
         /// <inheritdoc />
-        public Interval DelimiterInterval { get; }
+        public Interval AssignmentInterval { get; }
 
         /// <inheritdoc />
         public ValueType ValueType { get; }
@@ -93,14 +93,14 @@ namespace Syntactik.DOM.Mapped
         /// <summary>
         /// Creates a new instance of <see cref="AliasDefinition"/>.
         /// </summary>
-        public AliasDefinition(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null,
-            Interval nameInterval = null, Interval valueInterval = null, Interval delimiterInterval = null,
+        public AliasDefinition(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null,
+            Interval nameInterval = null, Interval valueInterval = null, Interval assignmentInterval = null,
             int nameQuotesType = 0, int valueQuotesType = 0, ValueType valueType = ValueType.None, List<object> interpolationItems = null,
             int valueIndent = 0
-        ) : base(name, delimiter, value)
+        ) : base(name, assignment, value)
         {
             ValueInterval = valueInterval;
-            DelimiterInterval = delimiterInterval;
+            AssignmentInterval = assignmentInterval;
             NameInterval = nameInterval;
             NameQuotesType = nameQuotesType;
             ValueQuotesType = valueQuotesType;
@@ -117,7 +117,7 @@ namespace Syntactik.DOM.Mapped
             {
                 if (Entities.Any(e => !(e is Comment))) throw new ApplicationException("Namespaces must be defined first");
             }
-            if (Delimiter == DelimiterEnum.EC)
+            if (Assignment == AssignmentEnum.EC)
             {
                 if (InterpolationItems == null) InterpolationItems = new List<object>();
                 InterpolationItems.Add(child);

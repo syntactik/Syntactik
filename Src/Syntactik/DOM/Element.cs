@@ -33,7 +33,7 @@ namespace Syntactik.DOM
         /// <summary>
         /// Creates a new instance of <see cref="Element"/>.
         /// </summary>
-        public Element(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null, string nsPrefix = null) : base(name, delimiter, value)
+        public Element(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null, string nsPrefix = null) : base(name, assignment, value)
         {
             _nsPrefix = nsPrefix;
         }
@@ -47,7 +47,7 @@ namespace Syntactik.DOM
         /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            if (Delimiter == DelimiterEnum.CE)
+            if (Assignment == AssignmentEnum.CE)
             {
                 base.AppendChild(child);
                 return;

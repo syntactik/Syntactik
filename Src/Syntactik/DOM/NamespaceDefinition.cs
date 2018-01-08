@@ -22,8 +22,13 @@ namespace Syntactik.DOM
     /// </summary>
     public class NamespaceDefinition : Pair
     {
-        /// <inheritdoc />
-        public NamespaceDefinition(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null) : base(name, delimiter, value)
+        /// <summary>
+        /// Creates an instance of <see cref="NamespaceDefinition"/>.
+        /// </summary>
+        /// <param name="name">Namespace prefix.</param>
+        /// <param name="assignment">Must be a literal assignment.</param>
+        /// <param name="value">Namespace URI.</param>
+        public NamespaceDefinition(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null) : base(name, assignment, value)
         {
         }
 

@@ -38,7 +38,7 @@ namespace Syntactik.DOM.Mapped
         public int ValueQuotesType => 0;
 
         /// <inheritdoc />
-        public Interval DelimiterInterval => Interval.Empty;
+        public Interval AssignmentInterval => Interval.Empty;
 
         /// <inheritdoc />
         public ValueType ValueType => ValueType.None;
@@ -70,7 +70,11 @@ namespace Syntactik.DOM.Mapped
 
         private TargetFormats _targetFormat;
 
-
+        /// <summary>
+        /// Create an instance of <see cref="DOM.Module"/>
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="fileName"></param>
         public Module(string name, string fileName = null):base(name, fileName)
         {
         }
@@ -96,8 +100,8 @@ namespace Syntactik.DOM.Mapped
         {
             if (child is NamespaceDefinition)
             {
-                if (_moduleDocument != null && _moduleDocument.Entities.Any(e => !(e is Comment)) 
-                        || _moduleDocument == null && Members.Count > 0)
+                if (ModuleDocument != null && ModuleDocument.Entities.Any(e => !(e is Comment)) 
+                        || ModuleDocument == null && Members.Count > 0)
                     throw new ApplicationException("Namespaces must be defined first");
             }
             base.AppendChild(child);

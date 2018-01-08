@@ -33,7 +33,7 @@ namespace Syntactik.DOM
         /// <summary>
         /// Creates a new instance of <see cref="Attribute"/>.
         /// </summary>
-        public Attribute(string name, DelimiterEnum delimiter, string value, string nsPrefix) : base(name, delimiter, value)
+        public Attribute(string name, AssignmentEnum assignment, string value, string nsPrefix) : base(name, assignment, value)
         {
             _nsPrefix = nsPrefix;
         }

@@ -31,7 +31,7 @@ namespace Syntactik.DOM
         /// <summary>
         /// Creates a new instance of <see cref="Scope"/>.
         /// </summary>
-        public Comment(string name, DelimiterEnum delimiter, string value) : base(name, delimiter, value)
+        public Comment(string name, AssignmentEnum assignment, string value) : base(name, assignment, value)
         {
         }
     }

@@ -47,7 +47,7 @@
     <None Include="Scenarios\AliasDefWithDefaultAndValueParameter\Module.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\ChoiceDelimiterOptionalArgument\ChoiceDelimiter.s4x">
+    <None Include="Scenarios\ChoiceAssignmentOptionalArgument\ChoiceDelimiter.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scenarios\EmptyModule\EmptyModule.s4x">
@@ -83,16 +83,16 @@
     <None Include="Scenarios\JsonExplicitArray\JsonArray.s4j">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\LiteralChoiceDelimiter\LiteralChoiceDelimiter.s4j">
+    <None Include="Scenarios\LiteralChoiceAssignment\LiteralChoiceDelimiter.s4j">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\LiteralChoiceDelimiter\LiteralChoiceDelimiter.s4x">
+    <None Include="Scenarios\LiteralChoiceAssignment\LiteralChoiceDelimiter.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\ChoiceDelimiter\ChoiceDelimiter.s4x">
+    <None Include="Scenarios\ChoiceAssignment\ChoiceAssignment.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\ChoiceDelimiter\ChoiceDelimiter.s4j">
+    <None Include="Scenarios\ChoiceAssignment\ChoiceAssignment.s4j">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scenarios\InvalidInterpolation\JsonDoc.s4j">

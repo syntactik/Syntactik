@@ -25,7 +25,7 @@ namespace Syntactik.DOM
         /// <summary>
         /// Creates a new instance of <see cref="Entity"/>.
         /// </summary>
-        protected Entity(string name, DelimiterEnum delimiter, string value) : base(name, delimiter, value)
+        protected Entity(string name, AssignmentEnum assignment, string value) : base(name, assignment, value)
         {
         }
     }

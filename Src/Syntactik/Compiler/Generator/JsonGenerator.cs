@@ -114,12 +114,12 @@ namespace Syntactik.Compiler.Generator
                 //Empty document. Writing an empty object as a value.
                 else
                 {
-                    if (document.Delimiter == DelimiterEnum.CC)
+                    if (document.Assignment == AssignmentEnum.CC)
                     {
                         JsonWriter.WriteStartArray();
                         JsonWriter.WriteEndArray();
                     }
-                    else if (document.Delimiter == DelimiterEnum.E || document.Delimiter == DelimiterEnum.EE || document.Delimiter == DelimiterEnum.CE)
+                    else if (document.Assignment == AssignmentEnum.E || document.Assignment == AssignmentEnum.EE || document.Assignment == AssignmentEnum.CE)
                     {
                         ResolveValue(document);
                     }
@@ -144,7 +144,7 @@ namespace Syntactik.Compiler.Generator
         protected bool EnterChoiceContainer(Pair pair, PairCollection<Entity> entities, Pair implementationPair = null)
         {
             if (implementationPair == null) implementationPair = pair;
-            if (implementationPair.Delimiter != DelimiterEnum.CC && implementationPair.Delimiter != DelimiterEnum.ECC 
+            if (implementationPair.Assignment != AssignmentEnum.CC && implementationPair.Assignment != AssignmentEnum.ECC 
                     || entities == null || entities.Count == 0)
                 return false;
 
@@ -246,7 +246,7 @@ namespace Syntactik.Compiler.Generator
         {
             CheckBlockStart(element);
 
-            if (!string.IsNullOrEmpty(element.Name)&& element.Delimiter != DelimiterEnum.None)
+            if (!string.IsNullOrEmpty(element.Name)&& element.Assignment != AssignmentEnum.None)
                 JsonWriter.WritePropertyName((element.NsPrefix != null ? element.NsPrefix + "." : "") + element.Name);
 
             if (ResolveValue(element)) return; //Block has value therefore it has no block.
@@ -270,7 +270,7 @@ namespace Syntactik.Compiler.Generator
             //Element has no block and no value. Writing an empty object as a value.
             if (!string.IsNullOrEmpty(element.Name) || ((DOM.Mapped.Element)element).ValueType == ValueType.Object)
             {
-                if (element.Delimiter == DelimiterEnum.CC)
+                if (element.Assignment == AssignmentEnum.CC)
                 {
                     JsonWriter.WriteStartArray();
                     JsonWriter.WriteEndArray();
@@ -315,7 +315,7 @@ namespace Syntactik.Compiler.Generator
             if (!BlockIsStarting) return;
 
             //This element is the first element of the block. It decides if the block is array or object
-            if (string.IsNullOrEmpty(node.Name) || node.Delimiter == DelimiterEnum.None)
+            if (string.IsNullOrEmpty(node.Name) || node.Assignment == AssignmentEnum.None)
             {
                 JsonWriter.WriteStartArray(); //start array
                 BlockState.Push(BlockStateEnum.Array);

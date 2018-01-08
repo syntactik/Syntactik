@@ -10,8 +10,8 @@ namespace Syntactik.DOM
     public interface IPairFactory
     {
         /// <summary>
-        /// If a pair has a literal value then parser calls this method when name, delimiter and value are parsed.
-        /// If a pair has a block or pair value then parser calls this method when name and delimiter are parsed.
+        /// If a pair has a literal value then parser calls this method when name, assignment and value are parsed.
+        /// If a pair has a block or pair value then parser calls this method when name and assignment are parsed.
         /// </summary>
         /// <param name="textSource"><see cref="ITextSource"/> is used to get name of the pair and literal values.</param>
         /// <param name="nameQuotesType">Quotes used to define name. 
@@ -20,8 +20,8 @@ namespace Syntactik.DOM
         /// 2 - double quotes
         /// </param>
         /// <param name="nameInterval"><see cref="Interval"/> used to define name of the pair.</param>
-        /// <param name="delimiter">Pair delimiter.</param>
-        /// <param name="delimiterInterval"><see cref="Interval"/> used to define pair delimiter.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="assignmentInterval"><see cref="Interval"/> used to define pair assignment.</param>
         /// <param name="valueQuotesType">Quotes used to define literal value. 
         /// 0 - no quotes
         /// 1 - single quotes
@@ -30,8 +30,8 @@ namespace Syntactik.DOM
         /// <param name="valueInterval"><see cref="Interval"/> used to define literal value of the pair.</param>
         /// <param name="valueIndent">Indent of the value in the source code.</param>
         /// <returns>Instance of <see cref="Pair"/>.</returns>
-        Pair CreateMappedPair(ITextSource textSource, int nameQuotesType, Interval nameInterval, DelimiterEnum delimiter, 
-            Interval delimiterInterval, int valueQuotesType, Interval valueInterval, int valueIndent);
+        Pair CreateMappedPair(ITextSource textSource, int nameQuotesType, Interval nameInterval, AssignmentEnum assignment, 
+            Interval assignmentInterval, int valueQuotesType, Interval valueInterval, int valueIndent);
 
         /// <summary>
         /// When child pair is create, parser calls this method to add child pair to parent.

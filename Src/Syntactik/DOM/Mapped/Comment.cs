@@ -43,9 +43,9 @@ namespace Syntactik.DOM.Mapped
         public int ValueQuotesType { get; }
 
         /// <summary>
-        /// <see cref="Interval"/> used to define pair delimiter. Always empty for <see cref="Comment"/>.
+        /// <see cref="Interval"/> used to define pair assignment. Always empty for <see cref="Comment"/>.
         /// </summary>
-        public Interval DelimiterInterval { get; }
+        public Interval AssignmentInterval { get; }
 
         /// <summary>
         /// Type of the pair value. Always <see cref="Mapped.ValueType.None"/> for <see cref="Comment"/>.
@@ -65,12 +65,12 @@ namespace Syntactik.DOM.Mapped
         /// <summary>
         /// Creates a new instance of <see cref="Comment"/>.
         /// </summary>
-        public Comment(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null,
-            Interval nameInterval = null, Interval valueInterval = null, Interval delimiterInterval = null,
-            int nameQuotesType = 0, int valueQuotesType = 0, int commentType = 0) : base(name, delimiter, value)
+        public Comment(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null,
+            Interval nameInterval = null, Interval valueInterval = null, Interval assignmentInterval = null,
+            int nameQuotesType = 0, int valueQuotesType = 0, int commentType = 0) : base(name, assignment, value)
         {
             ValueInterval = valueInterval;
-            DelimiterInterval = delimiterInterval;
+            AssignmentInterval = assignmentInterval;
             NameInterval = nameInterval;
             NameQuotesType = nameQuotesType;
             ValueQuotesType = valueQuotesType;

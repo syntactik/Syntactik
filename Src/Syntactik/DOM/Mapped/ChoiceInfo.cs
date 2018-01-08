@@ -21,7 +21,7 @@ using Syntactik.Compiler;
 namespace Syntactik.DOM.Mapped
 {
     /// <summary>
-    /// Stores info about pair with choice delimiter. 
+    /// Stores info about pair with choice assignment. 
     /// </summary>
     public class ChoiceInfo
     {

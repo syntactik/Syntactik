@@ -135,7 +135,7 @@ namespace Syntactik.Compiler.Steps
             if (aliasDef == null) return 0;
             if (aliasDef.HasCircularReference) return 0;
             PairCollection<Entity> entities = null;
-            if (aliasDef.Delimiter == DelimiterEnum.CC)
+            if (aliasDef.Assignment == AssignmentEnum.CC)
             {
                 var choiceInfo = JsonGenerator.FindChoiceInfo(_choiceStack.Peek(), alias);
                 if (choiceInfo?.Children != null) entities = ((Element) choiceInfo.Children[0].ChoiceNode).Entities;
@@ -280,7 +280,7 @@ namespace Syntactik.Compiler.Steps
         {
             if (((Alias) alias).AliasDefinition == null) return;
             if (!((Alias)alias).AliasDefinition.IsValueNode) return;
-            if (alias?.Parent.Delimiter == DelimiterEnum.CE) return;
+            if (alias?.Parent.Assignment == AssignmentEnum.CE) return;
             if (_currentModule.TargetFormat == Module.TargetFormats.Xml && alias?.Parent is Document)
                 Context.AddError(CompilerErrorFactory.InvalidUsageOfValueAlias((Alias) alias, _currentModule.FileName));
 
@@ -363,7 +363,7 @@ namespace Syntactik.Compiler.Steps
             }
             else
             {
-                CheckArrayDelimiter(element);
+                CheckArrayAssignment(element);
                 base.Visit(element);
             }
             ExitChoiceNode(element);
@@ -373,9 +373,9 @@ namespace Syntactik.Compiler.Steps
                 _blockState.Pop();
         }
 
-        private void CheckArrayDelimiter(Pair element)
+        private void CheckArrayAssignment(Pair element)
         {
-            if (element.Delimiter == DelimiterEnum.CCC)
+            if (element.Assignment == AssignmentEnum.CCC)
             {
                 _blockState.Push(JsonGenerator.BlockStateEnum.Array);
                 _blockStateUnknown = false;
@@ -423,7 +423,7 @@ namespace Syntactik.Compiler.Steps
         private bool CheckStartOfChoiceContainer(Pair pair, PairCollection<Entity> entities, Pair implementationPair = null)
         {
             if (implementationPair == null) implementationPair = pair;
-            if (implementationPair.Delimiter != DelimiterEnum.CC && implementationPair.Delimiter != DelimiterEnum.ECC || entities == null || entities.Count == 0) return false;
+            if (implementationPair.Assignment != AssignmentEnum.CC && implementationPair.Assignment != AssignmentEnum.ECC || entities == null || entities.Count == 0) return false;
             ChoiceInfo parent = _choiceStack.Count == 0 ? null : _choiceStack.Peek();
             var choiceInfo = new ChoiceInfo(parent, pair);
             _choiceStack.Push(choiceInfo);
@@ -485,8 +485,8 @@ namespace Syntactik.Compiler.Steps
             if (!string.IsNullOrEmpty(node.Name)) return; //not an array item
             if (_currentModule.TargetFormat != Module.TargetFormats.Xml) return; //don't check if s4j
             if (node.IsChoice) return; //don't check if node is choice
-            if (node.Delimiter == DelimiterEnum.CC) return; //Empty name is allowed for choice containers
-            if (node.Parent.Delimiter == DelimiterEnum.CCC) return; //Empty name if parent is an explicit array
+            if (node.Assignment == AssignmentEnum.CC) return; //Empty name is allowed for choice containers
+            if (node.Parent.Assignment == AssignmentEnum.CCC) return; //Empty name if parent is an explicit array
             
             if (!node.IsValueNode || node.Parent is DOM.Document) //Empty name is allowed for value (text) nodes
             {
@@ -511,7 +511,7 @@ namespace Syntactik.Compiler.Steps
         /// <param name="pair"></param>
         private void CheckPairValue(Pair pair)
         {
-            if (pair.Delimiter == DelimiterEnum.CE)
+            if (pair.Assignment == AssignmentEnum.CE)
             {
                 if (pair.PairValue == null || !(pair.PairValue is DOM.Alias) && !(pair.PairValue is DOM.Parameter))
                 {
@@ -525,7 +525,7 @@ namespace Syntactik.Compiler.Steps
                     Visit(pair.PairValue);
                 }
             }
-            else if (pair.Delimiter == DelimiterEnum.EC)
+            else if (pair.Assignment == AssignmentEnum.EC)
                 CheckStringConcatenation(pair);
             if (pair.PairValue is DOM.Parameter)
             {
@@ -570,9 +570,9 @@ namespace Syntactik.Compiler.Steps
 
         private void CheckNoPairValue(Pair pair)
         {
-            if (pair.Delimiter == DelimiterEnum.CE)
+            if (pair.Assignment == AssignmentEnum.CE)
             {
-               Context.AddError(CompilerErrorFactory.InvalidDelimiter(((IMappedPair)pair).NameInterval, _currentModule.FileName, ":="));
+               Context.AddError(CompilerErrorFactory.InvalidAssignment(((IMappedPair)pair).NameInterval, _currentModule.FileName, ":="));
             }
         }
 
@@ -675,14 +675,14 @@ namespace Syntactik.Compiler.Steps
                 var blockState = _blockState.Peek();
                 if (blockState == JsonGenerator.BlockStateEnum.Array)
                 {
-                    if (string.IsNullOrEmpty(pair.Name) || pair.Delimiter == DelimiterEnum.None) return;
+                    if (string.IsNullOrEmpty(pair.Name) || pair.Assignment == AssignmentEnum.None) return;
                     ReportErrorForEachNodeInAliasContext(
                         n => CompilerErrorFactory.ArrayItemIsExpected((IMappedPair) n, _currentModule.FileName));
                     Context.AddError(CompilerErrorFactory.ArrayItemIsExpected((IMappedPair) pair, _currentModule.FileName));
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(pair.Name) && pair.Delimiter != DelimiterEnum.None) return;
+                    if (!string.IsNullOrEmpty(pair.Name) && pair.Assignment != AssignmentEnum.None) return;
 
                     if(_currentModule.TargetFormat == Module.TargetFormats.Xml && ((IMappedPair)pair).IsValueNode ) return; 
 
@@ -695,7 +695,7 @@ namespace Syntactik.Compiler.Steps
             }
 
             //This element is the first element of the block. It decides if the block is array or object
-            _blockState.Push(string.IsNullOrEmpty(pair.Name) || pair.Delimiter == DelimiterEnum.None
+            _blockState.Push(string.IsNullOrEmpty(pair.Name) || pair.Assignment == AssignmentEnum.None
                 ? JsonGenerator.BlockStateEnum.Array
                 : JsonGenerator.BlockStateEnum.Object);
             _blockStateUnknown = false;

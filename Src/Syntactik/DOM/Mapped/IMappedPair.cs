@@ -50,9 +50,9 @@ namespace Syntactik.DOM.Mapped
         int ValueQuotesType { get; }
 
         /// <summary>
-        /// <see cref="Interval"/> used to define pair delimiter.
+        /// <see cref="Interval"/> used to define pair assignment.
         /// </summary>
-        Interval DelimiterInterval { get; }
+        Interval AssignmentInterval { get; }
 
         /// <summary>
         /// Type of the pair value.

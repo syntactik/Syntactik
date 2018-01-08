@@ -60,7 +60,7 @@ namespace Syntactik.DOM
         /// <summary>
         /// Creates a new instance of <see cref="Alias"/>.
         /// </summary>
-        public Alias(string name = null, DelimiterEnum delimiter = DelimiterEnum.None, string value = null) : base(name, delimiter, value)
+        public Alias(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null) : base(name, assignment, value)
         {
         }
 
@@ -79,7 +79,7 @@ namespace Syntactik.DOM
         /// <param name="child">Child pair to be added</param>
         public override void AppendChild(Pair child)
         {
-            if (Delimiter == DelimiterEnum.CE)
+            if (Assignment == AssignmentEnum.CE)
             {
                 base.AppendChild(child);
             }

@@ -20,12 +20,12 @@ using System.Collections.Generic;
 namespace Syntactik.DOM.Mapped
 {
     /// <summary>
-    /// Represents a pair with a choice delimiter.
+    /// Represents a pair with a choice assignment.
     /// </summary>
     public interface IChoiceNode
     {
         /// <summary>
-        /// True if pair has a choice delimiter.
+        /// True if pair has a choice assignment.
         /// </summary>
         bool IsChoice { get; }
         /// <summary>

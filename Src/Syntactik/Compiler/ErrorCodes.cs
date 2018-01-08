@@ -48,7 +48,7 @@ namespace Syntactik.Compiler
         public const string MCE0027 = "Unexpected default value argument.";
         public const string MCE0029 = "Invalid escape sequence - '{0}'.";
         public const string MCE0030 = "Alias or Parameter expected after ':='.";
-        public const string MCE0031 = "Invalid delimiter '{0}'.";
+        public const string MCE0031 = "Invalid assignment '{0}'.";
         public const string MCE0032 = "{0}.";
         public const string MCE0033 = "Duplicate namespace definition name - '{0}'.";
         public const string MCE0100 = "Invalid XML element name.";

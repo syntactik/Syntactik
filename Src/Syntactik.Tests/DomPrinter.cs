@@ -198,7 +198,7 @@ namespace Syntactik.Tests
         {
             if (pair.Value != null)
             {
-                _sb.Append(Pair.DelimiterToString(pair.Delimiter));
+                _sb.Append(Pair.AssignmentToString(pair.Assignment));
                 _sb.Append(" ");
                 _sb.Append(QuoteTypeToChar(((IMappedPair)pair).ValueQuotesType));
                 PrintValue(pair);
@@ -213,7 +213,7 @@ namespace Syntactik.Tests
             }
             else
             {
-                _sb.AppendLine(Pair.DelimiterToString(pair.Delimiter));
+                _sb.AppendLine(Pair.AssignmentToString(pair.Assignment));
                 _indent++;
             }
             _valueNodeExpected.Push(false);

@@ -1,9 +1,9 @@
 namespace Syntactik.DOM
 {
     /// <summary>
-    /// Enumerates possible values for delimiter of the <see cref="Pair"/>.
+    /// Enumerates possible values for assignment of the <see cref="Pair"/>.
     /// </summary>
-    public enum DelimiterEnum
+    public enum AssignmentEnum
     {
         /// <summary>
         /// The <see cref="Pair"/> has no delimeter

@@ -27,7 +27,7 @@ namespace Syntactik.DOM
     {
         private Pair _parent;
         internal string _name;
-        private DelimiterEnum _delimiter;
+        internal AssignmentEnum _assignment;
         internal string _value;
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Syntactik.DOM
         /// <summary>
         /// Gets or sets a value of pair assignment.
         /// </summary>
-        public virtual DelimiterEnum Delimiter => _delimiter;
+        public virtual AssignmentEnum Assignment => _assignment;
 
         /// <summary>
         /// Pair value of the pair. Use method <see cref="AppendChild"/> to set value of this property.
@@ -62,28 +62,31 @@ namespace Syntactik.DOM
         /// <summary>
         /// Creates a new instance of the <see cref="Pair"/> class.
         /// </summary>
-        protected Pair(string name, DelimiterEnum delimiter, string value)
+        /// <param name="name">Pair name.</param>
+        /// <param name="assignment"></param>
+        /// <param name="value">Pair value.</param>
+        protected Pair(string name, AssignmentEnum assignment, string value)
         {
             _name = name;
-            _delimiter = delimiter;
+            _assignment = assignment;
             _value = value;
         }
 
         /// <summary>
         /// Creates a new instance of the <see cref="Pair"/> class.
         /// </summary>
-        protected Pair(string name, DelimiterEnum delimiter)
+        protected Pair(string name, AssignmentEnum assignment)
         {
             _name = name;
-            _delimiter = delimiter;
+            _assignment = assignment;
         }
 
         /// <summary>
         /// Creates a new instance of the <see cref="Pair"/> class.
         /// </summary>
-        protected Pair(DelimiterEnum delimiter, string value)
+        protected Pair(AssignmentEnum assignment, string value)
         {
-            _delimiter = delimiter;
+            _assignment = assignment;
             _value = value;
         }
 
@@ -98,9 +101,9 @@ namespace Syntactik.DOM
         /// <summary>
         /// Creates a new instance of the <see cref="Pair"/> class.
         /// </summary>
-        protected Pair(DelimiterEnum delimiter)
+        protected Pair(AssignmentEnum assignment)
         {
-            _delimiter = delimiter;
+            _assignment = assignment;
         }
 
         /// <summary>
@@ -143,7 +146,7 @@ namespace Syntactik.DOM
         /// <param name="child">Child pair to be added</param>
         public virtual void AppendChild(Pair child)
         {
-            if (Delimiter != DelimiterEnum.CE)
+            if (Assignment != AssignmentEnum.CE)
                 throw new NotSupportedException(new StringBuilder("Cannot add ").Append(child.GetType().Name)
                     .Append(" in ").Append(GetType().Name).ToString());
             if (PairValue != null) throw new InvalidOperationException("PairValue is already initialized.");
@@ -152,29 +155,29 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
-        /// Auxiliary function to convert delimiter value to its string representation.
+        /// Auxiliary function to convert assignment value to its string representation.
         /// </summary>
-        /// <param name="delimiter"></param>
+        /// <param name="assignment"></param>
         /// <returns></returns>
-        internal static string DelimiterToString(DelimiterEnum delimiter)
+        internal static string AssignmentToString(AssignmentEnum assignment)
         {
-            switch (delimiter)
+            switch (assignment)
             {
-                case DelimiterEnum.C:
+                case AssignmentEnum.C:
                     return ":";
-                case DelimiterEnum.CC:
+                case AssignmentEnum.CC:
                     return "::";
-                case DelimiterEnum.CCC:
+                case AssignmentEnum.CCC:
                     return ":::";
-                case DelimiterEnum.E:
+                case AssignmentEnum.E:
                     return "=";
-                case DelimiterEnum.EC:
+                case AssignmentEnum.EC:
                     return "=:";
-                case DelimiterEnum.ECC:
+                case AssignmentEnum.ECC:
                     return "=::";
-                case DelimiterEnum.EE:
+                case AssignmentEnum.EE:
                     return "==";
-                case DelimiterEnum.CE:
+                case AssignmentEnum.CE:
                     return ":=";
             }
             return "";

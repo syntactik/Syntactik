@@ -36,8 +36,8 @@ namespace Syntactik.DOM
         public event ProcessCommentHandler OnProcessComment;
 
         public Pair CreateMappedPair(ITextSource textSource, int nameQuotesType, Interval nameInterval,
-            DelimiterEnum delimiter,
-            Interval delimiterInterval, int valueQuotesType, Interval valueInterval, int valueIndent)
+            AssignmentEnum assignment,
+            Interval assignmentInterval, int valueQuotesType, Interval valueInterval, int valueIndent)
         {
             var name = GetName(textSource, nameQuotesType, nameInterval);
             if (nameQuotesType > 0)
@@ -46,9 +46,9 @@ namespace Syntactik.DOM
                     name,
                     nameQuotesType: nameQuotesType,
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
-                    value : GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value : GetValue(textSource, assignment, valueQuotesType, valueInterval, valueIndent),
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: null,
@@ -60,9 +60,9 @@ namespace Syntactik.DOM
                     name.Substring(1),
                     null,
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
-                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: GetValue(textSource, assignment, valueQuotesType, valueInterval, valueIndent),
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: null,
@@ -73,9 +73,9 @@ namespace Syntactik.DOM
                 (
                     name.Substring(2),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
-                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: GetValue(textSource, assignment, valueQuotesType, valueInterval, valueIndent),
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: null,
@@ -86,9 +86,9 @@ namespace Syntactik.DOM
                 (
                     name.Substring(2),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
-                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: GetValue(textSource, assignment, valueQuotesType, valueInterval, valueIndent),
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: null,
@@ -99,9 +99,9 @@ namespace Syntactik.DOM
                 (
                     name.Substring(2),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
-                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: GetValue(textSource, assignment, valueQuotesType, valueInterval, valueIndent),
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: null,
@@ -112,9 +112,9 @@ namespace Syntactik.DOM
                 (
                      name.Substring(1),
                      nameInterval: nameInterval,
-                     delimiter: delimiter,
-                     delimiterInterval: delimiterInterval,
-                     value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                     assignment: assignment,
+                     assignmentInterval: assignmentInterval,
+                     value: GetValue(textSource, assignment, valueQuotesType, valueInterval, valueIndent),
                      valueQuotesType: valueQuotesType,
                      valueInterval: valueInterval,
                      interpolationItems: null,
@@ -125,9 +125,9 @@ namespace Syntactik.DOM
                 (
                     name.Substring(1),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
-                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: GetValue(textSource, assignment, valueQuotesType, valueInterval, valueIndent),
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: null,
@@ -138,9 +138,9 @@ namespace Syntactik.DOM
                 (
                     name.Substring(1),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval,
-                    value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: GetValue(textSource, assignment, valueQuotesType, valueInterval, valueIndent),
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: null,
@@ -151,8 +151,8 @@ namespace Syntactik.DOM
                 ( 
                     nsPrefix: name.Substring(1),
                     nameInterval: nameInterval,
-                    delimiter: delimiter,
-                    delimiterInterval: delimiterInterval
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval
                 );
             var tuple = Mapped.Element.GetNameAndNs(name, nameQuotesType);
             return new Mapped.Element
@@ -161,9 +161,9 @@ namespace Syntactik.DOM
                 string.IsNullOrEmpty(tuple.Item1) ? null : tuple.Item1,
                 nameQuotesType: nameQuotesType,
                 nameInterval: nameInterval,
-                delimiter: delimiter,
-                delimiterInterval: delimiterInterval,
-                value: GetValue(textSource, delimiter, valueQuotesType, valueInterval, valueIndent),
+                assignment: assignment,
+                assignmentInterval: assignmentInterval,
+                value: GetValue(textSource, assignment, valueQuotesType, valueInterval, valueIndent),
                 valueQuotesType: valueQuotesType,
                 valueInterval: valueInterval,
                 interpolationItems: null,
@@ -186,12 +186,12 @@ namespace Syntactik.DOM
                 : input.GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index);
         }
 
-        private string GetValue(ITextSource input, DelimiterEnum delimiter,
+        private string GetValue(ITextSource input, AssignmentEnum assignment,
             int valueQuotesType, Interval valueInterval, int valueIndent)
         {
             if (valueInterval == null)
             {
-                if (delimiter == DelimiterEnum.E || delimiter == DelimiterEnum.EE)
+                if (assignment == AssignmentEnum.E || assignment == AssignmentEnum.EE)
                     return string.Empty;
                 return null;
             }
@@ -206,25 +206,25 @@ namespace Syntactik.DOM
                                         valueQuotesType == (int) QuotesEnum.Double && c != '"';
                 if (!missingValueQuote)
                 {
-                    return GetValueFromValueInterval(input, delimiter, valueQuotesType,
+                    return GetValueFromValueInterval(input, assignment, valueQuotesType,
                         valueInterval.Begin.Index + 1, valueInterval.End.Index - 1, valueIndent);
                 }
 
-                return GetValueFromValueInterval(input, delimiter, valueQuotesType,
+                return GetValueFromValueInterval(input, assignment, valueQuotesType,
                     valueInterval.Begin.Index + 1, valueInterval.End.Index, valueIndent);
             }
-            return GetValueFromValueInterval(input, delimiter, valueQuotesType,
+            return GetValueFromValueInterval(input, assignment, valueQuotesType,
                 valueInterval.Begin.Index, valueInterval.End.Index, valueIndent);
         }
 
-        public static string GetValueFromValueInterval(ITextSource charStream, DelimiterEnum delimiter,
+        public static string GetValueFromValueInterval(ITextSource charStream, AssignmentEnum assignment,
             int valueQuotesType, int begin, int end, int valueIndent)
         {
             var sb = new StringBuilder();
             //Splitting text. Getting array of text lines
             var lines = charStream.GetText(begin, end).Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
 
-            bool folded = lines.Length > 1 && delimiter == DelimiterEnum.EE &&
+            bool folded = lines.Length > 1 && assignment == AssignmentEnum.EE &&
                           (valueQuotesType == (int) QuotesEnum.None || valueQuotesType == (int) QuotesEnum.Double);
 
             var first = true;
