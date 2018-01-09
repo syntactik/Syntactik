@@ -37,7 +37,7 @@ namespace Syntactik.Compiler
     public static class CompilerErrorFactory
     {
         /// <summary>
-        /// Creates instance of class <see cref="CompilerError"/>.
+        /// Creates <see cref="ICompilerInput"/> related error.
         /// </summary>
         /// <param name="inputName"></param>
         /// <param name="ex"></param>
@@ -48,7 +48,7 @@ namespace Syntactik.Compiler
         }
 
         /// <summary>
-        /// 
+        /// Creates <see cref="ICompilerInput"/> related error.
         /// </summary>
         /// <param name="lexicalInfo"></param>
         /// <param name="error"></param>
@@ -59,7 +59,7 @@ namespace Syntactik.Compiler
         }
 
         /// <summary>
-        /// 
+        /// Creates fatal error
         /// </summary>
         /// <param name="ex"></param>
         /// <returns></returns>
@@ -105,10 +105,9 @@ namespace Syntactik.Compiler
             return new CompilerError(code, location, isParserError, Array.ConvertAll(args, DisplayStringFor));
         }
 
-        internal static string DisplayStringFor(object o)
+        internal static object DisplayStringFor(object o)
         {
             if (o == null) return "";
-
             return  o.ToString();
         }
 

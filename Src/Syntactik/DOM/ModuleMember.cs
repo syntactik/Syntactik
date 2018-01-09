@@ -39,6 +39,10 @@ namespace Syntactik.DOM
         {
         }
 
+
+        /// <summary>
+        /// Namespace definitions of the module member.
+        /// </summary>
         public virtual PairCollection<NamespaceDefinition> NamespaceDefinitions
         {
             get => _namespaces ?? (_namespaces = new PairCollection<NamespaceDefinition>(this));

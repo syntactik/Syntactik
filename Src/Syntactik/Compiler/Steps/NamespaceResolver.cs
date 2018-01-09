@@ -24,7 +24,6 @@ using Syntactik.DOM.Mapped;
 using Alias = Syntactik.DOM.Mapped.Alias;
 using AliasDefinition = Syntactik.DOM.Mapped.AliasDefinition;
 using Argument = Syntactik.DOM.Mapped.Argument;
-using Attribute = Syntactik.DOM.Attribute;
 using Document = Syntactik.DOM.Mapped.Document;
 using Module = Syntactik.DOM.Mapped.Module;
 using NamespaceDefinition = Syntactik.DOM.NamespaceDefinition;
@@ -33,15 +32,22 @@ using Scope = Syntactik.DOM.Mapped.Scope;
 
 namespace Syntactik.Compiler.Steps
 {
+    /// <summary>
+    /// Implements logic of collecting information about aliases and namespaces.
+    /// </summary>
     public class NamespaceResolver
     {
         private List<NsInfo> _moduleMembersNsInfo;
-        private DOM.ModuleMember _currentModuleMember;
+        private ModuleMember _currentModuleMember;
         private DOM.Module _currentModule;
         private readonly CompilerContext _context;
         private readonly Stack<NsInfo> _aliasDefStack;
         private readonly long _syncTime;
 
+        /// <summary>
+        /// Creates an instance of <see cref="NamespaceResolver"/>.
+        /// </summary>
+        /// <param name="context"><see cref="CompilerContext"/> is used to report errors.</param>
         public NamespaceResolver(CompilerContext context)
         {
             _context = context;
@@ -50,11 +56,13 @@ namespace Syntactik.Compiler.Steps
         }
 
         /// <summary>
-        /// NsInfo for all Module Members (Documents and AliasDef)
+        /// NsInfo for all processed module members (Documents and AliasDef).
         /// </summary>
         public List<NsInfo> ModuleMembersNsInfo => _moduleMembersNsInfo ?? (_moduleMembersNsInfo = new List<NsInfo>());
 
-        //This method is called from ProcessAliasesAndNamespaces step after the all Nodes are visited.
+        /// <summary>
+        /// Resolves aliases, namespaces and do checks after the all nodes are visited.
+        /// </summary>
         public void ResolveAliasesAndDoChecks()
         {
             foreach (var nsInfo in ModuleMembersNsInfo)
@@ -101,9 +109,14 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
-        public NsInfo GetNsInfo(DOM.ModuleMember document)
+        /// <summary>
+        /// Finds <see cref="NsInfo"/> related to the <see cref="ModuleMember"/>.
+        /// </summary>
+        /// <param name="moduleMember">Target <see cref="ModuleMember"/>.</param>
+        /// <returns></returns>
+        public NsInfo GetNsInfo(ModuleMember moduleMember)
         {
-            return ModuleMembersNsInfo.FirstOrDefault(n => n.ModuleMember == document);
+            return ModuleMembersNsInfo.FirstOrDefault(n => n.ModuleMember == moduleMember);
         }
 
         private void CheckModuleMember(NsInfo nsInfo)
@@ -131,6 +144,11 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
+        /// <summary>
+        /// Gets <see cref="AliasDefinition"/> by name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public AliasDefinition GetAliasDefinition(string name)
         {
             NsInfo resultInfo =
@@ -184,7 +202,7 @@ namespace Syntactik.Compiler.Steps
             return ResolveAliasesInAliasDefinition(aliasDef);
         }
 
-        protected virtual AliasDefinition LookupAliasDef(Alias alias)
+        private AliasDefinition LookupAliasDef(Alias alias)
         {
             if (alias.AliasDefinition != null && _syncTime <= alias.AliasDefinition.SyncTime)
                 return alias.AliasDefinition;
@@ -265,18 +283,18 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
-        public void ProcessAlias(Alias node)
-        {
-            CheckDuplicateArguments(node);
-        }
-
         /// <summary>
-        /// Adds Alias to the Namespace Info of the current Module Member.
+        /// Tells <see cref="NamespaceResolver"/> to check validity of <see cref="Alias"/> and add it
+        /// to the list of aliases of the current <see cref="ModuleMember"/>.
+        /// Method should be called from the visitor.
         /// </summary>
-        /// <param name="node"></param>
-        public void AddAlias(Alias node)
+        /// <param name="alias">The alias to be added.</param>
+        public void ProcessAlias(Alias alias)
         {
-            CurrentModuleMemberNsInfo.Aliases.Add(node);
+            CheckDuplicateArguments(alias);
+
+            // Adds Alias to the Namespace Info of the current Module Member.
+            CurrentModuleMemberNsInfo.Aliases.Add(alias);
         }
 
         private void CheckDuplicateArguments(Alias alias)
@@ -287,23 +305,39 @@ namespace Syntactik.Compiler.Steps
                     _context.AddError(CompilerErrorFactory.DuplicateArgumentName((Argument) a, _currentModule.FileName)));
         }
 
-        public void EnterDocument(Document node)
+        /// <summary>
+        /// Sets current <see cref="ModuleMember"/>.
+        /// Method should be called from the visitor.
+        /// </summary>
+        /// <param name="document">Current <see cref="Document"/>.</param>
+        public void EnterDocument(Document document)
         {
-            _currentModuleMember = node;
+            _currentModuleMember = document;
             _currentModuleMemberNsInfo = new NsInfo(_currentModuleMember);
             ModuleMembersNsInfo.Add(_currentModuleMemberNsInfo);
         }
 
-        public void EnterAliasDef(AliasDefinition node)
+        /// <summary>
+        /// Sets current <see cref="ModuleMember"/>.
+        /// Method should be called from the visitor.
+        /// </summary>
+        /// <param name="aliasDefinition">Current <see cref="AliasDefinition"/>.</param>
+        public void EnterAliasDef(AliasDefinition aliasDefinition)
         {
-            _currentModuleMember = node;
+            _currentModuleMember = aliasDefinition;
             _currentModuleMemberNsInfo = new NsInfo(_currentModuleMember);
             ModuleMembersNsInfo.Add(_currentModuleMemberNsInfo);
         }
 
-        public void EnterModule(DOM.Module node)
+
+        /// <summary>
+        /// Sets current <see cref="Module"/>.
+        /// Method should be called from the visitor.
+        /// </summary>
+        /// <param name="module">Current <see cref="Module"/>.</param>
+        public void EnterModule(DOM.Module module)
         {
-            _currentModule = node;
+            _currentModule = module;
             _currentModuleMember = null;
         }
 
@@ -313,51 +347,49 @@ namespace Syntactik.Compiler.Steps
         /// - finds Namespace DOM object in the Module or ModuleMember and adds it to NsINFo of the current ModuleMember
         /// if the namespace is not added yet
         /// </summary>
-        /// <param name="pair"></param>
         internal void ProcessNsPrefix(IMappedPair pair)
         {
             var nsPrefix = ((INsNode) pair).NsPrefix;
 
-            if (!string.IsNullOrEmpty(nsPrefix) && !nsPrefix.StartsWith("xml", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(nsPrefix) ||
+                nsPrefix.StartsWith("xml", StringComparison.OrdinalIgnoreCase)) return;
+
+            var ns = LookupNamespace(nsPrefix);
+            if (ns == null)
             {
-                var ns = LookupNamespace(nsPrefix);
-                if (ns == null)
-                {
-                    _context.AddError(CompilerErrorFactory.NsPrefixNotDefined(pair.NameInterval, nsPrefix, _currentModule.FileName));
-                    return;
-                }
-
-                var foundNs = CurrentModuleMemberNsInfo.Namespaces.FirstOrDefault(n => n.Value == ns.Value);
-
-                if (foundNs == null)
-                    CurrentModuleMemberNsInfo.Namespaces.Add(ns);
-                else
-                    //If namespace is already defined with different prefix then changing prefix on pair
-                    if (foundNs.Name != nsPrefix) ((INsNodeOverridable) pair).OverrideNsPrefix(foundNs.Name);
-
-                if (pair is DOM.Mapped.Attribute attribute && attribute.Name == "type" && nsPrefix == "xsi")
-                {
-                    var typeInfo = attribute.Value?.Split(':');
-                    if (typeInfo?.Length > 1)
-                    {
-                        nsPrefix = typeInfo[0];
-                        ns = LookupNamespace(nsPrefix);
-                        if (ns == null)
-                        {
-                            _context.AddError(CompilerErrorFactory.NsPrefixNotDefined(pair.ValueInterval, nsPrefix, _currentModule.FileName));
-                            return;
-                        }
-                        foundNs = CurrentModuleMemberNsInfo.Namespaces.FirstOrDefault(n => n.Value == ns.Value);
-
-                        if (foundNs == null)
-                            CurrentModuleMemberNsInfo.Namespaces.Add(ns);
-                        else if (foundNs.Name != nsPrefix)
-                        {
-                            attribute.OverrideValue($"{foundNs.Name}:{typeInfo[1]}");
-                        }
-                    }
-                }
+                _context.AddError(CompilerErrorFactory.NsPrefixNotDefined(pair.NameInterval, nsPrefix, _currentModule.FileName));
+                return;
             }
+
+            var foundNs = CurrentModuleMemberNsInfo.Namespaces.FirstOrDefault(n => n.Value == ns.Value);
+
+            if (foundNs == null)
+                CurrentModuleMemberNsInfo.Namespaces.Add(ns);
+            else
+                //If namespace is already defined with different prefix then changing prefix on pair
+            if (foundNs.Name != nsPrefix) ((INsNodeOverridable) pair).OverrideNsPrefix(foundNs.Name);
+
+            if (!(pair is DOM.Mapped.Attribute attribute) || attribute.Name != "type" || nsPrefix != "xsi") return;
+            
+            var typeInfo = attribute.Value?.Split(':');
+            if (!(typeInfo?.Length > 1)) return;
+            
+            nsPrefix = typeInfo[0];
+            ns = LookupNamespace(nsPrefix);
+            if (ns == null)
+            {
+                _context.AddError(CompilerErrorFactory.NsPrefixNotDefined(pair.ValueInterval, nsPrefix, _currentModule.FileName));
+                return;
+            }
+            foundNs = CurrentModuleMemberNsInfo.Namespaces.FirstOrDefault(n => n.Value == ns.Value);
+
+            if (foundNs == null)
+                CurrentModuleMemberNsInfo.Namespaces.Add(ns);
+            else if (foundNs.Name != nsPrefix)
+            {
+                attribute.OverrideValue($"{foundNs.Name}:{typeInfo[1]}");
+            }
+            
         }
 
         /// <summary>
@@ -365,9 +397,9 @@ namespace Syntactik.Compiler.Steps
         /// </summary>
         /// <param name="nsPrefix"></param>
         /// <returns></returns>
-        private DOM.NamespaceDefinition LookupNamespace(string nsPrefix)
+        private NamespaceDefinition LookupNamespace(string nsPrefix)
         {
-            DOM.NamespaceDefinition ns;
+            NamespaceDefinition ns;
             //Looking up in the ModuleMember (Document/AliasDef)
             if ((ns = _currentModuleMember.NamespaceDefinitions.FirstOrDefault(n => n.Name == nsPrefix)) != null)
                 return ns;
@@ -375,8 +407,8 @@ namespace Syntactik.Compiler.Steps
             //Looking up in the Module
             if ((ns = _currentModule.NamespaceDefinitions.FirstOrDefault(n => n.Name == nsPrefix)) != null)
             {
-                //Checking if this namespace can be replaced by ns from ModuleMember because it has same URI
-                DOM.NamespaceDefinition ns2;
+                //Checking if this namespace can be replaced by namespace from ModuleMember because it has same URI
+                NamespaceDefinition ns2;
                 if ((ns2 = _currentModuleMember.NamespaceDefinitions.FirstOrDefault(n => n.Value == ns.Value)) != null)
                     return ns2;
 
@@ -386,7 +418,15 @@ namespace Syntactik.Compiler.Steps
             return null;
         }
 
-        public void GetPrefixAndNs(INsNode node, DOM.Document document, Func<Scope> getScope, out string prefix,
+        /// <summary>
+        /// Resolves namespace and prefix for <see cref="INsNode"/>.
+        /// </summary>
+        /// <param name="node">Target <see cref="INsNode"/>.</param>
+        /// <param name="document">Current <see cref="Document"/>.</param>
+        /// <param name="scope">Current <see cref="Scope"/>.</param>
+        /// <param name="prefix">Output namespace prefix parameter.</param>
+        /// <param name="ns">Output namespace parameter.</param>
+        public void GetPrefixAndNs(INsNode node, DOM.Document document, Scope scope, out string prefix,
                 out string ns)
         {
             prefix = null;
@@ -395,15 +435,20 @@ namespace Syntactik.Compiler.Steps
             var nsPrefix = node.NsPrefix;
             if (nsPrefix == null)
             {
-                var scope = getScope();
                 if (scope == null) return;
                 nsPrefix = scope.NsPrefix;
             }
-
             GetPrefixAndNs(nsPrefix, node, document, out prefix, out ns);
-        
         }
 
+        /// <summary>
+        /// Resolves namespace and prefix for <see cref="INsNode"/>.
+        /// </summary>
+        /// <param name="nsPrefix">Effective namespace prefix of the node. Could be different than the actual prefix.</param>
+        /// <param name="node">Target <see cref="INsNode"/>.</param>
+        /// <param name="document">Current <see cref="Document"/>.</param>
+        /// <param name="prefix">Output namespace prefix parameter.</param>
+        /// <param name="ns">Output namespace parameter.</param>
         public void GetPrefixAndNs(string nsPrefix, INsNode node, DOM.Document document, out string prefix,
                 out string ns)
         {
@@ -415,7 +460,7 @@ namespace Syntactik.Compiler.Steps
             var moduleMember = GetModuleMember((Pair)node);
             if (moduleMember is ModuleMember member)
             {
-                //Resolving ns first using aliasDef context NsInfo
+                //Resolving namespace first using aliasDef context NsInfo
                 var contextNsInfo = ModuleMembersNsInfo.First(n => n.ModuleMember == moduleMember);
                 var domNamespace = contextNsInfo.Namespaces.FirstOrDefault(n => n.Name == nsPrefix);
 
@@ -438,9 +483,6 @@ namespace Syntactik.Compiler.Steps
                 }
             }
         }
-
-
-
 
         private Pair GetModuleMember(Pair node)
         {

@@ -19,10 +19,15 @@ using System;
 
 namespace Syntactik.Compiler.Steps
 {
+    /// <summary>
+    /// <see cref="ICompilerStep"/> that uses <see cref="ProcessAliasesAndNamespacesVisitor"/> and 
+    /// <see cref="NamespaceResolver"/> to collect info about namespaces and aliases.
+    /// </summary>
     public class ProcessAliasesAndNamespaces : ICompilerStep    
     {
         CompilerContext _context;
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _context = null;
@@ -30,12 +35,14 @@ namespace Syntactik.Compiler.Steps
 
         private NamespaceResolver NamespaceResolver => (NamespaceResolver) _context.Properties["NamespaceResolver"];
 
+        /// <inheritdoc />
         public void Initialize(CompilerContext context)
         {
             _context = context;
             context.Properties.Add("NamespaceResolver", new NamespaceResolver(context));
         }
 
+        /// <inheritdoc />
         public void Run()
         {
             try

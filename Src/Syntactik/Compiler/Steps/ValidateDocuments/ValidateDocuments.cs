@@ -20,19 +20,26 @@ using Syntactik.DOM;
 
 namespace Syntactik.Compiler.Steps
 {
+    /// <summary>
+    /// <see cref="ICompilerStep"/> that is using data provided by <see cref="NamespaceResolver"/> to validate Syntactik modules.
+    /// </summary>
     public class ValidateDocuments: ICompilerStep
     {
         CompilerContext _context;
+
+        /// <inheritdoc />
         public void Dispose()
         {
             _context = null;
         }
 
+        /// <inheritdoc />
         public void Initialize(CompilerContext context)
         {
             _context = context;
         }
 
+        /// <inheritdoc />
         public void Run()
         {
             try

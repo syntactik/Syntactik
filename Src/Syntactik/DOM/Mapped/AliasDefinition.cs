@@ -55,7 +55,9 @@ namespace Syntactik.DOM.Mapped
         /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
 
-        /// <inheritdoc />
+        /// <summary>
+        /// List of interpolation objects.
+        /// </summary>
         public List<object> InterpolationItems { get; private set; }
 
         /// <inheritdoc />
@@ -91,8 +93,19 @@ namespace Syntactik.DOM.Mapped
         public bool HasCircularReference { get; set; }
 
         /// <summary>
-        /// Creates a new instance of <see cref="AliasDefinition"/>.
+        /// Creates an instance of <see cref="AliasDefinition"/>.
         /// </summary>
+        /// <param name="name">Pair name.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Pair value.</param>
+        /// <param name="nameInterval">Name <see cref="Interval"/>.</param>
+        /// <param name="valueInterval">Value <see cref="Interval"/>.</param>
+        /// <param name="assignmentInterval">Assignment <see cref="Interval"/>.</param>
+        /// <param name="nameQuotesType">Name quotes type.</param>
+        /// <param name="valueQuotesType">Value quotes type.</param>
+        /// <param name="valueType">Type of value.</param>
+        /// <param name="interpolationItems">List of interpolation objects.</param>
+        /// <param name="valueIndent">Indent of value in the source code.</param>
         public AliasDefinition(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null,
             Interval nameInterval = null, Interval valueInterval = null, Interval assignmentInterval = null,
             int nameQuotesType = 0, int valueQuotesType = 0, ValueType valueType = ValueType.None, List<object> interpolationItems = null,

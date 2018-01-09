@@ -50,7 +50,7 @@ namespace Syntactik.DOM.Mapped
         public int ValueIndent => 0;
 
         /// <summary>
-        /// 
+        /// Target format of the module.
         /// </summary>
         public enum TargetFormats
         {
@@ -73,8 +73,8 @@ namespace Syntactik.DOM.Mapped
         /// <summary>
         /// Create an instance of <see cref="DOM.Module"/>
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="fileName"></param>
+        /// <param name="name">Module name.</param>
+        /// <param name="fileName">Name of file associated with the module.</param>
         public Module(string name, string fileName = null):base(name, fileName)
         {
         }

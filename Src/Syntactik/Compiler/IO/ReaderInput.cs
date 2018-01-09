@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.IO;
 
 namespace Syntactik.Compiler.IO
 {
@@ -25,29 +26,29 @@ namespace Syntactik.Compiler.IO
     /// </summary>
     public class ReaderInput : ICompilerInput
     {
-        private readonly string _name;
+        private readonly TextReader _reader;
 
-        private readonly System.IO.TextReader _reader;
-
-        public ReaderInput(string name, System.IO.TextReader reader)
+        /// <summary>
+        /// Creates an instance of <see cref="ReaderInput"/>.
+        /// </summary>
+        /// <param name="name">File name associated with the input.</param>
+        /// <param name="reader">Underlying <see cref="TextReader"/></param>
+        public ReaderInput(string name, TextReader reader)
         {
-            if (null == name)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            if (null == reader)
-            {
-                throw new ArgumentNullException(nameof(reader));
-            }
-
-            _name = name;
-            _reader = reader;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            _reader = reader ?? throw new ArgumentNullException(nameof(reader));
         }
 
-        public string Name => _name;
+        /// <summary>
+        /// File name associated with the input.
+        /// </summary>
+        public string Name { get; }
 
-        public System.IO.TextReader Open()
+        /// <summary>
+        /// Opens input for reading.
+        /// </summary>
+        /// <returns><see cref="TextReader"/> as source of string input.</returns>
+        public TextReader Open()
         {
             return _reader;
         }

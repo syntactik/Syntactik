@@ -55,7 +55,6 @@ namespace Syntactik.Compiler.Steps
         public override void Visit(DOM.Alias alias)
         {
             _namespaceResolver.ProcessAlias((Alias)alias);
-            _namespaceResolver.AddAlias((Alias)alias);
             ProcessInterpolation((IPairWithInterpolation)alias);
             base.Visit(alias);
             Visit(alias.PairValue);
@@ -97,7 +96,6 @@ namespace Syntactik.Compiler.Steps
                 if (item is Alias alias)
                 {
                     _namespaceResolver.ProcessAlias(alias);
-                    _namespaceResolver.AddAlias(alias);
                     continue;
                 }
 

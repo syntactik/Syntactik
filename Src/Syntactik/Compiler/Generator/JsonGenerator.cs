@@ -50,7 +50,7 @@ namespace Syntactik.Compiler.Generator
             Array
         }
         /// <summary>
-        /// Delegate is called to create <see cref="Newtonsoft.Json.JsonWriter"/> for each <see cref="Document"/>.
+        /// Delegate is called to create JsonWriter for each <see cref="Document"/>.
         /// </summary>
         protected readonly Func<string, JsonWriter> WriterDelegate;
         /// <summary>
@@ -140,7 +140,7 @@ namespace Syntactik.Compiler.Generator
         /// <param name="pair">Pair being resolved.</param>
         /// <param name="entities">Entities of the pair.</param>
         /// <param name="implementationPair">If pair is an <see cref="Alias"/> then this parameter should get be an <see cref="DOM.AliasDefinition"/>.</param>
-        /// <returns></returns>
+        /// <returns>True if pair is choice.</returns>
         protected bool EnterChoiceContainer(Pair pair, PairCollection<Entity> entities, Pair implementationPair = null)
         {
             if (implementationPair == null) implementationPair = pair;

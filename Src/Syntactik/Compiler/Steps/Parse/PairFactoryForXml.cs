@@ -42,17 +42,26 @@ using ValueType = Syntactik.DOM.Mapped.ValueType;
 
 namespace Syntactik.Compiler.Steps
 {
+    /// <summary>
+    /// Implementation of <see cref="IPairFactory"/> that creates <see cref="Pair"/> for XML-modules.
+    /// </summary>
     public class PairFactoryForXml : IPairFactory
     {
         private readonly CompilerContext _context;
         private readonly Module _module;
 
+        /// <summary>
+        /// Creates instance of <see cref="PairFactoryForXml"/>.
+        /// </summary>
+        /// <param name="context"><see cref="CompilerContext"/> used to report errors.</param>
+        /// <param name="module">Current module.</param>
         public PairFactoryForXml(CompilerContext context, Module module)
         {
             _context = context;
             _module = module;
         }
 
+        /// <inheritdoc />
         public Pair CreateMappedPair(ITextSource textSource, int nameQuotesType, Interval nameInterval,
             AssignmentEnum assignment,
             Interval assignmentInterval, int valueQuotesType, Interval valueInterval, int valueIndent)
@@ -399,7 +408,7 @@ namespace Syntactik.Compiler.Steps
                    valueQuotesType == (int) QuotesEnum.Double && c != '"';
         }
 
-        public static string GetValueFromValueInterval(ITextSource charStream, AssignmentEnum assignment,
+        static string GetValueFromValueInterval(ITextSource charStream, AssignmentEnum assignment,
             int valueQuotesType, int begin, int end, int valueIndent)
         {
             var sb = new StringBuilder();
@@ -607,6 +616,7 @@ namespace Syntactik.Compiler.Steps
             return alias;
         }
 
+        /// <inheritdoc />
         public void AppendChild(Pair parent, Pair child)
         {
             try
@@ -615,14 +625,16 @@ namespace Syntactik.Compiler.Steps
             }
             catch (Exception e)
             {
-                _context.Errors.Add(CompilerErrorFactory.CantAppendChild(((DOM.Mapped.IMappedPair)child).NameInterval, _module.FileName, e.Message));
+                _context.Errors.Add(CompilerErrorFactory.CantAppendChild(((IMappedPair)child).NameInterval, _module.FileName, e.Message));
             }
         }
 
+        /// <inheritdoc />
         public void EndPair(Pair pair, Interval endInterval, bool endedByEof)
         {
         }
 
+        /// <inheritdoc />
         public Comment ProcessComment(ITextSource textSource, int commentType, Interval interval)
         {
             var value = GetValueFromValueInterval(textSource, AssignmentEnum.None, 0, interval.Begin.Index + 3,

@@ -9,7 +9,6 @@ using Syntactik.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using Syntactik.DOM;
 using YamlDotNet.RepresentationModel;
 using Module = Syntactik.DOM.Module;
 

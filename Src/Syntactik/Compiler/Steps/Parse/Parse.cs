@@ -22,20 +22,26 @@ using Syntactik.IO;
 
 namespace Syntactik.Compiler.Steps
 {
+    /// <summary>
+    /// <see cref="ICompilerStep"/> parsing Syntactik modules.
+    /// </summary>
     public class Parse : ICompilerStep
     {
-        protected CompilerContext _context;
+        private CompilerContext _context;
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _context = null;
         }
 
+        /// <inheritdoc />
         public void Initialize(CompilerContext context)
         {
             _context = context;
         }
 
+        /// <inheritdoc />
         public void Run()
         {
             try
@@ -59,6 +65,11 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
+        /// <summary>
+        /// Do parsing of the single <see cref="Module"/>.
+        /// </summary>
+        /// <param name="fileName">Module file name.</param>
+        /// <param name="reader">Source code reader.</param>
         protected virtual void DoParse(string fileName, TextReader reader)
         {
             try
@@ -76,11 +87,22 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
+        /// <summary>
+        /// Used to create instance of the <see cref="Module"/> for each <see cref="ICompilerInput"/> in <see cref="CompilerParameters"/>.
+        /// </summary>
+        /// <param name="fileName">File name.</param>
+        /// <returns>Instance of the <see cref="Module"/>.</returns>
         protected virtual Module CreateModule(string fileName)
         {
-            return new DOM.Mapped.Module(name: Path.GetFileNameWithoutExtension(fileName), fileName: fileName);
+            return new DOM.Mapped.Module(Path.GetFileNameWithoutExtension(fileName), fileName);
         }
 
+        /// <summary>
+        /// Creates instance of <see cref="Parser"/> to be used by this step.
+        /// </summary>
+        /// <param name="module">Instance of <see cref="Module"/>.</param>
+        /// <param name="input">Input stream for the parser.</param>
+        /// <returns>Instance of <see cref="Parser"/>.</returns>
         protected virtual Parser GetParser(Module module, ICharStream input)
         {
             if (!(module is DOM.Mapped.Module m)) throw new ArgumentException("Invalid module type.");

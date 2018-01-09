@@ -27,17 +27,26 @@ using ValueType = Syntactik.DOM.Mapped.ValueType;
 
 namespace Syntactik.Compiler.Steps
 {
+    /// <summary>
+    /// Implementation of <see cref="IPairFactory"/> that creates <see cref="Pair"/> for JSON-modules.
+    /// </summary>
     public class PairFactoryForJson : IPairFactory
     {
         private readonly CompilerContext _context;
         private readonly DOM.Module _module;
 
+        /// <summary>
+        /// Creates instance of <see cref="PairFactoryForJson"/>.
+        /// </summary>
+        /// <param name="context"><see cref="CompilerContext"/> used to report errors.</param>
+        /// <param name="module">Current module.</param>
         public PairFactoryForJson(CompilerContext context, DOM.Module module)
         {
             _context = context;
             _module = module;
         }
 
+        /// <inheritdoc />
         public Pair CreateMappedPair(ITextSource textSource, int nameQuotesType, Interval nameInterval, AssignmentEnum assignment,
                                 Interval assignmentInterval, int valueQuotesType, Interval valueInterval, int valueIndent)
         {
@@ -268,11 +277,8 @@ namespace Syntactik.Compiler.Steps
 
             return name;
         }
-        //private string VerifyScopeName(string name, Interval nameInterval, DOM.Module module)
-        //{
-        //    if (string.IsNullOrEmpty(name)) return name;
-        //    return VerifyNsName(name, nameInterval, module);
-        //}
+
+        /// <inheritdoc />
         public void AppendChild(Pair parent, Pair child)
         {
             try
@@ -285,10 +291,12 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
+        /// <inheritdoc />
         public void EndPair(Pair pair, Interval endInterval, bool endedByEof)
         {
         }
 
+        /// <inheritdoc />
         public DOM.Comment ProcessComment(ITextSource textSource, int commentType, Interval commentInterval)
         {
             return null;

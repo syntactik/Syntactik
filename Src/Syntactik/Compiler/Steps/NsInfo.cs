@@ -17,49 +17,55 @@
 #endregion
 
 using System.Collections.Generic;
+using Syntactik.DOM;
 
 namespace Syntactik.Compiler.Steps
 {
     /// <summary>
-    /// Collects a list of used namespaces and aliases in the ModuleMember (Document or AliasDef)
+    /// Collects a list of used namespaces and aliases for <see cref="DOM.ModuleMember"/> (<see cref="Document"/> 
+    /// or <see cref="AliasDefinition"/>).
     /// </summary>
     public class NsInfo
     {
-        public DOM.ModuleMember ModuleMember { get; private set; }
+        /// <summary>
+        /// <see cref="ModuleMember"/> that the collected information is related to.
+        /// </summary>
+        public ModuleMember ModuleMember { get; }
+        /// <summary>
+        /// True if <see cref="ModuleMember"/> is <see cref="AliasDefinition"/> and it has a complete information
+        /// about namespaces and aliases.
+        /// </summary>
         public bool AliasesResolved { get; internal set; }
-        private List<DOM.NamespaceDefinition> _namespaces;
-        private List<DOM.Alias> _aliases;
+        private List<NamespaceDefinition> _namespaces;
+        private List<Alias> _aliases;
 
-        public List<DOM.NamespaceDefinition> Namespaces
+        /// <summary>
+        /// Stores info about namespaces used directly or indirectly (trough aliases) in the <see cref="ModuleMember"/>.
+        /// </summary>
+        public List<NamespaceDefinition> Namespaces
         {
-            get
-            {
-                return _namespaces ?? (_namespaces = new List<DOM.NamespaceDefinition>());
-            }
+            get => _namespaces ?? (_namespaces = new List<NamespaceDefinition>());
 
-            set
-            {
-                _namespaces = value;
-            }
+            set => _namespaces = value;
         }
 
-        public List<DOM.Alias> Aliases
+        /// <summary>
+        /// Stores info about aliases used directly in the <see cref="ModuleMember"/>.
+        /// </summary>
+        public List<Alias> Aliases
         {
-            get
-            {
+            get => _aliases ?? (_aliases = new List<Alias>());
 
-                return _aliases ?? (_aliases = new List<DOM.Alias>());
-            }
-
-            set
-            {
-                _aliases = value;
-            }
+            set => _aliases = value;
         }
 
-        public NsInfo(DOM.ModuleMember currentDocument)
+        /// <summary>
+        /// Create an instance of <see cref="NsInfo"/>.
+        /// </summary>
+        /// <param name="moduleMember"><see cref="ModuleMember"/> that the collected information is related to.</param>
+        public NsInfo(ModuleMember moduleMember)
         {
-            ModuleMember = currentDocument;
+            ModuleMember = moduleMember;
         }
     }
 }

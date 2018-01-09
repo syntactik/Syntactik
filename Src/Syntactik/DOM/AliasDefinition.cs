@@ -27,6 +27,9 @@ namespace Syntactik.DOM
         /// <summary>
         /// Creates a new instance of <see cref="AliasDefinition"/>.
         /// </summary>
+        /// <param name="name">Pair name.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Pair value.</param>
         public AliasDefinition(string name, AssignmentEnum assignment, string value) : base(name, assignment, value)
         {
         }

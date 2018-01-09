@@ -250,9 +250,7 @@ namespace Syntactik.Compiler.Steps
             {
                 Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
             }
-                
             AliasContext.Pop();
-            _namespaceResolver.ProcessAlias((Alias) alias);
         }
 
 

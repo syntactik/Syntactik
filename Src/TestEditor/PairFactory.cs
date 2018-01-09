@@ -1,29 +1,10 @@
-﻿#region license
-
-// Copyright © 2017 Maxim O. Trushin (trushin@gmail.com)
-//
-// This file is part of Syntactik.
-// Syntactik is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-
-// Syntactik is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-
-// You should have received a copy of the GNU Lesser General Public License
-// along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
-
-#endregion
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Text;
+using Syntactik.DOM;
 using Syntactik.IO;
 
-namespace Syntactik.DOM
+namespace TestEditor
 {
     class PairFactory : IPairFactory
     {
@@ -41,21 +22,21 @@ namespace Syntactik.DOM
         {
             var name = GetName(textSource, nameQuotesType, nameInterval);
             if (nameQuotesType > 0)
-                return new Mapped.Element
+                return new Syntactik.DOM.Mapped.Element
                 (
                     name,
                     nameQuotesType: nameQuotesType,
                     nameInterval: nameInterval,
                     assignment: assignment,
                     assignmentInterval: assignmentInterval,
-                    value : GetValue(textSource, assignment, valueQuotesType, valueInterval, valueIndent),
+                    value: GetValue(textSource, assignment, valueQuotesType, valueInterval, valueIndent),
                     valueQuotesType: valueQuotesType,
                     valueInterval: valueInterval,
                     interpolationItems: null,
                     valueIndent: valueIndent
                 );
             if (name.StartsWith("@"))
-                return new Mapped.Attribute
+                return new Syntactik.DOM.Mapped.Attribute
                 (
                     name.Substring(1),
                     null,
@@ -69,7 +50,7 @@ namespace Syntactik.DOM
                     valueIndent: valueIndent
                 );
             if (name.StartsWith("!$"))
-                return new Mapped.AliasDefinition
+                return new Syntactik.DOM.Mapped.AliasDefinition
                 (
                     name.Substring(2),
                     nameInterval: nameInterval,
@@ -82,7 +63,7 @@ namespace Syntactik.DOM
                     valueIndent: valueIndent
                 );
             if (name.StartsWith("!#"))
-                return new Mapped.NamespaceDefinition
+                return new Syntactik.DOM.Mapped.NamespaceDefinition
                 (
                     name.Substring(2),
                     nameInterval: nameInterval,
@@ -95,7 +76,7 @@ namespace Syntactik.DOM
                     valueIndent: valueIndent
                 );
             if (name.StartsWith("!%"))
-                return new Mapped.Parameter
+                return new Syntactik.DOM.Mapped.Parameter
                 (
                     name.Substring(2),
                     nameInterval: nameInterval,
@@ -108,7 +89,7 @@ namespace Syntactik.DOM
                     valueIndent: valueIndent
                 );
             if (name.StartsWith("!"))
-                return new Mapped.Document
+                return new Syntactik.DOM.Mapped.Document
                 (
                      name.Substring(1),
                      nameInterval: nameInterval,
@@ -121,7 +102,7 @@ namespace Syntactik.DOM
                      valueIndent: valueIndent
                 );
             if (name.StartsWith("$"))
-                return new Mapped.Alias
+                return new Syntactik.DOM.Mapped.Alias
                 (
                     name.Substring(1),
                     nameInterval: nameInterval,
@@ -134,7 +115,7 @@ namespace Syntactik.DOM
                     valueIndent: valueIndent
                 );
             if (name.StartsWith("%"))
-                return new Mapped.Argument
+                return new Syntactik.DOM.Mapped.Argument
                 (
                     name.Substring(1),
                     nameInterval: nameInterval,
@@ -147,15 +128,15 @@ namespace Syntactik.DOM
                     valueIndent: valueIndent
                 );
             if (name.StartsWith("#"))
-                return new Mapped.Scope
-                ( 
+                return new Syntactik.DOM.Mapped.Scope
+                (
                     nsPrefix: name.Substring(1),
                     nameInterval: nameInterval,
                     assignment: assignment,
                     assignmentInterval: assignmentInterval
                 );
-            var tuple = Mapped.Element.GetNameAndNs(name, nameQuotesType);
-            return new Mapped.Element
+            var tuple = Syntactik.DOM.Mapped.Element.GetNameAndNs(name, nameQuotesType);
+            return new Syntactik.DOM.Mapped.Element
             (
                 tuple.Item2,
                 string.IsNullOrEmpty(tuple.Item1) ? null : tuple.Item1,
@@ -199,11 +180,11 @@ namespace Syntactik.DOM
             {
                 return string.Empty;
             }
-            if (valueQuotesType == (int) QuotesEnum.Single || valueQuotesType == (int) QuotesEnum.Double)
+            if (valueQuotesType == (int)QuotesEnum.Single || valueQuotesType == (int)QuotesEnum.Double)
             {
                 var c = input.GetChar(valueInterval.End.Index);
-                var missingValueQuote = valueQuotesType == (int) QuotesEnum.Single && c != '\'' ||
-                                        valueQuotesType == (int) QuotesEnum.Double && c != '"';
+                var missingValueQuote = valueQuotesType == (int)QuotesEnum.Single && c != '\'' ||
+                                        valueQuotesType == (int)QuotesEnum.Double && c != '"';
                 if (!missingValueQuote)
                 {
                     return GetValueFromValueInterval(input, assignment, valueQuotesType,
@@ -222,10 +203,10 @@ namespace Syntactik.DOM
         {
             var sb = new StringBuilder();
             //Splitting text. Getting array of text lines
-            var lines = charStream.GetText(begin, end).Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
+            var lines = charStream.GetText(begin, end).Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
             bool folded = lines.Length > 1 && assignment == AssignmentEnum.EE &&
-                          (valueQuotesType == (int) QuotesEnum.None || valueQuotesType == (int) QuotesEnum.Double);
+                          (valueQuotesType == (int)QuotesEnum.None || valueQuotesType == (int)QuotesEnum.Double);
 
             var first = true;
             var firstEmptyLine = true; //If true then previous line was not empty therefor newline shouldn't be added
@@ -237,7 +218,7 @@ namespace Syntactik.DOM
                 if (checkIfFirstLineIsEmpty) //ignoring first empty line for open strings
                 {
                     checkIfFirstLineIsEmpty = false;
-                    if (valueQuotesType == (int) QuotesEnum.None && line == string.Empty)
+                    if (valueQuotesType == (int)QuotesEnum.None && line == string.Empty)
                     {
                         first = false;
                         continue;

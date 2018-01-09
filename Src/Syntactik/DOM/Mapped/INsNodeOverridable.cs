@@ -25,7 +25,7 @@ namespace Syntactik.DOM
         /// <summary>
         /// Overrides namespace prefix of the node.
         /// </summary>
-        /// <param name="nsPrefix"></param>
+        /// <param name="nsPrefix">New value of the namespace prefix.</param>
         void OverrideNsPrefix(string nsPrefix);
     }
 }
