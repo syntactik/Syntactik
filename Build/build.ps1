@@ -2,7 +2,7 @@
   $zipFileName = "Syntactik.0.2.1.zip"
   $majorVersion = "0.2"
   $majorWithReleaseVersion = "0.2.1"
-  $nugetPrerelease = "beta2"
+  $nugetPrerelease = "beta3"
   $version = GetVersion $majorWithReleaseVersion
   $packageId = "Syntactik"
   $signAssemblies = $false
