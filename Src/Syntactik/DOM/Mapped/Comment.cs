@@ -65,29 +65,21 @@ namespace Syntactik.DOM.Mapped
         /// <summary>
         /// Creates a new instance of <see cref="Comment"/>.
         /// </summary>
-        /// <param name="name">Pair name.</param>
-        /// <param name="assignment">Pair assignment.</param>
         /// <param name="value">Pair value.</param>
-        /// <param name="nameInterval">Name <see cref="Interval"/>.</param>
         /// <param name="valueInterval">Value <see cref="Interval"/>.</param>
-        /// <param name="assignmentInterval">Assignment <see cref="Interval"/>.</param>
-        /// <param name="nameQuotesType">Name quotes type.</param>
-        /// <param name="valueQuotesType">Value quotes type.</param>
         /// <param name="commentType">
         /// Type of the comment:
         /// 1 - single-line comment,
         /// 2 - multi-line comment.
         /// </param>
-        public Comment(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null,
-            Interval nameInterval = null, Interval valueInterval = null, Interval assignmentInterval = null,
-            int nameQuotesType = 0, int valueQuotesType = 0, int commentType = 0) : base(name, assignment, value)
+        public Comment(string value = null, Interval valueInterval = null, int commentType = 0) : base(value)
         {
             ValueInterval = valueInterval;
-            AssignmentInterval = assignmentInterval;
-            NameInterval = nameInterval;
-            NameQuotesType = nameQuotesType;
-            ValueQuotesType = valueQuotesType;
             CommentType = commentType;
+            NameInterval = null;
+            NameQuotesType = 0;
+            ValueQuotesType = 0;
+            AssignmentInterval = null;
         }
 
     }

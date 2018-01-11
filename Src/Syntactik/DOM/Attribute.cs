@@ -31,9 +31,13 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="Attribute"/>.
+        /// Creates an instance of <see cref="Attribute"/>.
         /// </summary>
-        public Attribute(string name, AssignmentEnum assignment, string value, string nsPrefix) : base(name, assignment, value)
+        /// <param name="name">Attribute name.</param>
+        /// <param name="nsPrefix">Namespace prefix.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Attribute value.</param>
+        public Attribute(string name, string nsPrefix, AssignmentEnum assignment, string value) : base(name, assignment, value)
         {
             _nsPrefix = nsPrefix;
         }

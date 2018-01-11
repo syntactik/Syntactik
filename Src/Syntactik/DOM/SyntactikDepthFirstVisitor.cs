@@ -107,7 +107,7 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
-        /// Tells visitor to visit a pair.
+        /// Asks visitor to visit a pair.
         /// </summary>
         /// <param name="pair"><see cref="Pair"/> to visit.</param>
         public void Visit(Pair pair)
@@ -115,10 +115,10 @@ namespace Syntactik.DOM
             if (pair == null) return;
             OnPair(pair);
         }
-
         /// <summary>
-        /// Tells visitor to visit each pair in collection.
+        /// Asks visitor to visit each pair in collection.
         /// </summary>
+        /// <typeparam name="T">Descendant of <see cref="Pair"/></typeparam>
         /// <param name="items">Collection of pairs to visit.</param>
         public void Visit<T>(IEnumerable<T> items) where T : Pair
         {

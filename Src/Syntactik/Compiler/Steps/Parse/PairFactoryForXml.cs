@@ -635,14 +635,14 @@ namespace Syntactik.Compiler.Steps
         }
 
         /// <inheritdoc />
-        public Comment ProcessComment(ITextSource textSource, int commentType, Interval interval)
+        public Comment ProcessComment(ITextSource textSource, int commentType, Interval commentInterval)
         {
-            var value = GetValueFromValueInterval(textSource, AssignmentEnum.None, 0, interval.Begin.Index + 3,
-                interval.End.Index - (commentType == 2 ? 3 : 0), 0);
+            var value = GetValueFromValueInterval(textSource, AssignmentEnum.None, 0, commentInterval.Begin.Index + 3,
+                commentInterval.End.Index - (commentType == 2 ? 3 : 0), 0);
             return new DOM.Mapped.Comment(
                 commentType: commentType,
                 value: value,
-                valueInterval: interval
+                valueInterval: commentInterval
             );
         }
     }

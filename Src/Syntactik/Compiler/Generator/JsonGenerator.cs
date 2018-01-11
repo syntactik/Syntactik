@@ -54,7 +54,7 @@ namespace Syntactik.Compiler.Generator
         /// </summary>
         protected readonly Func<string, JsonWriter> WriterDelegate;
         /// <summary>
-        /// <see cref="JsonWriter"/> is used to generate JSON text.
+        /// JsonWriter is used to generate JSON text.
         /// </summary>
         protected JsonWriter JsonWriter;
         /// <summary>
@@ -68,14 +68,14 @@ namespace Syntactik.Compiler.Generator
         /// <summary>
         /// Stack of <see cref="ChoiceInfo"/>.
         /// </summary>
-        protected readonly Stack<ChoiceInfo> _choiceStack = new Stack<ChoiceInfo>();
+        protected readonly Stack<ChoiceInfo> ChoiceStack = new Stack<ChoiceInfo>();
 
 
         /// <summary>
         /// This constructor should be used if output depends on the name of the document.
         /// </summary>
         /// <param name="writerDelegate">Delegate will be called for the each Document. The name of the document will be sent in the string argument.</param>
-        /// <param name="context"></param>
+        /// <param name="context">Compilation context.</param>
         public JsonGenerator(Func<string, JsonWriter> writerDelegate, CompilerContext context):base(context)
         {
             WriterDelegate = writerDelegate;
@@ -96,7 +96,7 @@ namespace Syntactik.Compiler.Generator
         public override void Visit(Document document)
         {
             CurrentDocument = (DOM.Mapped.Document) document;
-            _choiceStack.Push(CurrentDocument.ChoiceInfo);
+            ChoiceStack.Push(CurrentDocument.ChoiceInfo);
 
             using (JsonWriter = WriterDelegate(document.Name))
             {
@@ -130,7 +130,7 @@ namespace Syntactik.Compiler.Generator
                     }
                 }
             }
-            _choiceStack.Pop();
+            ChoiceStack.Pop();
             CurrentDocument = null;
         }
 
@@ -148,13 +148,13 @@ namespace Syntactik.Compiler.Generator
                     || entities == null || entities.Count == 0)
                 return false;
 
-            var choice = _choiceStack.Peek();
+            var choice = ChoiceStack.Peek();
             var choiceInfo = FindChoiceInfo(choice, pair);
             if (choice.ChoiceNode != pair)
             {
-                _choiceStack.Push(choiceInfo);
+                ChoiceStack.Push(choiceInfo);
             }
-            _choiceStack.Push(choiceInfo.Children[0]);
+            ChoiceStack.Push(choiceInfo.Children[0]);
             if (((Element) choiceInfo.Children[0].ChoiceNode).Entities.Count > 0)
                 Visit(((Element) choiceInfo.Children[0].ChoiceNode).Entities);
             else
@@ -164,9 +164,9 @@ namespace Syntactik.Compiler.Generator
                 BlockState.Push(BlockStateEnum.Object);
             }
 
-            _choiceStack.Pop();
+            ChoiceStack.Pop();
             if (choice.ChoiceNode != pair)
-                _choiceStack.Pop();
+                ChoiceStack.Pop();
             return true;
 
         }
@@ -174,22 +174,22 @@ namespace Syntactik.Compiler.Generator
         /// <inheritdoc />
         protected override string ResolveChoiceValue(Pair pair, out ValueType valueType)
         {
-            var choice = _choiceStack.Peek();
+            var choice = ChoiceStack.Peek();
             var choiceInfo = FindChoiceInfo(choice, pair);
             if (choice.ChoiceNode != pair)
             {
-                _choiceStack.Push(choiceInfo);
+                ChoiceStack.Push(choiceInfo);
             }
             string result = string.Empty;
             valueType = ValueType.OpenString;
             if (choice.Children != null)
             {
-                _choiceStack.Push(choiceInfo.Children[0]);
+                ChoiceStack.Push(choiceInfo.Children[0]);
                 result = ResolvePairValue((IMappedPair) choiceInfo.Children[0].ChoiceNode, out valueType);
-                _choiceStack.Pop();
+                ChoiceStack.Pop();
             }
             if (choice.ChoiceNode != pair)
-                _choiceStack.Pop();
+                ChoiceStack.Pop();
             return result;
         }
 

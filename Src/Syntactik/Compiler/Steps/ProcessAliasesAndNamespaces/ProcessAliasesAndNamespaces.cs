@@ -16,12 +16,13 @@
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using System;
+using Syntactik.DOM;
 
 namespace Syntactik.Compiler.Steps
 {
     /// <summary>
-    /// <see cref="ICompilerStep"/> that uses <see cref="ProcessAliasesAndNamespacesVisitor"/> and 
-    /// <see cref="NamespaceResolver"/> to collect info about namespaces and aliases.
+    /// <see cref="ICompilerStep"/> that uses <see cref="SyntactikDepthFirstVisitor"/> and 
+    /// <see cref="Steps.NamespaceResolver"/> to collect info about namespaces and aliases.
     /// </summary>
     public class ProcessAliasesAndNamespaces : ICompilerStep    
     {

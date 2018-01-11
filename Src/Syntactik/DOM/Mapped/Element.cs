@@ -80,7 +80,7 @@ namespace Syntactik.DOM.Mapped
             Interval nameInterval = null, Interval valueInterval = null, Interval assignmentInterval = null,
             int nameQuotesType = 0, int valueQuotesType = 0, ValueType valueType = ValueType.None, List<object> interpolationItems = null,
             int valueIndent = 0
-            ):base(name, assignment, value, nsPrefix)
+            ):base(name, nsPrefix, assignment, value)
         {
             ValueInterval = valueInterval;
             AssignmentInterval = assignmentInterval;

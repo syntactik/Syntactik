@@ -38,8 +38,11 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="Argument"/>.
+        /// Creates an instance of <see cref="Argument"/>.
         /// </summary>
+        /// <param name="name">Alias name.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Alias value.</param>
         public Argument(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null) : base(name, assignment, value)
         {
         }

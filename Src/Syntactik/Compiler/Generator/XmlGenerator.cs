@@ -78,8 +78,8 @@ namespace Syntactik.Compiler.Generator
         /// </summary>
         /// <param name="writerDelegate">Delegate will be called for each Document. The name of the document will be sent in the string argument.</param>
         /// <param name="readerDelegate">Delegate should return XmlReader for each generated document.</param>
-        /// <param name="context"></param>
-        /// <param name="generateComments"></param>
+        /// <param name="context">Compilation context</param>
+        /// <param name="generateComments">if true then comments will be generated.</param>
         public XmlGenerator(Func<string, Encoding, XmlWriter> writerDelegate, Func<string, XmlReaderSettings, XmlReader> readerDelegate, CompilerContext context, bool generateComments = false):base(context)
         {
             WriterDelegate = writerDelegate;
@@ -157,7 +157,7 @@ namespace Syntactik.Compiler.Generator
         /// <summary>
         /// Writes start of xml document.
         /// </summary>
-        /// <param name="document"></param>
+        /// <param name="document">Instance of <see cref="DOM.Document"/></param>
         protected virtual void WriteStartDocument(DOM.Document document)
         {
             XmlTextWriter.WriteStartDocument();
@@ -332,10 +332,11 @@ namespace Syntactik.Compiler.Generator
                 sb.Append(c);
             }
         }
-
         /// <summary>
         /// Whether a given character is allowed by XML 1.0.
         /// </summary>
+        /// <param name="character">Character.</param>
+        /// <returns>True of the character is allowed.</returns>
         public static bool IsLegalXmlChar(int character)
         {
             return

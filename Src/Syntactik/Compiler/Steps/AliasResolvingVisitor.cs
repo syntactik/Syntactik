@@ -371,11 +371,11 @@ namespace Syntactik.Compiler.Steps
         }
 
         /// <summary>
-        /// 
+        /// Resolves value of the value parameter.
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="valueType"></param>
-        /// <returns></returns>
+        /// <param name="parameter">Parameter.</param>
+        /// <param name="valueType">Calculated <see cref="ValueType"/></param>
+        /// <returns>Literal value of parameter.</returns>
         protected string ResolveValueParameter(Parameter parameter, out ValueType valueType)
         {
             var aliasContext = GetAliasContextForParameter(parameter);
@@ -517,18 +517,18 @@ namespace Syntactik.Compiler.Steps
         }
 
         /// <inheritdoc />
-        public override void Visit(DOM.Scope pair)
+        public override void Visit(DOM.Scope scope)
         {
-            ScopeContext.Push((Scope) pair);
-            base.Visit(pair);
+            ScopeContext.Push((Scope)scope);
+            base.Visit(scope);
             ScopeContext.Pop();
         }
 
         /// <inheritdoc />
-        public override void Visit(DOM.Element pair)
+        public override void Visit(DOM.Element element)
         {
-            ResolveAttributes(pair.Entities);
-            Visit(pair.Entities.Where(e => !(e is DOM.Attribute)));
+            ResolveAttributes(element.Entities);
+            Visit(element.Entities.Where(e => !(e is DOM.Attribute)));
         }
 
         /// <inheritdoc />
@@ -564,7 +564,7 @@ namespace Syntactik.Compiler.Steps
         }
 
         /// <inheritdoc />
-        public override void Visit(DOM.AliasDefinition node)
+        public override void Visit(DOM.AliasDefinition aliasDefinition)
         {
             //Doing nothing for Alias Definition        
         }

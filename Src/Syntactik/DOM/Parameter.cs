@@ -39,7 +39,12 @@ namespace Syntactik.DOM
             }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Creates an instance of <see cref="Parameter"/>.
+        /// </summary>
+        /// <param name="name">Parameter name.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Parameter value.</param>
         public Parameter(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null) : base(name, assignment, value)
         {
         }

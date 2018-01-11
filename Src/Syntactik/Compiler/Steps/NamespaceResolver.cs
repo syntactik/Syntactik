@@ -113,7 +113,7 @@ namespace Syntactik.Compiler.Steps
         /// Finds <see cref="NsInfo"/> related to the <see cref="ModuleMember"/>.
         /// </summary>
         /// <param name="moduleMember">Target <see cref="ModuleMember"/>.</param>
-        /// <returns></returns>
+        /// <returns>Instance of <see cref="NsInfo"/>.</returns>
         public NsInfo GetNsInfo(ModuleMember moduleMember)
         {
             return ModuleMembersNsInfo.FirstOrDefault(n => n.ModuleMember == moduleMember);
@@ -147,8 +147,8 @@ namespace Syntactik.Compiler.Steps
         /// <summary>
         /// Gets <see cref="AliasDefinition"/> by name.
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">Alias name.</param>
+        /// <returns>Returns instance of <see cref="AliasDefinition"/> or null if definition is not found.</returns>
         public AliasDefinition GetAliasDefinition(string name)
         {
             NsInfo resultInfo =

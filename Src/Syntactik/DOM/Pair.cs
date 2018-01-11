@@ -53,14 +53,14 @@ namespace Syntactik.DOM
         /// <summary>
         /// If true then the pair has either literal value or pair value.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True if the pair has either literal value or pair value.</returns>
         public virtual bool HasValue()
         {
             return PairValue != null || Value != null;
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="Pair"/> class.
+        /// Creates an instance of the <see cref="Pair"/>.
         /// </summary>
         /// <param name="name">Pair name.</param>
         /// <param name="assignment"></param>
@@ -73,17 +73,22 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="Pair"/> class.
+        /// Creates an instance of the <see cref="Pair"/>.
         /// </summary>
+        /// <param name="name">Pair name.</param>
+        /// <param name="assignment"></param>
         protected Pair(string name, AssignmentEnum assignment)
         {
             _name = name;
             _assignment = assignment;
         }
 
+
         /// <summary>
-        /// Creates a new instance of the <see cref="Pair"/> class.
+        /// Creates an instance of the <see cref="Pair"/>.
         /// </summary>
+        /// <param name="assignment"></param>
+        /// <param name="value">Pair value.</param>
         protected Pair(AssignmentEnum assignment, string value)
         {
             _assignment = assignment;
@@ -91,23 +96,25 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="Pair"/> class.
+        /// Creates an instance of the <see cref="Pair"/>.
         /// </summary>
+        /// <param name="name">Pair name.</param>
         protected Pair(string name)
         {
             _name = name;
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="Pair"/> class.
+        /// Creates an instance of the <see cref="Pair"/>.
         /// </summary>
+        /// <param name="assignment"></param>
         protected Pair(AssignmentEnum assignment)
         {
             _assignment = assignment;
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="Pair"/> class.
+        /// Creates an instance of the <see cref="Pair"/>.
         /// </summary>
         protected Pair()
         {

@@ -29,9 +29,10 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="Scope"/>.
+        /// Creates an instance of <see cref="Comment"/>.
         /// </summary>
-        public Comment(string name, AssignmentEnum assignment, string value) : base(name, assignment, value)
+        /// <param name="value"></param>
+        public Comment(string value) : base(null, AssignmentEnum.None, value)
         {
         }
     }

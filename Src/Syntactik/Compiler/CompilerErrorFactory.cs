@@ -37,69 +37,47 @@ namespace Syntactik.Compiler
     public static class CompilerErrorFactory
     {
         /// <summary>
-        /// Creates <see cref="ICompilerInput"/> related error.
+        /// Creates input/output related error.
         /// </summary>
-        /// <param name="inputName"></param>
-        /// <param name="ex"></param>
-        /// <returns></returns>
+        /// <param name="inputName">Unique name of the input, a file name, for example.</param>
+        /// <param name="ex">Inner exception.</param>
+        /// <returns>An instance of <see cref="CompilerError"/>.</returns>
         public static CompilerError InputError(string inputName, Exception ex)
         {
             return InputError(new LexicalInfo(inputName), ex);
         }
 
-        /// <summary>
-        /// Creates <see cref="ICompilerInput"/> related error.
-        /// </summary>
-        /// <param name="lexicalInfo"></param>
-        /// <param name="error"></param>
-        /// <returns></returns>
-        public static CompilerError InputError(LexicalInfo lexicalInfo, Exception error)
+        internal static CompilerError InputError(LexicalInfo lexicalInfo, Exception error)
         {
             return Instantiate("MCE0001", lexicalInfo, error, lexicalInfo.FileName, error.Message);
         }
 
         /// <summary>
-        /// Creates fatal error
+        /// Creates a fatal error.
         /// </summary>
-        /// <param name="ex"></param>
-        /// <returns></returns>
+        /// <param name="ex">Inner exception.</param>
+        /// <returns>An instance of <see cref="CompilerError"/>.</returns>
         public static CompilerError FatalError(Exception ex)
         {
             return new CompilerError("MCE0000", ex, ex.Message);
         }
 
         /// <summary>
-        /// 
+        /// Creates a fatal error.
         /// </summary>
-        /// <param name="ex"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
+        /// <param name="ex">Inner exception.</param>
+        /// <param name="message">Description of the error.</param>
+        /// <returns>An instance of <see cref="CompilerError"/>.</returns>
         public static CompilerError FatalError(Exception ex, string message)
         {
             return new CompilerError("MCE0000", ex, message);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="location"></param>
-        /// <param name="error"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        private static CompilerError Instantiate(string code, LexicalInfo location, Exception error, params object[] args)
+        private static CompilerError Instantiate(string code, LexicalInfo location, Exception ex, params object[] args)
         {
-            return new CompilerError(code, location, error, args);
+            return new CompilerError(code, location, ex, args);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="location"></param>
-        /// <param name="isParserError"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
         private static CompilerError Instantiate(string code, LexicalInfo location, bool isParserError, params object[] args)
         {
             return new CompilerError(code, location, isParserError, Array.ConvertAll(args, DisplayStringFor));

@@ -41,9 +41,13 @@ namespace Syntactik.DOM
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="Scope"/>.
+        /// Creates an instance of <see cref="Scope"/>.
         /// </summary>
-        public Scope(string name, AssignmentEnum assignment, string value, string nsPrefix) : base(name, assignment, value)
+        /// <param name="name">Element name.</param>
+        /// <param name="nsPrefix">Namespace prefix.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Element value.</param>
+        public Scope(string name, string nsPrefix, AssignmentEnum assignment, string value) : base(name, assignment, value)
         {
             _nsPrefix = nsPrefix;
         }

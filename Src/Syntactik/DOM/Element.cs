@@ -31,9 +31,13 @@ namespace Syntactik.DOM
         public virtual string NsPrefix => _nsPrefix;
 
         /// <summary>
-        /// Creates a new instance of <see cref="Element"/>.
+        /// Creates an instance of <see cref="Element"/>.
         /// </summary>
-        public Element(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null, string nsPrefix = null) : base(name, assignment, value)
+        /// <param name="name">Element name.</param>
+        /// <param name="nsPrefix">Namespace prefix.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Element value.</param>
+        public Element(string name = null, string nsPrefix = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null) : base(name, assignment, value)
         {
             _nsPrefix = nsPrefix;
         }

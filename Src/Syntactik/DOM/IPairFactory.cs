@@ -54,6 +54,7 @@ namespace Syntactik.DOM
         /// <param name="textSource"><see cref="ITextSource"/> is used to get text of the comment.</param>
         /// <param name="commentType">1 - single line comment. 2 - multi-line comment</param>
         /// <param name="commentInterval">Interval of the comment in the source code.</param>
+        /// <returns>Instance of <see cref="Comment"/>.</returns>
         Comment ProcessComment(ITextSource textSource, int commentType, Interval commentInterval);
     }
 }

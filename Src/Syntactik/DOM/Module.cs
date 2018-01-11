@@ -91,7 +91,8 @@ namespace Syntactik.DOM
         /// <summary>
         /// Creates an instance of <see cref="Module"/>.
         /// </summary>
-        /// 
+        /// <param name="name">Module name.</param>
+        /// <param name="fileName">Path to the file of module.</param>
         public Module(string name, string fileName = null): base(name, AssignmentEnum.C)
         {
             FileName = fileName;

@@ -6,7 +6,7 @@ namespace Syntactik.DOM
     public enum AssignmentEnum
     {
         /// <summary>
-        /// The <see cref="Pair"/> has no delimeter
+        /// The <see cref="Pair"/> has no assignment.
         /// </summary>
         None,
         /// <summary>
