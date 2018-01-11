@@ -36,10 +36,10 @@ using ValueType = Syntactik.DOM.Mapped.ValueType;
 
 namespace Syntactik.Compiler.Steps
 {
-    public class ValidatingDocumentsVisitor: AliasResolvingVisitor
+    class ValidatingDocumentsVisitor: AliasResolvingVisitor
     {   
         private bool _blockStateUnknown;
-        private Stack<JsonGenerator.BlockState> _blockState;
+        private Stack<JsonGenerator.BlockStateEnum> _blockState;
         private Module _currentModule;
         private readonly Stack<ChoiceInfo> _choiceStack = new Stack<ChoiceInfo>();
         private readonly NamespaceResolver _namespaceResolver;
@@ -49,12 +49,12 @@ namespace Syntactik.Compiler.Steps
             _namespaceResolver = (NamespaceResolver)Context.Properties["NamespaceResolver"];
         }
 
-        public override void OnModule(DOM.Module module)
+        public override void Visit(DOM.Module module)
         {
             _currentModule = (Module) module;
             _namespaceResolver.EnterModule(module);
             _blockStateUnknown = true;
-            _blockState = new Stack<JsonGenerator.BlockState>();
+            _blockState = new Stack<JsonGenerator.BlockStateEnum>();
 
             Visit(module.NamespaceDefinitions);
             Visit(module.Members.Where(
@@ -65,22 +65,22 @@ namespace Syntactik.Compiler.Steps
 
         }
 
-        public override void OnDocument(DOM.Document document)
+        public override void Visit(DOM.Document document)
         {
-            _currentDocument = (Document) document;
+            CurrentDocument = (Document) document;
             CheckPairValue(document);
             _blockStateUnknown = true;
 
             CheckDocumentNameDuplicates(document);
             _choiceStack.Push(((Document)document).ChoiceInfo);
-            base.OnDocument(document);
+            base.Visit(document);
             if (_currentModule.TargetFormat == Module.TargetFormats.Xml)
                 CheckDocumentElement(document);
             _choiceStack.Pop();
             if (((Document)document).ChoiceInfo.Errors != null)
                 foreach (var error in ((Document)document).ChoiceInfo.Errors)
                     Context.AddError(error);
-            _currentDocument = null;
+            CurrentDocument = null;
         }
 
         /// <summary>
@@ -94,8 +94,7 @@ namespace Syntactik.Compiler.Steps
             {
                 if (entity is DOM.Element) rootElementCount++;
 
-                var scope = entity as Scope;
-                if (scope != null) rootElementCount += CalcNumOfRootElements(scope);
+                if (entity is Scope scope) rootElementCount += CalcNumOfRootElements(scope);
 
                 if (entity is DOM.Alias) rootElementCount += CalcNumOfRootElements((Alias)entity);
 
@@ -120,8 +119,7 @@ namespace Syntactik.Compiler.Steps
             {
                 if (entity is DOM.Element) rootElementCount++;
 
-                var scopeEntity = entity as Scope;
-                if (scopeEntity != null) rootElementCount += CalcNumOfRootElements(scopeEntity);
+                if (entity is Scope scopeEntity) rootElementCount += CalcNumOfRootElements(scopeEntity);
 
                 if (entity is DOM.Alias) rootElementCount += CalcNumOfRootElements((Alias)entity);
 
@@ -137,7 +135,7 @@ namespace Syntactik.Compiler.Steps
             if (aliasDef == null) return 0;
             if (aliasDef.HasCircularReference) return 0;
             PairCollection<Entity> entities = null;
-            if (aliasDef.Delimiter == DelimiterEnum.CC)
+            if (aliasDef.Assignment == AssignmentEnum.CC)
             {
                 var choiceInfo = JsonGenerator.FindChoiceInfo(_choiceStack.Peek(), alias);
                 if (choiceInfo?.Children != null) entities = ((Element) choiceInfo.Children[0].ChoiceNode).Entities;
@@ -156,15 +154,13 @@ namespace Syntactik.Compiler.Steps
                     continue;
                 }
 
-                var scopeEntity = entity as Scope;
-                if (scopeEntity != null)
+                if (entity is Scope scopeEntity)
                 {
                     result += CalcNumOfRootElements(scopeEntity);
                     continue;
                 }
 
-                var aliasEntity = entity as DOM.Alias;
-                if (aliasEntity != null)
+                if (entity is DOM.Alias aliasEntity)
                 {
                     result += CalcNumOfRootElements((Alias)aliasEntity);
                     continue;
@@ -198,8 +194,7 @@ namespace Syntactik.Compiler.Steps
         /// <param name="namespaceDefinition"></param>
         private void CheckNsDefDuplicates(NamespaceDefinition namespaceDefinition)
         {
-            var parentModule = namespaceDefinition.Parent as Module;
-            if (parentModule != null)
+            if (namespaceDefinition.Parent is Module parentModule)
             {
                 var sameNsDefs = parentModule.NamespaceDefinitions.Where(n => n.Name == namespaceDefinition.Name);
                 if (sameNsDefs.Count() > 1)
@@ -210,8 +205,7 @@ namespace Syntactik.Compiler.Steps
                 return;
             }
 
-            var parentModuleMember = namespaceDefinition.Parent as ModuleMember;
-            if (parentModuleMember != null)
+            if (namespaceDefinition.Parent is ModuleMember parentModuleMember)
             {
                 var sameNsDefs = parentModuleMember.NamespaceDefinitions.Where(n => n.Name == namespaceDefinition.Name);
                 if (sameNsDefs.Count() > 1)
@@ -234,7 +228,7 @@ namespace Syntactik.Compiler.Steps
         }
 
 
-        public override void OnAlias(DOM.Alias alias)
+        public override void Visit(DOM.Alias alias)
         {
             CheckBlockIntegrityForValueAlias(alias);
             CheckPairValue(alias);
@@ -243,7 +237,7 @@ namespace Syntactik.Compiler.Steps
             //Do not resolve alias without AliasDef or having circular reference
             if (aliasDef == null || aliasDef.HasCircularReference) return;
 
-            AliasContext.Push(new AliasContext{ AliasDefinition = aliasDef, Alias = (Alias)alias, AliasNsInfo = GetContextNsInfo() });
+            AliasContext.Push((Alias) alias);
             CheckForUnexpectedArguments((Alias)alias, aliasDef, _currentModule.FileName);
             CheckInterpolation((Alias)alias);
             if (CheckStartOfChoiceContainer((Alias) alias, aliasDef.Entities, aliasDef))
@@ -256,9 +250,7 @@ namespace Syntactik.Compiler.Steps
             {
                 Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
             }
-                
             AliasContext.Pop();
-            _namespaceResolver.ProcessAlias((Alias) alias);
         }
 
 
@@ -286,8 +278,8 @@ namespace Syntactik.Compiler.Steps
         {
             if (((Alias) alias).AliasDefinition == null) return;
             if (!((Alias)alias).AliasDefinition.IsValueNode) return;
-            if (alias?.Parent.Delimiter == DelimiterEnum.CE) return;
-            if (_currentModule.TargetFormat == Module.TargetFormats.Xml && alias.Parent is Document)
+            if (alias?.Parent.Assignment == AssignmentEnum.CE) return;
+            if (_currentModule.TargetFormat == Module.TargetFormats.Xml && alias?.Parent is Document)
                 Context.AddError(CompilerErrorFactory.InvalidUsageOfValueAlias((Alias) alias, _currentModule.FileName));
 
             if (_currentModule.TargetFormat == Module.TargetFormats.Xml) return;
@@ -295,7 +287,7 @@ namespace Syntactik.Compiler.Steps
             if (!_blockStateUnknown)
             {
                 var blockState = _blockState.Peek();
-                if (blockState != JsonGenerator.BlockState.Object) return;
+                if (blockState != JsonGenerator.BlockStateEnum.Object) return;
 
                 ReportErrorForEachNodeInAliasContext(
                     n => CompilerErrorFactory.PropertyIsExpected((IMappedPair)n, _currentModule.FileName));
@@ -304,11 +296,11 @@ namespace Syntactik.Compiler.Steps
             }
 
             //This element is the first element of the block. It decides if the block is array or object
-            _blockState.Push(JsonGenerator.BlockState.Array);
+            _blockState.Push(JsonGenerator.BlockStateEnum.Array);
             _blockStateUnknown = false;
         }
 
-        public override void OnAliasDefinition(DOM.AliasDefinition aliasDefinition)
+        public override void Visit(DOM.AliasDefinition aliasDefinition)
         {
             CheckPairValue(aliasDefinition);
 
@@ -346,7 +338,7 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
-        public override void OnElement(DOM.Element element)
+        public override void Visit(DOM.Element element)
         {
             if (!((Element) element).IsChoice)
             {
@@ -364,13 +356,13 @@ namespace Syntactik.Compiler.Steps
             }
             if (CheckStartOfChoiceContainer(element, element.Entities))
             {
-                base.OnElement(element);
+                base.Visit(element);
                 EndChoiceContainer();
             }
             else
             {
-                CheckArrayDelimiter(element);
-                base.OnElement(element);
+                CheckArrayAssignment(element);
+                base.Visit(element);
             }
             ExitChoiceNode(element);
             _blockStateUnknown = false;
@@ -379,11 +371,11 @@ namespace Syntactik.Compiler.Steps
                 _blockState.Pop();
         }
 
-        private void CheckArrayDelimiter(Pair element)
+        private void CheckArrayAssignment(Pair element)
         {
-            if (element.Delimiter == DelimiterEnum.CCC)
+            if (element.Assignment == AssignmentEnum.CCC)
             {
-                _blockState.Push(JsonGenerator.BlockState.Array);
+                _blockState.Push(JsonGenerator.BlockStateEnum.Array);
                 _blockStateUnknown = false;
             }
         }
@@ -398,7 +390,7 @@ namespace Syntactik.Compiler.Steps
         }
 
         /// <summary>
-        /// If choice fails then it adds all error to the parent container,
+        /// If choice fails then it adds all errors to the parent container,
         /// otherwise the choice adds itself to the parent child list.
         /// </summary>
         /// <param name="element"></param>
@@ -423,13 +415,13 @@ namespace Syntactik.Compiler.Steps
         /// Checks if Choice Container should be created and creates it.
         /// </summary>
         /// <param name="pair">Current pair from visitor.</param>
-        /// <param name="entities">Pairs enitities. Empty pair is ignored because there are no choices.</param>
+        /// <param name="entities">Pairs entities. Empty pair is ignored because there are no choices.</param>
         /// <param name="implementationPair">Actual implementation of pair, (AliasDef is implementation of Alias for example )</param>
-        /// <returns>True if Choice Conteiner is found.</returns>
+        /// <returns>True if Choice Container is found.</returns>
         private bool CheckStartOfChoiceContainer(Pair pair, PairCollection<Entity> entities, Pair implementationPair = null)
         {
             if (implementationPair == null) implementationPair = pair;
-            if (implementationPair.Delimiter != DelimiterEnum.CC && implementationPair.Delimiter != DelimiterEnum.ECC || entities == null || entities.Count == 0) return false;
+            if (implementationPair.Assignment != AssignmentEnum.CC && implementationPair.Assignment != AssignmentEnum.ECC || entities == null || entities.Count == 0) return false;
             ChoiceInfo parent = _choiceStack.Count == 0 ? null : _choiceStack.Peek();
             var choiceInfo = new ChoiceInfo(parent, pair);
             _choiceStack.Push(choiceInfo);
@@ -464,22 +456,20 @@ namespace Syntactik.Compiler.Steps
 
         private void CheckInterpolation(IPairWithInterpolation pair)
         {
-            if (((Pair) pair).ValueQuotesType != 2) return;
+            if (((IMappedPair) pair).ValueQuotesType != 2) return;
             foreach (var item in pair.InterpolationItems)
             {
-                var alias = item as Alias;
-                if (alias != null)
+                if (item is Alias alias)
                 {
                     CheckAliasIsDefined(alias);
                     continue;
                 }
 
-                var param = item as DOM.Parameter;
-                if (param != null)
+                if (item is DOM.Parameter param)
                 {
                     var aliasContext = AliasContext.Peek();
                     if (aliasContext != null)
-                        ValidateParameter((Parameter) param, aliasContext.Alias, _currentModule.FileName);
+                        ValidateParameter((Parameter) param, aliasContext, _currentModule.FileName);
                 }
             }
         }
@@ -493,8 +483,8 @@ namespace Syntactik.Compiler.Steps
             if (!string.IsNullOrEmpty(node.Name)) return; //not an array item
             if (_currentModule.TargetFormat != Module.TargetFormats.Xml) return; //don't check if s4j
             if (node.IsChoice) return; //don't check if node is choice
-            if (node.Delimiter == DelimiterEnum.CC) return; //Empty name is allowed for choice containers
-            if (node.Parent.Delimiter == DelimiterEnum.CCC) return; //Empty name if parent is an explicit array
+            if (node.Assignment == AssignmentEnum.CC) return; //Empty name is allowed for choice containers
+            if (node.Parent.Assignment == AssignmentEnum.CCC) return; //Empty name if parent is an explicit array
             
             if (!node.IsValueNode || node.Parent is DOM.Document) //Empty name is allowed for value (text) nodes
             {
@@ -502,7 +492,7 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
-        public override void OnAttribute(DOM.Attribute attribute)
+        public override void Visit(DOM.Attribute attribute)
         {
             CheckBlockIntegrity(attribute);
             CheckPairValue(attribute);
@@ -519,12 +509,11 @@ namespace Syntactik.Compiler.Steps
         /// <param name="pair"></param>
         private void CheckPairValue(Pair pair)
         {
-            if (pair.Delimiter == DelimiterEnum.CE)
+            if (pair.Assignment == AssignmentEnum.CE)
             {
                 if (pair.PairValue == null || !(pair.PairValue is DOM.Alias) && !(pair.PairValue is DOM.Parameter))
                 {
-                    var mappedPair = pair.PairValue as IMappedPair;
-                    Context.AddError(mappedPair != null
+                    Context.AddError(pair.PairValue is IMappedPair mappedPair
                         ? CompilerErrorFactory.AliasOrParameterExpected(mappedPair.NameInterval, _currentModule.FileName)
                         : CompilerErrorFactory.AliasOrParameterExpected(((IMappedPair) pair).NameInterval,
                             _currentModule.FileName));
@@ -534,13 +523,13 @@ namespace Syntactik.Compiler.Steps
                     Visit(pair.PairValue);
                 }
             }
-            else if (pair.Delimiter == DelimiterEnum.EC)
+            else if (pair.Assignment == AssignmentEnum.EC)
                 CheckStringConcatenation(pair);
             if (pair.PairValue is DOM.Parameter)
             {
                 var aliasContext = AliasContext.Peek();
                 if (aliasContext != null)
-                    ValidateParameter((Parameter)pair.PairValue, aliasContext.Alias, _currentModule.FileName);
+                    ValidateParameter((Parameter)pair.PairValue, aliasContext, _currentModule.FileName);
             }
             else if (pair.PairValue is DOM.Alias)
             {
@@ -551,7 +540,7 @@ namespace Syntactik.Compiler.Steps
                 //Do not resolve alias without AliasDef or having circular reference
                 if (aliasDef == null || aliasDef.HasCircularReference) return;
 
-                AliasContext.Push(new AliasContext() { AliasDefinition = aliasDef, Alias = alias, AliasNsInfo = GetContextNsInfo() });
+                AliasContext.Push(alias);
                 CheckForUnexpectedArguments(alias, aliasDef, _currentModule.FileName);
                 CheckInterpolation(aliasDef);
                 CheckPairValue(aliasDef);
@@ -570,7 +559,7 @@ namespace Syntactik.Compiler.Steps
 
         private void CheckStringConcatenation(Pair pair)
         {
-            _blockState.Push(JsonGenerator.BlockState.Array);
+            _blockState.Push(JsonGenerator.BlockStateEnum.Array);
             _blockStateUnknown = false;
             if (((IPairWithInterpolation)pair).InterpolationItems != null) 
                 Visit(((IPairWithInterpolation) pair).InterpolationItems.ConvertAll(i => (Pair)i));
@@ -579,26 +568,26 @@ namespace Syntactik.Compiler.Steps
 
         private void CheckNoPairValue(Pair pair)
         {
-            if (pair.Delimiter == DelimiterEnum.CE)
+            if (pair.Assignment == AssignmentEnum.CE)
             {
-               Context.AddError(CompilerErrorFactory.InvalidDelimiter(((IMappedPair)pair).NameInterval, _currentModule.FileName, ":="));
+               Context.AddError(CompilerErrorFactory.InvalidAssignment(((IMappedPair)pair).NameInterval, _currentModule.FileName, ":="));
             }
         }
 
-        public override void OnArgument(DOM.Argument argument)
+        public override void Visit(DOM.Argument argument)
         {
             CheckArgumentIntegrity((Argument) argument);
             CheckPairValue(argument);
-            base.OnArgument(argument);
+            base.Visit(argument);
         }
 
-        public override void OnParameter(DOM.Parameter parameter)
+        public override void Visit(DOM.Parameter parameter)
         {
             CheckPairValue(parameter);
             var aliasContext = AliasContext.Peek();
             if (aliasContext != null)
-                ValidateParameter((Parameter) parameter, aliasContext.Alias, _currentModule.FileName);
-            base.OnParameter(parameter);
+                ValidateParameter((Parameter) parameter, aliasContext, _currentModule.FileName);
+            base.Visit(parameter);
         }
 
 
@@ -647,18 +636,23 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
-
-        public override void OnNamespaceDefinition(DOM.NamespaceDefinition namespaceDefinition)
+        public override void Visit(DOM.NamespaceDefinition namespaceDefinition)
         {
             CheckNoPairValue(namespaceDefinition);
             CheckNsDefDuplicates((NamespaceDefinition) namespaceDefinition);
-            base.OnNamespaceDefinition(namespaceDefinition);
+            base.Visit(namespaceDefinition);
         }
 
-        public override void OnScope(Scope pair)
+        protected override string ResolveChoiceValue(Pair pair, out ValueType valueType) // todo: Implement choice validation
+        {
+            valueType = ValueType.None;
+            return "";
+        }
+
+        public override void Visit(Scope pair)
         {
             CheckNoPairValue(pair);
-            base.OnScope(pair);
+            base.Visit(pair);
         }
 
         private void CheckArgumentIntegrity(Argument argument)
@@ -677,16 +671,16 @@ namespace Syntactik.Compiler.Steps
             if (!_blockStateUnknown)
             {
                 var blockState = _blockState.Peek();
-                if (blockState == JsonGenerator.BlockState.Array)
+                if (blockState == JsonGenerator.BlockStateEnum.Array)
                 {
-                    if (string.IsNullOrEmpty(pair.Name) || pair.Delimiter == DelimiterEnum.None) return;
+                    if (string.IsNullOrEmpty(pair.Name) || pair.Assignment == AssignmentEnum.None) return;
                     ReportErrorForEachNodeInAliasContext(
                         n => CompilerErrorFactory.ArrayItemIsExpected((IMappedPair) n, _currentModule.FileName));
                     Context.AddError(CompilerErrorFactory.ArrayItemIsExpected((IMappedPair) pair, _currentModule.FileName));
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(pair.Name) && pair.Delimiter != DelimiterEnum.None) return;
+                    if (!string.IsNullOrEmpty(pair.Name) && pair.Assignment != AssignmentEnum.None) return;
 
                     if(_currentModule.TargetFormat == Module.TargetFormats.Xml && ((IMappedPair)pair).IsValueNode ) return; 
 
@@ -699,9 +693,9 @@ namespace Syntactik.Compiler.Steps
             }
 
             //This element is the first element of the block. It decides if the block is array or object
-            _blockState.Push(string.IsNullOrEmpty(pair.Name) || pair.Delimiter == DelimiterEnum.None
-                ? JsonGenerator.BlockState.Array
-                : JsonGenerator.BlockState.Object);
+            _blockState.Push(string.IsNullOrEmpty(pair.Name) || pair.Assignment == AssignmentEnum.None
+                ? JsonGenerator.BlockStateEnum.Array
+                : JsonGenerator.BlockStateEnum.Object);
             _blockStateUnknown = false;
         }
 
@@ -711,7 +705,7 @@ namespace Syntactik.Compiler.Steps
             {
                 if (item != null)
                 {
-                    Context.AddError(func(item.Alias));
+                    Context.AddError(func(item));
                 }
             }
         }
@@ -736,55 +730,6 @@ namespace Syntactik.Compiler.Steps
             {
                 Context.AddError(CompilerErrorFactory.UnexpectedDefaultValueArgument(alias,
                     fileName));
-            }
-        }
-
-        private void CheckCompatibilityWithParameters(Alias alias, AliasDefinition aliasDef, string fileName)
-        {
-            foreach (var parameter in aliasDef.Parameters)
-            {
-                if (parameter.Name == "_") //Default parameter
-                {
-                    if (!parameter.IsValueNode)
-                    {
-                        if (alias.Entities.All(e => e is Comment) && alias.ValueType != ValueType.Object)
-                            ReportErrorInsideChoice(() => CompilerErrorFactory.DefaultBlockArgumentIsMissing(alias,
-                                fileName));
-                    }
-                    else
-                    {
-                        if (parameter.HasValue()) continue; //if parameter has default value then skip check
-
-                        if (!alias.HasValue())
-                        {
-                            ReportErrorInsideChoice(() => CompilerErrorFactory.DefaultValueArgumentIsMissing(alias,
-                                fileName));
-                        }
-                    }
-                    continue;
-                }
-
-                //Non default parameter
-                var argument = alias.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
-                if (argument == null)
-                {
-                    //Report Error if argument is missing and there is no default value for the parameter
-                    if (parameter.Value == null && parameter.Entities.Count == 0 && parameter.ValueType != ValueType.Object)
-                        ReportErrorInsideChoice(() => CompilerErrorFactory.ArgumentIsMissing(alias, parameter.Name,
-                            fileName));
-
-                    continue;
-                }
-
-                //Report error if type of argument (value/block) mismatch the type of parameter
-                if (((Argument)argument).IsValueNode != parameter.IsValueNode)
-                {
-                    ReportErrorInsideChoice( () => parameter.IsValueNode
-                        ? CompilerErrorFactory.ValueArgumentIsExpected((Argument)argument,
-                            fileName)
-                        : CompilerErrorFactory.BlockArgumentIsExpected((Argument)argument,
-                            fileName));
-                }
             }
         }
     }

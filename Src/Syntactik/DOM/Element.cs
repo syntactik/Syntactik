@@ -17,25 +17,47 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents an Element.
+    /// </summary>
     public class Element : Entity, INsNode, IContainer
     {
-        // Fields
-        protected PairCollection<Entity> _entities;
-        protected string _nsPrefix;
+        private PairCollection<Entity> _entities;
+        internal string _nsPrefix;
 
-        // Methods
-        public override void Accept(IDomVisitor visitor)
+        /// <summary>
+        /// Namespace prefix of the element.
+        /// </summary>
+        public virtual string NsPrefix => _nsPrefix;
+
+        /// <summary>
+        /// Creates an instance of <see cref="Element"/>.
+        /// </summary>
+        /// <param name="name">Element name.</param>
+        /// <param name="nsPrefix">Namespace prefix.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Element value.</param>
+        public Element(string name = null, string nsPrefix = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null) : base(name, assignment, value)
         {
-            visitor.OnElement(this);
+            _nsPrefix = nsPrefix;
         }
 
+        /// <inheritdoc />
+        public override void Accept(IDomVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            Value = null;
-            PairValue = null;
+            if (Assignment == AssignmentEnum.CE)
+            {
+                base.AppendChild(child);
+                return;
+            }
 
-            var item = child as Entity;
-            if (item != null)
+            if (child is Entity item)
             {
                 Entities.Add(item);
             }
@@ -45,10 +67,10 @@ namespace Syntactik.DOM
             }
         }
 
-        // Properties
+        /// <inheritdoc />
         public virtual PairCollection<Entity> Entities
         {
-            get { return _entities ?? (_entities = new PairCollection<Entity>(this)); }
+            get => _entities ?? (_entities = new PairCollection<Entity>(this));
             set
             {
                 if (value == _entities) return;
@@ -56,12 +78,6 @@ namespace Syntactik.DOM
                 value?.InitializeParent(this);
                 _entities = value;
             }
-        }
-
-        public virtual string NsPrefix
-        {
-            get { return _nsPrefix; }
-            set { _nsPrefix = value; }
         }
     }
 }

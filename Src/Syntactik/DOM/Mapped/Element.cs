@@ -21,19 +21,84 @@ using System.Text.RegularExpressions;
 
 namespace Syntactik.DOM.Mapped
 {
-    public class Element: DOM.Element, IMappedPair, IPairWithInterpolation, IChoiceNode
+    /// <summary>
+    /// Represents an <see cref="DOM.Element"/> mapped to the source code.
+    /// </summary>
+    public class Element: DOM.Element, IMappedPair, IPairWithInterpolation, IChoiceNode, INsNodeOverridable
     {
-        public Interval NameInterval { get; set; }
-        public Interval ValueInterval { get; set; }
-        public Interval DelimiterInterval { get; set; }
-        public ValueType ValueType { get; set; }
+        /// <inheritdoc />
+        public Interval NameInterval { get; }
+
+        /// <inheritdoc />
+        public int NameQuotesType { get; }
+
+        /// <inheritdoc />
+        public Interval ValueInterval { get; }
+
+        /// <inheritdoc />
+        public int ValueQuotesType { get; }
+
+        /// <inheritdoc />
+        public Interval AssignmentInterval { get; }
+
+        /// <inheritdoc />
+        public ValueType ValueType { get; }
+
+        /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
-        public List<object> InterpolationItems { get; set; }
-        public int ValueIndent { get; set; }
+
+        /// <summary>
+        /// List of interpolation objects.
+        /// </summary>
+        public List<object> InterpolationItems { get; private set; }
+
+        /// <inheritdoc />
+        public int ValueIndent { get; }
+
+        /// <inheritdoc />
         public List<object> ChoiceObjects => !IsChoice ? null : InterpolationItems;
 
+        /// <inheritdoc />
         public bool IsChoice { get; private set; }
 
+        /// <summary>
+        /// Creates a new instance of <see cref="Element"/>.
+        /// </summary>
+        /// <param name="name">Pair name.</param>
+        /// <param name="nsPrefix">Pair namespace prefix.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Pair value.</param>
+        /// <param name="nameInterval">Name <see cref="Interval"/>.</param>
+        /// <param name="valueInterval">Value <see cref="Interval"/>.</param>
+        /// <param name="assignmentInterval">Assignment <see cref="Interval"/>.</param>
+        /// <param name="nameQuotesType">Name quotes type.</param>
+        /// <param name="valueQuotesType">Value quotes type.</param>
+        /// <param name="valueType">Type of value.</param>
+        /// <param name="interpolationItems">List of interpolation objects.</param>
+        /// <param name="valueIndent">Indent of value in the source code.</param>
+        public Element(string name = null, string nsPrefix = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null,
+            Interval nameInterval = null, Interval valueInterval = null, Interval assignmentInterval = null,
+            int nameQuotesType = 0, int valueQuotesType = 0, ValueType valueType = ValueType.None, List<object> interpolationItems = null,
+            int valueIndent = 0
+            ):base(name, nsPrefix, assignment, value)
+        {
+            ValueInterval = valueInterval;
+            AssignmentInterval = assignmentInterval;
+            NameInterval = nameInterval;
+            NameQuotesType = nameQuotesType;
+            ValueQuotesType = valueQuotesType;
+            ValueType = valueType;
+            InterpolationItems = interpolationItems;
+            ValueIndent = valueIndent;
+        }
+
+        /// <summary>
+        /// Splits full name on namespace prefix and name.
+        /// </summary>
+        /// <param name="name">Full name of a pair</param>
+        /// <param name="nameQuotesType">Type of quotes used to define the name. 
+        /// 0 - no quotes, 1 - single quotes, 2 - double quotes.</param>
+        /// <returns>First item of tuple stores namespace prefix. Second item of tuple stores a name.</returns>
         public static Tuple<string, string> GetNameAndNs(string name, int nameQuotesType)
         {
             if (nameQuotesType > 0) return new Tuple<string, string>("", name);
@@ -42,18 +107,20 @@ namespace Syntactik.DOM.Mapped
             return new Tuple<string, string>("", name);
         }
 
+        /// <inheritdoc />
         public override void InitializeParent(Pair parent)
         {
-            if (parent.Delimiter == DelimiterEnum.CC || parent.Delimiter == DelimiterEnum.ECC)
+            if (parent?.Assignment == AssignmentEnum.CC || parent?.Assignment == AssignmentEnum.ECC)
             {
                 IsChoice = true;
             }
             base.InitializeParent(parent);
         }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            if (Delimiter == DelimiterEnum.EC)
+            if (Assignment == AssignmentEnum.EC)
             {
                 if (InterpolationItems == null) InterpolationItems = new List<object>();
                 InterpolationItems.Add(child);
@@ -62,5 +129,12 @@ namespace Syntactik.DOM.Mapped
             else
                 base.AppendChild(child);
         }
+
+        /// <inheritdoc />
+        public void OverrideNsPrefix(string nsPrefix)
+        {
+            _nsPrefix = nsPrefix;
+        }
+
     }
 }

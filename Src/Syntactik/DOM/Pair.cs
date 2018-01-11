@@ -20,131 +20,171 @@ using System.Text;
 
 namespace Syntactik.DOM
 {
-    public enum DelimiterEnum
-    {
-        None, 
-        E,   // =
-        EE,  // ==
-        C,   // :
-        CC,  // ::
-        CCC, // :::
-        EC,  // =:
-        ECC, // =::
-        CE, // :=
-    }
-
-    public enum QuotesEnum
-    {
-        None,
-        Single,
-        Double
-    }
     /// <summary>
-    /// Pair has either literal (property Value), pair (property PairValue) or block (implemented by descendants) value.
+    /// Base class for all DOM classes. 
     /// </summary>
-    public abstract class Pair{
-        protected string _value;
-        protected Pair _pairValue;
-        protected Pair _parent;
-        protected string _name;
-        protected DelimiterEnum _delimiter;
-        protected int _nameQuotesType;
-        protected int _valueQuotesType;
-
-        public virtual string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-
-        public virtual Pair PairValue
-        {
-            get { return _pairValue; }
-            set
-            {
-                _pairValue = value;
-                _value = null;
-            }
-        }
+    public abstract class Pair
+    {
+        private Pair _parent;
+        internal string _name;
+        internal AssignmentEnum _assignment;
+        internal string _value;
 
         /// <summary>
-        /// Represent a literal value of a pair.
+        /// Name of the pair.
         /// </summary>
-        public virtual string Value
-        {
-            get { return _value; }
-            set
-            {
-                _value = value;
-                _pairValue = null;
-            }
-        }
+        public virtual string Name => _name;
+
+        /// <summary>
+        /// Gets or sets a value of pair assignment.
+        /// </summary>
+        public virtual AssignmentEnum Assignment => _assignment;
+
+        /// <summary>
+        /// Pair value of the pair. Use method <see cref="AppendChild"/> to set value of this property.
+        /// </summary>
+        public virtual Pair PairValue { get; private set; }
+
+        /// <summary>
+        /// Literal value of the pair.
+        /// </summary>
+        public virtual string Value => _value;
+
+        /// <summary>
+        /// If true then the pair has either literal value or pair value.
+        /// </summary>
+        /// <returns>True if the pair has either literal value or pair value.</returns>
         public virtual bool HasValue()
         {
             return PairValue != null || Value != null;
         }
 
-
-        public virtual DelimiterEnum Delimiter
+        /// <summary>
+        /// Creates an instance of the <see cref="Pair"/>.
+        /// </summary>
+        /// <param name="name">Pair name.</param>
+        /// <param name="assignment"></param>
+        /// <param name="value">Pair value.</param>
+        protected Pair(string name, AssignmentEnum assignment, string value)
         {
-            get { return _delimiter; }
-            set { _delimiter = value; }
+            _name = name;
+            _assignment = assignment;
+            _value = value;
         }
 
         /// <summary>
-        /// 0 - no quotes
-        /// 1 - single quotes
-        /// 2 - double quotes
+        /// Creates an instance of the <see cref="Pair"/>.
         /// </summary>
-        public virtual int NameQuotesType
+        /// <param name="name">Pair name.</param>
+        /// <param name="assignment"></param>
+        protected Pair(string name, AssignmentEnum assignment)
         {
-            get { return _nameQuotesType; }
-            set { _nameQuotesType = value; }
+            _name = name;
+            _assignment = assignment;
+        }
+
+
+        /// <summary>
+        /// Creates an instance of the <see cref="Pair"/>.
+        /// </summary>
+        /// <param name="assignment"></param>
+        /// <param name="value">Pair value.</param>
+        protected Pair(AssignmentEnum assignment, string value)
+        {
+            _assignment = assignment;
+            _value = value;
         }
 
         /// <summary>
-        /// 0 - no quotes
-        /// 1 - single quotes
-        /// 2 - double quotes
+        /// Creates an instance of the <see cref="Pair"/>.
         /// </summary>
-        public virtual int ValueQuotesType
+        /// <param name="name">Pair name.</param>
+        protected Pair(string name)
         {
-            get { return _valueQuotesType; }
-            set { _valueQuotesType = value; }
+            _name = name;
         }
 
+        /// <summary>
+        /// Creates an instance of the <see cref="Pair"/>.
+        /// </summary>
+        /// <param name="assignment"></param>
+        protected Pair(AssignmentEnum assignment)
+        {
+            _assignment = assignment;
+        }
+
+        /// <summary>
+        /// Creates an instance of the <see cref="Pair"/>.
+        /// </summary>
+        protected Pair()
+        {
+        }
+
+        /// <summary>
+        /// This method is called when the pair is added as child to another pair.
+        /// </summary>
+        /// <param name="parent">Parent of the pair.</param>
         public virtual void InitializeParent(Pair parent)
+        {
+            if (_parent != null)
+                throw new InvalidOperationException("Parent is already initialized.");
+            _parent = parent;
+        }
+
+        internal void InitializeOverrideParent(Pair parent)
         {
             _parent = parent;
         }
+
+        /// <summary>
+        /// Parent of the pair.
+        /// </summary>
         public virtual Pair Parent => _parent;
 
-        // Methods
+        /// <summary>
+        /// Method is a part of the <see href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor pattern</see> implementation.
+        /// </summary>
+        /// <param name="visitor">Visitor object</param>
         public abstract void Accept(IDomVisitor visitor);
+
+        /// <summary>
+        /// Adds another pair as a child. If pair has "pair assignment" <b>:=</b> then the method initializes property PairValue.
+        /// </summary>
+        /// <param name="child">Child pair to be added</param>
         public virtual void AppendChild(Pair child)
         {
-            throw new NotSupportedException(new StringBuilder("Cannot add ").Append(child.GetType().Name).Append(" in ").Append(GetType().Name).ToString());
+            if (Assignment != AssignmentEnum.CE)
+                throw new NotSupportedException(new StringBuilder("Cannot add ").Append(child.GetType().Name)
+                    .Append(" in ").Append(GetType().Name).ToString());
+            if (PairValue != null) throw new InvalidOperationException("PairValue is already initialized.");
+            PairValue = child;
+            child.InitializeParent(this);
         }
 
-        public static string DelimiterToString(DelimiterEnum delimiter)
+        /// <summary>
+        /// Auxiliary function to convert assignment value to its string representation.
+        /// </summary>
+        /// <param name="assignment"></param>
+        /// <returns></returns>
+        internal static string AssignmentToString(AssignmentEnum assignment)
         {
-            switch (delimiter)
+            switch (assignment)
             {
-                case DelimiterEnum.C:
+                case AssignmentEnum.C:
                     return ":";
-                case DelimiterEnum.CC:
+                case AssignmentEnum.CC:
                     return "::";
-                case DelimiterEnum.CCC:
+                case AssignmentEnum.CCC:
                     return ":::";
-                case DelimiterEnum.E:
+                case AssignmentEnum.E:
                     return "=";
-                case DelimiterEnum.EC:
+                case AssignmentEnum.EC:
                     return "=:";
-                case DelimiterEnum.ECC:
+                case AssignmentEnum.ECC:
                     return "=::";
-                case DelimiterEnum.EE:
+                case AssignmentEnum.EE:
                     return "==";
-                case DelimiterEnum.CE:
+                case AssignmentEnum.CE:
                     return ":=";
             }
             return "";

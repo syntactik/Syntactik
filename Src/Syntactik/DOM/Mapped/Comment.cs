@@ -17,18 +17,70 @@
 #endregion
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Represent a <see cref="DOM.Comment"/> node mapped to the source code.
+    /// </summary>
     public class Comment : DOM.Comment, IMappedPair
     {
         /// <summary>
-        /// 1 - singleline comment
-        /// 2 - multiline comment
+        /// Type of the comment:
+        /// 1 - single-line comment,
+        /// 2 - multi-line comment.
         /// </summary>
-        public int CommentType { get; set; }
-        public Interval NameInterval { get; set; }
-        public Interval ValueInterval { get; set; }
-        public Interval DelimiterInterval { get; set; }
-        public ValueType ValueType { get; set; }
+        public int CommentType { get; }
+        /// <summary>
+        /// <see cref="Interval"/> used to define name of the pair. Always empty for <see cref="Comment"/>.
+        /// </summary>
+        public Interval NameInterval { get; }
+
+        /// <inheritdoc />
+        public int NameQuotesType { get; }
+
+        /// <inheritdoc />
+        public Interval ValueInterval { get; }
+
+        /// <inheritdoc />
+        public int ValueQuotesType { get; }
+
+        /// <summary>
+        /// <see cref="Interval"/> used to define pair assignment. Always empty for <see cref="Comment"/>.
+        /// </summary>
+        public Interval AssignmentInterval { get; }
+
+        /// <summary>
+        /// Type of the pair value. Always <see cref="Mapped.ValueType.None"/> for <see cref="Comment"/>.
+        /// </summary>
+        public ValueType ValueType => ValueType.None;
+
+        /// <summary>
+        /// True if pair has a literal value or pair value. Always <b>true</b>> for <see cref="Comment"/>.
+        /// </summary>
         public bool IsValueNode => true;
-        public int ValueIndent { get; set; }
+
+        /// <summary>
+        /// Indent of pair value. Always 0 for <see cref="Comment"/>.
+        /// </summary>
+        public int ValueIndent => 0;
+
+        /// <summary>
+        /// Creates a new instance of <see cref="Comment"/>.
+        /// </summary>
+        /// <param name="value">Pair value.</param>
+        /// <param name="valueInterval">Value <see cref="Interval"/>.</param>
+        /// <param name="commentType">
+        /// Type of the comment:
+        /// 1 - single-line comment,
+        /// 2 - multi-line comment.
+        /// </param>
+        public Comment(string value = null, Interval valueInterval = null, int commentType = 0) : base(value)
+        {
+            ValueInterval = valueInterval;
+            CommentType = commentType;
+            NameInterval = null;
+            NameQuotesType = 0;
+            ValueQuotesType = 0;
+            AssignmentInterval = null;
+        }
+
     }
 }

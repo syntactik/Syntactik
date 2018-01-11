@@ -19,8 +19,17 @@ using Syntactik.DOM;
 
 namespace Syntactik
 {
+    /// <summary>
+    /// Base interface for all error listeners.
+    /// </summary>
     public interface IErrorListener
     {
-        void SyntaxError(int code, Interval interval, params object[] args);
+        /// <summary>
+        /// Method called when parser error occurred.
+        /// </summary>
+        /// <param name="code">Code of the error</param>
+        /// <param name="interval">Interval of source code that caused the error.</param>
+        /// <param name="args"><see href="https://msdn.microsoft.com/en-us/library/txafckwd(v=vs.110).aspx">Formatting items</see>.</param>
+        void OnError(int code, Interval interval, params object[] args);
     }
 }

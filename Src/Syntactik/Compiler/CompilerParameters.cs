@@ -20,15 +20,27 @@ using System.Xml.Schema;
 
 namespace Syntactik.Compiler
 {
+    /// <summary>
+    /// Compiler parameters.
+    /// </summary>
     public class CompilerParameters
     {
+        /// <summary>
+        /// Output directory. Used if <see cref="CompilerPipeline"/> produces output files.
+        /// </summary>
         public string OutputDirectory { get; set; }
-
+        /// <summary>
+        /// <see cref="CompilerPipeline"/> is an ordered list of <see cref="ICompilerStep"/> implementations
+        /// that should be executed in sequence.
+        /// </summary>
         public CompilerPipeline Pipeline { get; set; }
-
-
+        /// <summary>
+        /// List of compiler inputs.
+        /// </summary>
         public List<ICompilerInput> Input { get; } = new List<ICompilerInput>();
-
+        /// <summary>
+        /// Instance of <see cref="XmlSchemaSet"/> used to validate output XML.
+        /// </summary>
         public XmlSchemaSet XmlSchemaSet { get; } = new XmlSchemaSet();
     }
 }

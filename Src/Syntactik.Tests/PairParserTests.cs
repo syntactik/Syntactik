@@ -10,7 +10,7 @@ namespace Syntactik.Tests
     public class PairParserTests
     {
         [Test, DomRecorded]
-        public void ArrayDelimiter()
+        public void ArrayAssignment()
         {
             DoTest();
         }
@@ -199,7 +199,7 @@ namespace Syntactik.Tests
         }
 
         [Test, DomRecorded, ParserErrorRecorded]
-        public void PairDelimiter()
+        public void PairAssignment()
         {
             DoTest();
         }
@@ -228,7 +228,7 @@ namespace Syntactik.Tests
         }
 
         [Test, DomRecorded, ParserErrorRecorded]
-        public void ExtraDelimiter()
+        public void ExtraAssignment()
         {
             DoTest();
         }

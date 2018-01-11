@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Syntactik.DOM;
 using Newtonsoft.Json;
+using Syntactik.Compiler.Steps;
 using Syntactik.DOM.Mapped;
 using Alias = Syntactik.DOM.Alias;
 using Attribute = Syntactik.DOM.Attribute;
@@ -29,34 +30,59 @@ using ValueType = Syntactik.DOM.Mapped.ValueType;
 
 namespace Syntactik.Compiler.Generator
 {
+    /// <summary>
+    /// Generates JSON from Syntactik DOM.
+    /// </summary>
     public class JsonGenerator : AliasResolvingVisitor
     {
-        public enum BlockState
+        /// <summary>
+        /// Enumerates possible state of block.
+        /// </summary>
+        public enum BlockStateEnum
         {
-            Object, //Json block is object
-            Array   //Json block is array
+            /// <summary>
+            /// Block is an object.
+            /// </summary>
+            Object,
+            /// <summary>
+            /// Block is an array.
+            /// </summary>
+            Array
         }
-
-        protected readonly Func<string, JsonWriter> _writerDelegate;
-
-        protected JsonWriter _jsonWriter;
-        protected bool _blockStart;
-        protected Stack<BlockState> _blockState;
-        protected readonly Stack<ChoiceInfo> _choiceStack = new Stack<ChoiceInfo>();
+        /// <summary>
+        /// Delegate is called to create JsonWriter for each <see cref="Document"/>.
+        /// </summary>
+        protected readonly Func<string, JsonWriter> WriterDelegate;
+        /// <summary>
+        /// JsonWriter is used to generate JSON text.
+        /// </summary>
+        protected JsonWriter JsonWriter;
+        /// <summary>
+        /// If true then the current block state (object/array) is not defined. 
+        /// </summary>
+        protected bool BlockIsStarting;
+        /// <summary>
+        /// Stack storing states of blocks.
+        /// </summary>
+        protected Stack<BlockStateEnum> BlockState;
+        /// <summary>
+        /// Stack of <see cref="ChoiceInfo"/>.
+        /// </summary>
+        protected readonly Stack<ChoiceInfo> ChoiceStack = new Stack<ChoiceInfo>();
 
 
         /// <summary>
         /// This constructor should be used if output depends on the name of the document.
         /// </summary>
         /// <param name="writerDelegate">Delegate will be called for the each Document. The name of the document will be sent in the string argument.</param>
-        /// <param name="context"></param>
+        /// <param name="context">Compilation context.</param>
         public JsonGenerator(Func<string, JsonWriter> writerDelegate, CompilerContext context):base(context)
         {
-            _writerDelegate = writerDelegate;
-            Context = context;
+            WriterDelegate = writerDelegate;
         }
 
-        public override void OnModule(DOM.Module module)
+        /// <inheritdoc />
+        public override void Visit(DOM.Module module)
         {
             Visit(module.NamespaceDefinitions);
             Visit(module.Members.Where(
@@ -66,94 +92,104 @@ namespace Syntactik.Compiler.Generator
                 );
         }
 
-        public override void OnDocument(Document document)
+        /// <inheritdoc />
+        public override void Visit(Document document)
         {
-            _currentDocument = (DOM.Mapped.Document) document;
-            _choiceStack.Push(_currentDocument.ChoiceInfo);
+            CurrentDocument = (DOM.Mapped.Document) document;
+            ChoiceStack.Push(CurrentDocument.ChoiceInfo);
 
-            using (_jsonWriter = _writerDelegate(document.Name))
+            using (JsonWriter = WriterDelegate(document.Name))
             {
-                _blockStart = true;
-                _blockState = new Stack<BlockState>();
-                base.OnDocument(document);
+                BlockIsStarting = true;
+                BlockState = new Stack<BlockStateEnum>();
+                base.Visit(document);
 
-                if (_blockState.Count > 0)
+                if (BlockState.Count > 0)
                 {
-                    if (_blockState.Pop() == BlockState.Array)
-                        _jsonWriter.WriteEndArray();
+                    if (BlockState.Pop() == BlockStateEnum.Array)
+                        JsonWriter.WriteEndArray();
                     else
-                        _jsonWriter.WriteEndObject();
+                        JsonWriter.WriteEndObject();
                 }
                 //Empty document. Writing an empty object as a value.
                 else
                 {
-                    if (document.Delimiter == DelimiterEnum.CC)
+                    if (document.Assignment == AssignmentEnum.CC)
                     {
-                        _jsonWriter.WriteStartArray();
-                        _jsonWriter.WriteEndArray();
+                        JsonWriter.WriteStartArray();
+                        JsonWriter.WriteEndArray();
                     }
-                    else if (document.Delimiter == DelimiterEnum.E || document.Delimiter == DelimiterEnum.EE || document.Delimiter == DelimiterEnum.CE)
+                    else if (document.Assignment == AssignmentEnum.E || document.Assignment == AssignmentEnum.EE || document.Assignment == AssignmentEnum.CE)
                     {
                         ResolveValue(document);
                     }
                     else
                     {
-                        _jsonWriter.WriteStartObject();
-                        _jsonWriter.WriteEndObject();
+                        JsonWriter.WriteStartObject();
+                        JsonWriter.WriteEndObject();
                     }
                 }
             }
-            _choiceStack.Pop();
-            _currentDocument = null;
+            ChoiceStack.Pop();
+            CurrentDocument = null;
         }
 
-        protected bool EnterChoiceContainer(DOM.Mapped.Alias alias, PairCollection<Entity> entities)
+        /// <summary>
+        /// Tries to resolve a pair as a choice.
+        /// </summary>
+        /// <param name="pair">Pair being resolved.</param>
+        /// <param name="entities">Entities of the pair.</param>
+        /// <param name="implementationPair">If pair is an <see cref="Alias"/> then this parameter should get be an <see cref="DOM.AliasDefinition"/>.</param>
+        /// <returns>True if pair is choice.</returns>
+        protected bool EnterChoiceContainer(Pair pair, PairCollection<Entity> entities, Pair implementationPair = null)
         {
-            if (alias.AliasDefinition.Delimiter != DelimiterEnum.CC && alias.AliasDefinition.Delimiter != DelimiterEnum.ECC 
+            if (implementationPair == null) implementationPair = pair;
+            if (implementationPair.Assignment != AssignmentEnum.CC && implementationPair.Assignment != AssignmentEnum.ECC 
                     || entities == null || entities.Count == 0)
                 return false;
 
-            var choice = _choiceStack.Peek();
-            var choiceInfo = FindChoiceInfo(choice, alias);
-            if (choice.ChoiceNode != alias)
+            var choice = ChoiceStack.Peek();
+            var choiceInfo = FindChoiceInfo(choice, pair);
+            if (choice.ChoiceNode != pair)
             {
-                _choiceStack.Push(choiceInfo);
+                ChoiceStack.Push(choiceInfo);
             }
-            _choiceStack.Push(choiceInfo.Children[0]);
+            ChoiceStack.Push(choiceInfo.Children[0]);
             if (((Element) choiceInfo.Children[0].ChoiceNode).Entities.Count > 0)
                 Visit(((Element) choiceInfo.Children[0].ChoiceNode).Entities);
             else
             {
                 //Empty choice generates empty object
-                _jsonWriter.WriteStartObject();
-                _blockState.Push(BlockState.Object);
+                JsonWriter.WriteStartObject();
+                BlockState.Push(BlockStateEnum.Object);
             }
 
-            _choiceStack.Pop();
-            if (choice.ChoiceNode != alias)
-                _choiceStack.Pop();
+            ChoiceStack.Pop();
+            if (choice.ChoiceNode != pair)
+                ChoiceStack.Pop();
             return true;
 
         }
 
+        /// <inheritdoc />
         protected override string ResolveChoiceValue(Pair pair, out ValueType valueType)
         {
-            var choice = _choiceStack.Peek();
+            var choice = ChoiceStack.Peek();
             var choiceInfo = FindChoiceInfo(choice, pair);
             if (choice.ChoiceNode != pair)
             {
-                _choiceStack.Push(choiceInfo);
+                ChoiceStack.Push(choiceInfo);
             }
             string result = string.Empty;
             valueType = ValueType.OpenString;
             if (choice.Children != null)
             {
-                _choiceStack.Push(choiceInfo.Children[0]);
-                result = ResolveNodeValue((IMappedPair) choiceInfo.Children[0].ChoiceNode, out valueType);
-                _choiceStack.Pop();
+                ChoiceStack.Push(choiceInfo.Children[0]);
+                result = ResolvePairValue((IMappedPair) choiceInfo.Children[0].ChoiceNode, out valueType);
+                ChoiceStack.Pop();
             }
             if (choice.ChoiceNode != pair)
-                _choiceStack.Pop();
+                ChoiceStack.Pop();
             return result;
         }
 
@@ -168,98 +204,98 @@ namespace Syntactik.Compiler.Generator
             return null;
         }
 
-        public override void OnValue(string value, DOM.Mapped.ValueType type)
+        /// <inheritdoc />
+        public override void OnValue(string value, ValueType type)
         {
             if (type == ValueType.Null)
             {
-                _jsonWriter.WriteNull();
+                JsonWriter.WriteNull();
                 return;
             }
 
-            bool boolValue;
-            if (type == ValueType.Boolean && bool.TryParse(value, out boolValue))
+            if (type == ValueType.Boolean && bool.TryParse(value, out var boolValue))
             {
-                _jsonWriter.WriteValue(boolValue);
+                JsonWriter.WriteValue(boolValue);
             }
             else
             {
-                decimal numberValue;
-                if (type == ValueType.Number && decimal.TryParse(value, out numberValue))
+                if (type == ValueType.Number && decimal.TryParse(value, out var numberValue))
                 {
                     if (numberValue % 1 == 0)
-                        _jsonWriter.WriteValue((long) numberValue);
+                        JsonWriter.WriteValue((long) numberValue);
                     else
-                        _jsonWriter.WriteValue(numberValue);
+                        JsonWriter.WriteValue(numberValue);
                 }
                     
                 else
-                    _jsonWriter.WriteValue(value);
+                    JsonWriter.WriteValue(value);
             }
         }
 
-        public override void OnAttribute(Attribute pair)
+        /// <inheritdoc />
+        public override void Visit(Attribute attribute)
         {
-            CheckBlockStart(pair);
+            CheckBlockStart(attribute);
 
-            _jsonWriter.WritePropertyName((pair.NsPrefix != null ? pair.NsPrefix + "." : "") + pair.Name);
-            ResolveValue(pair);
+            JsonWriter.WritePropertyName((attribute.NsPrefix != null ? attribute.NsPrefix + "." : "") + attribute.Name);
+            ResolveValue(attribute);
         }
 
-        public override void OnElement(Element element)
+        /// <inheritdoc />
+        public override void Visit(Element element)
         {
             CheckBlockStart(element);
 
-            if (!string.IsNullOrEmpty(element.Name)&& element.Delimiter != DelimiterEnum.None)
-                _jsonWriter.WritePropertyName((element.NsPrefix != null ? element.NsPrefix + "." : "") + element.Name);
+            if (!string.IsNullOrEmpty(element.Name)&& element.Assignment != AssignmentEnum.None)
+                JsonWriter.WritePropertyName((element.NsPrefix != null ? element.NsPrefix + "." : "") + element.Name);
 
             if (ResolveValue(element)) return; //Block has value therefore it has no block.
 
             //Working with node's block
-            _blockStart = true;
-            var prevBlockStateCount = _blockState.Count;
-            base.OnElement(element);
+            BlockIsStarting = true;
+            var prevBlockStateCount = BlockState.Count;
+            base.Visit(element);
 
-            _blockStart = false;
+            BlockIsStarting = false;
 
-            if (_blockState.Count > prevBlockStateCount)
+            if (BlockState.Count > prevBlockStateCount)
             {
-                if (_blockState.Pop() == BlockState.Array)
-                    _jsonWriter.WriteEndArray();
+                if (BlockState.Pop() == BlockStateEnum.Array)
+                    JsonWriter.WriteEndArray();
                 else
-                    _jsonWriter.WriteEndObject();
+                    JsonWriter.WriteEndObject();
                 return;
             }
 
-            //Element hase nor block no value. Writing an empty object as a value.
+            //Element has no block and no value. Writing an empty object as a value.
             if (!string.IsNullOrEmpty(element.Name) || ((DOM.Mapped.Element)element).ValueType == ValueType.Object)
             {
-                if (element.Delimiter == DelimiterEnum.CC)
+                if (element.Assignment == AssignmentEnum.CC)
                 {
-                    _jsonWriter.WriteStartArray();
-                    _jsonWriter.WriteEndArray();
+                    JsonWriter.WriteStartArray();
+                    JsonWriter.WriteEndArray();
                 }
                 else
                 {
-                    _jsonWriter.WriteStartObject();
-                    _jsonWriter.WriteEndObject();
+                    JsonWriter.WriteStartObject();
+                    JsonWriter.WriteEndObject();
                 }
             }
         }
 
-        public override void OnAlias(Alias alias)
+        /// <inheritdoc />
+        public override void Visit(Alias alias)
         {
             var aliasDef = ((DOM.Mapped.Alias)alias).AliasDefinition;
             if (aliasDef.IsValueNode)
             {
                 CheckBlockStartForAlias();
-                ValueType valueType;
-                OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out valueType), valueType);
+                OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out var valueType), valueType);
             }
 
-
-            AliasContext.Push(new AliasContext() { AliasDefinition = aliasDef, Alias = (DOM.Mapped.Alias)alias, AliasNsInfo = GetContextNsInfo() });
-            if (!EnterChoiceContainer((DOM.Mapped.Alias) alias, aliasDef.Entities))
-                Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
+            AliasContext.Push((DOM.Mapped.Alias) alias);
+            if (!EnterChoiceContainer((DOM.Mapped.Alias) alias, aliasDef.Entities, aliasDef))
+                Visit(aliasDef.Entities.Where(e => !(e is Attribute)));
             AliasContext.Pop();
         }
 
@@ -268,28 +304,28 @@ namespace Syntactik.Compiler.Generator
         /// </summary>
         protected virtual void CheckBlockStartForAlias()
         {
-            if (!_blockStart) return;
-            _jsonWriter.WriteStartArray(); //start array
-            _blockState.Push(BlockState.Array);
-            _blockStart = false;
+            if (!BlockIsStarting) return;
+            JsonWriter.WriteStartArray(); //start array
+            BlockState.Push(BlockStateEnum.Array);
+            BlockIsStarting = false;
         }
 
-        protected virtual void CheckBlockStart(Pair node)
+        private void CheckBlockStart(Pair node)
         {
-            if (!_blockStart) return;
+            if (!BlockIsStarting) return;
 
             //This element is the first element of the block. It decides if the block is array or object
-            if (string.IsNullOrEmpty(node.Name) || node.Delimiter == DelimiterEnum.None)
+            if (string.IsNullOrEmpty(node.Name) || node.Assignment == AssignmentEnum.None)
             {
-                _jsonWriter.WriteStartArray(); //start array
-                _blockState.Push(BlockState.Array);
+                JsonWriter.WriteStartArray(); //start array
+                BlockState.Push(BlockStateEnum.Array);
             }
             else
             {
-                _jsonWriter.WriteStartObject(); //start array
-                _blockState.Push(BlockState.Object);
+                JsonWriter.WriteStartObject(); //start array
+                BlockState.Push(BlockStateEnum.Object);
             }
-            _blockStart = false;
+            BlockIsStarting = false;
         }
     }
 }

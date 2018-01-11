@@ -24,6 +24,7 @@ using System.Text;
 using Syntactik.IO;
 using NUnit.Framework;
 using Syntactik.DOM;
+using Module = Syntactik.DOM.Mapped.Module;
 
 namespace Syntactik.Tests
 {
@@ -38,17 +39,16 @@ namespace Syntactik.Tests
             PrintCode(code);
 #endif
 
-            var parser = new Parser(new InputStream(code), new PairFactory(), new DOM.Module { Name = "Module" });
+            var parser = new Parser(new InputStream(code), new PairFactory(), new Module("Module"));
             var errorListener = new ErrorListener();
             parser.ErrorListeners.Add(errorListener);
 
-            var domText = PrintModule(parser.ParseModule(""));
+            var domText = PrintModule(parser.ParseModule());
 
             var recordedDom = GetRecordedDomText(domText);
 
             //Parser Errors
-            string serialParserErrors;
-            var recordedParserErros = LoadParserErrors(errorListener, out serialParserErrors);
+            var recordedParserErros = LoadParserErrors(errorListener, out var serialParserErrors);
             if (recordedParserErros != null)
             {
 #if (!CI)
@@ -157,7 +157,7 @@ namespace Syntactik.Tests
             return File.ReadAllText(fileName).Replace("\r\n", "\n");
         }
 
-        public static string LoadParserErrors(ErrorListener errorListener, out string serialParserErrors)
+        static string LoadParserErrors(ErrorListener errorListener, out string serialParserErrors)
         {
             var isParserErrorRecordedTest = IsParserErrorRecordedTest();
             var isParserErrorRecordTest = IsParserErrorRecordTest(); //Overwrites existing recording

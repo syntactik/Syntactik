@@ -16,6 +16,8 @@
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 
+using System.IO;
+
 namespace Syntactik.Compiler
 {
     /// <summary>
@@ -23,11 +25,18 @@ namespace Syntactik.Compiler
     /// </summary>
     public interface ICompilerInput
     {
+        /// <summary>
+        /// Logical name of the input. For example, name of the file.
+        /// </summary>
         string Name
         {
             get;
         }
 
-        System.IO.TextReader Open();
+        /// <summary>
+        /// Prepare input for reading.
+        /// </summary>
+        /// <returns>Instance of the <see cref="TextReader"/></returns>
+        TextReader Open();
     }
 }

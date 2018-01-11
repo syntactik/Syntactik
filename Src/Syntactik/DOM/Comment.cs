@@ -17,11 +17,23 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represent comment in the Syntactik document.
+    /// </summary>
     public class Comment: Entity
     {
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
-            visitor.OnComment(this);
+            visitor.Visit(this);
+        }
+
+        /// <summary>
+        /// Creates an instance of <see cref="Comment"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        public Comment(string value) : base(null, AssignmentEnum.None, value)
+        {
         }
     }
 }

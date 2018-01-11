@@ -19,15 +19,17 @@ using System.Text;
 
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents a Parameter.
+    /// </summary>
     public class Parameter : Entity, IContainer
     {
-        // Fields
-        protected PairCollection<Entity> _entities;
+        private PairCollection<Entity> _entities;
 
-        // Properties
+        /// <inheritdoc />
         public virtual PairCollection<Entity> Entities
         {
-            get { return _entities ?? (_entities = new PairCollection<Entity>(this)); }
+            get => _entities ?? (_entities = new PairCollection<Entity>(this));
             set
             {
                 if (value == _entities) return;
@@ -37,19 +39,32 @@ namespace Syntactik.DOM
             }
         }
 
-        // Methods
-        public override void Accept(IDomVisitor visitor)
+        /// <summary>
+        /// Creates an instance of <see cref="Parameter"/>.
+        /// </summary>
+        /// <param name="name">Parameter name.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Parameter value.</param>
+        public Parameter(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null) : base(name, assignment, value)
         {
-            visitor.OnParameter(this);
         }
 
+        /// <inheritdoc />
+        public override void Accept(IDomVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            Value = null;
-            PairValue = null;
+            if (Assignment == AssignmentEnum.CE)
+            {
+                base.AppendChild(child);
+                return;
+            }
 
-            var item = child as Entity;
-            if (item != null)
+            if (child is Entity item)
             {
                 Entities.Add(item);
             }
@@ -58,6 +73,8 @@ namespace Syntactik.DOM
                 base.AppendChild(child);
             }
         }
+
+        /// <inheritdoc />
         public override string ToString()
         {
             return new StringBuilder().Append("%").Append(Name).ToString();

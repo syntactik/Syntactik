@@ -15,16 +15,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-
-using Syntactik.DOM.Mapped;
-
-namespace Syntactik.Compiler.Generator
+namespace Syntactik.DOM
 {
-    public class AliasContext
+    /// <summary>
+    /// Represents node that can override its namespace prefix.
+    /// </summary>
+    public interface INsNodeOverridable
     {
-        public Alias Alias { get; set; }
-        public AliasDefinition AliasDefinition { get; set; }
-        public NsInfo AliasNsInfo { get; set; }
-
+        /// <summary>
+        /// Overrides namespace prefix of the node.
+        /// </summary>
+        /// <param name="nsPrefix">New value of the namespace prefix.</param>
+        void OverrideNsPrefix(string nsPrefix);
     }
 }

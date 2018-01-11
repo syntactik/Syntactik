@@ -18,25 +18,38 @@
 
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// DOM object that corresponds to a single source of text, like file, string, stream etc.
+    /// Modules that belong to the same <see cref="CompileUnit"/> must have different names.
+    /// </summary>
     public class Module : Pair
     {
-        #region Fields
+        private PairCollection<ModuleMember> _members;
+        private PairCollection<NamespaceDefinition> _namespaceDefinitions;
 
-        protected PairCollection<ModuleMember> _members;
-        protected PairCollection<NamespaceDefinition> _namespaceDefinitions;
+        private Document _moduleDocument;
 
-        public string FileName;
-        protected Document _moduleDocument;
+        /// <summary>
+        /// Number of indent symbol needed to form a single indent.
+        /// </summary>
+        public int IndentMultiplicity { get; internal set; }
 
-        #endregion
+        /// <summary>
+        /// Symbol used for indent (space or tab).
+        /// </summary>
+        public char IndentSymbol { get; internal set; }
 
-        #region Properties
-        public int IndentMultiplicity { get; set; }
-        public char IndentSymbol { get; set; }
+        /// <summary>
+        /// Path to the module file.
+        /// </summary>
+        public string FileName { get; }
 
+        /// <summary>
+        /// Collection of <see cref="Document"/> and <see cref="AliasDefinition"/>.
+        /// </summary>
         public virtual PairCollection<ModuleMember> Members
         {
-            get { return _members ?? (_members = new PairCollection<ModuleMember>(this)); }
+            get => _members ?? (_members = new PairCollection<ModuleMember>(this));
             set
             {
                 if (value != _members)
@@ -47,9 +60,12 @@ namespace Syntactik.DOM
             }
         }
 
+        /// <summary>
+        /// Collection of <see cref="NamespaceDefinition"/>.
+        /// </summary>
         public virtual PairCollection<NamespaceDefinition> NamespaceDefinitions
         {
-            get { return _namespaceDefinitions ?? (_namespaceDefinitions = new PairCollection<NamespaceDefinition>(this)); }
+            get => _namespaceDefinitions ?? (_namespaceDefinitions = new PairCollection<NamespaceDefinition>(this));
             set
             {
                 if (value != _namespaceDefinitions)
@@ -59,44 +75,46 @@ namespace Syntactik.DOM
                 }
             }
         }
+
+        /// <summary>
+        /// <see cref="Document"/> of module is implicitly declared by added <see cref="Entity"/> as module child.
+        /// </summary>
         public virtual Document ModuleDocument => _moduleDocument;
 
-        #endregion
 
-
-
-        #region  Methods
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
-            visitor.OnModule(this);
+            visitor.Visit(this);
         }
 
-        public Module()
+        /// <summary>
+        /// Creates an instance of <see cref="Module"/>.
+        /// </summary>
+        /// <param name="name">Module name.</param>
+        /// <param name="fileName">Path to the file of module.</param>
+        public Module(string name, string fileName = null): base(name, AssignmentEnum.C)
         {
-            _delimiter = DelimiterEnum.C;
+            FileName = fileName;
         }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            Value = null;
-            PairValue = null;
 
-            var item = child as ModuleMember;
-            if (item != null)
+            if (child is ModuleMember item)
             {
                 Members.Add(item);
                 return;
             }
 
-            var ns = child as NamespaceDefinition;
-            if (ns != null)
+            if (child is NamespaceDefinition ns)
             {
                 NamespaceDefinitions.Add(ns);
                 return;
             }
 
-            var entity = child as Entity;
-            if (entity != null)
+            if (child is Entity entity)
             {
                 AddEntity(entity);
             }
@@ -106,23 +124,28 @@ namespace Syntactik.DOM
             }
         }
 
-        protected void AddEntity(Entity entity)
+        /// <summary>
+        /// Adds entity to the <see cref="ModuleDocument"/>.
+        /// </summary>
+        /// <param name="entity"><see cref="Entity"/> to be added to the block of <see cref="ModuleDocument"/>.</param>
+        protected virtual void AddEntity(Entity entity)
         {
             if (_moduleDocument == null) CreateModuleDocument();
             _moduleDocument.AppendChild(entity);
 
         }
 
-        protected void CreateModuleDocument()
+        /// <summary>
+        /// Creates an empty <see cref="ModuleDocument"/>.
+        /// </summary>
+        protected virtual void CreateModuleDocument()
         {
             _moduleDocument = new Mapped.Document
-            {
-                Name = Name,
-                NameInterval = new Interval(new CharLocation(1,1,1), new CharLocation(1, 1, 1)),
-                Delimiter = DelimiterEnum.None
-            };
+            (
+                Name,
+                nameInterval : new Interval(new CharLocation(1,1,1), new CharLocation(1, 1, 1))
+            );
             Members.Add(_moduleDocument);
         }
-        #endregion
     }
 }

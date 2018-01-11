@@ -17,8 +17,14 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents a pair that has child pairs.
+    /// </summary>
     public interface IContainer
     {
+        /// <summary>
+        /// Collection of child pairs.
+        /// </summary>
         PairCollection<Entity> Entities { get; set; }
     }
 }

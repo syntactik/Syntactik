@@ -20,16 +20,68 @@ using System.Linq;
 
 namespace Syntactik.DOM.Mapped
 {
-    public class Module : DOM.Module
+    /// <summary>
+    /// Represent a <see cref="Module"/> mapped to the source code.
+    /// </summary>
+    public class Module : DOM.Module, IMappedPair
     {
+        /// <inheritdoc />
+        public Interval NameInterval => Interval.Empty;
+
+        /// <inheritdoc />
+        public int NameQuotesType => 0;
+
+        /// <inheritdoc />
+        public Interval ValueInterval => Interval.Empty;
+
+        /// <inheritdoc />
+        public int ValueQuotesType => 0;
+
+        /// <inheritdoc />
+        public Interval AssignmentInterval => Interval.Empty;
+
+        /// <inheritdoc />
+        public ValueType ValueType => ValueType.None;
+
+        /// <inheritdoc />
+        public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
+
+        /// <inheritdoc />
+        public int ValueIndent => 0;
+
+        /// <summary>
+        /// Target format of the module.
+        /// </summary>
         public enum TargetFormats
         {
+            /// <summary>
+            /// Format is not explicitly defined.
+            /// </summary>
             Undefined = 0,
+            /// <summary>
+            /// Format is defined as XML.
+            /// </summary>
             Xml,
+            /// <summary>
+            /// Format is defined as JSON.
+            /// </summary>
             Json
         }
 
         private TargetFormats _targetFormat;
+
+        /// <summary>
+        /// Create an instance of <see cref="DOM.Module"/>
+        /// </summary>
+        /// <param name="name">Module name.</param>
+        /// <param name="fileName">Name of file associated with the module.</param>
+        public Module(string name, string fileName = null):base(name, fileName)
+        {
+        }
+
+        /// <summary>
+        /// Target format of the module. XML or JSON, for ex.
+        /// </summary>
         public TargetFormats TargetFormat
         {
             get
@@ -40,15 +92,16 @@ namespace Syntactik.DOM.Mapped
 
                 return _targetFormat = TargetFormats.Xml;
             }
-            set { _targetFormat = value; }
+            set => _targetFormat = value;
         }
 
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
             if (child is NamespaceDefinition)
             {
-                if (_moduleDocument != null && _moduleDocument.Entities.Any(e => !(e is Comment)) 
-                        || _moduleDocument == null && Members.Count > 0)
+                if (ModuleDocument != null && ModuleDocument.Entities.Any(e => !(e is Comment)) 
+                        || ModuleDocument == null && Members.Count > 0)
                     throw new ApplicationException("Namespaces must be defined first");
             }
             base.AppendChild(child);

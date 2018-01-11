@@ -17,7 +17,19 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Entity is a <see cref="Pair"/> that can be added to <see cref="IContainer"/> node.
+    /// </summary>
     public abstract class Entity : Pair
     {
+        /// <summary>
+        /// Creates an instance of <see cref="Entity"/>.
+        /// </summary>
+        /// <param name="name">Entity name.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Entity value.</param>
+        protected Entity(string name, AssignmentEnum assignment, string value) : base(name, assignment, value)
+        {
+        }
     }
 }

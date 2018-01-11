@@ -17,31 +17,46 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents an AliasDefinition.
+    /// </summary>
     public class AliasDefinition : ModuleMember, IContainer
     {
-        // Fields
-        protected PairCollection<Entity> _entities;
+        private PairCollection<Entity> _entities;
 
-        // Methods
-        public override void Accept(IDomVisitor visitor)
+        /// <summary>
+        /// Creates a new instance of <see cref="AliasDefinition"/>.
+        /// </summary>
+        /// <param name="name">Pair name.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Pair value.</param>
+        public AliasDefinition(string name, AssignmentEnum assignment, string value) : base(name, assignment, value)
         {
-            visitor.OnAliasDefinition(this);
         }
 
+
+        /// <inheritdoc />
+        public override void Accept(IDomVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            Value = null;
-            PairValue = null;
+            if (Assignment == AssignmentEnum.CE)
+            {
+                base.AppendChild(child);
+                return;
+            }
 
-            var entity = child as Entity;
-            if (entity != null)
+            if (child is Entity entity)
             {
                 Entities.Add(entity);
                 return;
             }
 
-            var ns = child as NamespaceDefinition;
-            if (ns != null)
+            if (child is NamespaceDefinition ns)
             {
                 NamespaceDefinitions.Add(ns);
                 return;
@@ -50,10 +65,10 @@ namespace Syntactik.DOM
             base.AppendChild(child);
         }
 
-        // Properties
+        /// <inheritdoc />
         public virtual PairCollection<Entity> Entities
         {
-            get { return _entities ?? (_entities = new PairCollection<Entity>(this)); }
+            get => _entities ?? (_entities = new PairCollection<Entity>(this));
             set
             {
                 if (value != _entities)

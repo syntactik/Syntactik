@@ -19,10 +19,19 @@ using System.Collections.Generic;
 
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Represents a pair with a choice assignment.
+    /// </summary>
     public interface IChoiceNode
     {
-        List<object> ChoiceObjects { get; }
+        /// <summary>
+        /// True if pair has a choice assignment.
+        /// </summary>
         bool IsChoice { get; }
+        /// <summary>
+        /// Cases of the choice.
+        /// </summary>
+        List<object> ChoiceObjects { get; }
     }
 
 }

@@ -20,13 +20,13 @@ using Syntactik.DOM;
 
 namespace Syntactik
 {
-    public class ErrorListener: IErrorListener
+    class ErrorListener: IErrorListener
     {
         public List<string> Errors { get; } = new List<string>();
 
-        public void SyntaxError(int code, Interval interval, params object[] args)
+        public void OnError(int code, Interval interval, params object[] args)
         {
-            Errors.Add(ErrorCodes.Format(code, args) + $" ({interval.Begin.Line}:{interval.Begin.Column})-({interval.End.Line}:{interval.End.Column})");
+            Errors.Add(ParsingErrors.Format(code, args) + $" ({interval.Begin.Line}:{interval.Begin.Column})-({interval.End.Line}:{interval.End.Column})");
         }
     }
 }

@@ -32,33 +32,63 @@ using ValueType = Syntactik.DOM.Mapped.ValueType;
 
 namespace Syntactik.Compiler.Generator
 {
+    /// <summary>
+    /// Generates XML from Syntactik DOM.
+    /// </summary>
     public class XmlGenerator : AliasResolvingVisitor
     {
-        protected XmlWriter _xmlTextWriter;
-        protected readonly Func<string, Encoding,  XmlWriter> _writerDelegate;
+        /// <summary>
+        /// <see cref="XmlWriter"/> is used to generate XML text.
+        /// </summary>
+        protected XmlWriter XmlTextWriter;
+        
+        /// <summary>
+        /// Delegate is called to create <see cref="XmlWriter"/> for each <see cref="Document"/>.
+        /// </summary>
+        protected readonly Func<string, Encoding,  XmlWriter> WriterDelegate;
+        
+        /// <summary>
+        /// Delegate is called to create <see cref="XmlReader"/> to validate each generated XML document.
+        /// </summary>
         protected readonly Func<string, XmlReaderSettings, XmlReader> _readerDelegate;
-        protected bool _rootElementAdded;
-        protected readonly Stack<ChoiceInfo> _choiceStack = new Stack<ChoiceInfo>();
-        protected ModuleMember _currentModuleMember;
+        
+        /// <summary>
+        /// True if document element is added. Used to identify document element in the visitor.
+        /// </summary>
+        protected bool DocumentElementAdded;
+        /// <summary>
+        /// Stack of <see cref="ChoiceInfo"/>.
+        /// </summary>
+        protected readonly Stack<ChoiceInfo> ChoiceStack = new Stack<ChoiceInfo>();
+
+        /// <summary>
+        /// Current <see cref="ModuleMember"/> (<see cref="Document"/> or <see cref="DOM.AliasDefinition"/>).
+        /// </summary>
+        protected ModuleMember CurrentModuleMember;
+
         private readonly bool _generateComments;
 
-        public List<LexicalInfo> LocationMap { get; set; }
+        /// <summary>
+        /// <see cref="LocationMap"/> is used to map XML validation errors to Syntactik code.
+        /// </summary>
+        public List<LexicalInfo> LocationMap { get; protected set; }
 
         /// <summary>
         /// This constructor should be used if output depends on the name of the document.
         /// </summary>
         /// <param name="writerDelegate">Delegate will be called for each Document. The name of the document will be sent in the string argument.</param>
         /// <param name="readerDelegate">Delegate should return XmlReader for each generated document.</param>
-        /// <param name="context"></param>
-        /// <param name="generateComments"></param>
+        /// <param name="context">Compilation context</param>
+        /// <param name="generateComments">if true then comments will be generated.</param>
         public XmlGenerator(Func<string, Encoding, XmlWriter> writerDelegate, Func<string, XmlReaderSettings, XmlReader> readerDelegate, CompilerContext context, bool generateComments = false):base(context)
         {
-            _writerDelegate = writerDelegate;
+            WriterDelegate = writerDelegate;
             _readerDelegate = readerDelegate;
             _generateComments = generateComments;
         }
-        
-        public override void OnModule(DOM.Module module)
+
+        /// <inheritdoc />
+        public override void Visit(DOM.Module module)
         {
             Visit(module.NamespaceDefinitions);
             Visit(module.Members.Where(
@@ -68,24 +98,25 @@ namespace Syntactik.Compiler.Generator
                 );
         }
 
-        public override void OnDocument(DOM.Document document)
+        /// <inheritdoc />
+        public override void Visit(DOM.Document document)
         {
-            _currentDocument = (Document) document;
-            _currentModuleMember = document;
-            _choiceStack.Push(_currentDocument.ChoiceInfo);
+            CurrentDocument = (Document) document;
+            CurrentModuleMember = document;
+            ChoiceStack.Push(CurrentDocument.ChoiceInfo);
             Encoding encoding = Encoding.UTF8;
             if (_generateComments)
             {
                 encoding = GetEncoding(document);
             }
             //Generate XML file
-            using (_xmlTextWriter = _writerDelegate(document.Name, encoding))
+            using (XmlTextWriter = WriterDelegate(document.Name, encoding))
             {
                 WriteStartDocument(document);
-                _rootElementAdded = false;
+                DocumentElementAdded = false;
                 LocationMap = new List<LexicalInfo>();
-                base.OnDocument(document);
-                _xmlTextWriter.WriteEndDocument();
+                base.Visit(document);
+                XmlTextWriter.WriteEndDocument();
 
             }
 
@@ -96,36 +127,40 @@ namespace Syntactik.Compiler.Generator
             //var fileName = Path.Combine(_context.Parameters.OutputDirectory, node.Name + ".xml");
             validator.ValidateGeneratedFile(document.Name);
 
-            _currentDocument = null;
-            _currentModuleMember = null;
+            CurrentDocument = null;
+            CurrentModuleMember = null;
         }
-
+        /// <summary>
+        /// Gets encoding of xml-document from Syntactik comments.
+        /// </summary>
+        /// <param name="document">Syntactik document with comments.</param>
+        /// <returns>Xml encoding.</returns>
         protected Encoding GetEncoding(DOM.Document document)
         {
             var leadingComments = document.Entities.TakeWhile(e => e is Comment);
             var declaration = leadingComments.FirstOrDefault(c => c.Value.StartsWith("XmlDeclaration:"));
-            if (declaration != null)
-            {
-                var m = new Regex(@"(?:[.]*encoding\s*=\s*"")([^""]*)(?:"")").Match(declaration.Value);
-                if (m.Success && m.Groups.Count > 1)
-                {
-                    try
-                    {
-                        return Encoding.GetEncoding(m.Groups[1].Value);
-                    }
-                    catch (Exception)
-                    {
-                        return Encoding.UTF8;
-                    }
-                }
-            }
-            return Encoding.UTF8;
+            if (declaration == null) return Encoding.UTF8;
 
+            var m = new Regex(@"(?:[.]*encoding\s*=\s*"")([^""]*)(?:"")").Match(declaration.Value);
+            if (!m.Success || m.Groups.Count <= 1) return Encoding.UTF8;
+
+            try
+            {
+                return Encoding.GetEncoding(m.Groups[1].Value);
+            }
+            catch (Exception)
+            {
+                return Encoding.UTF8;
+            }
         }
 
+        /// <summary>
+        /// Writes start of xml document.
+        /// </summary>
+        /// <param name="document">Instance of <see cref="DOM.Document"/></param>
         protected virtual void WriteStartDocument(DOM.Document document)
         {
-            _xmlTextWriter.WriteStartDocument();
+            XmlTextWriter.WriteStartDocument();
             if (!_generateComments) return;
             var leadingComments = document.Entities.TakeWhile(e => e is Comment);
             var pInstructions =
@@ -135,86 +170,93 @@ namespace Syntactik.Compiler.Generator
                 var m = new Regex(@"(?:ProcessingInstruction\s*)(.*):\s*(.*)").Match(instruction);
                 if (m.Success && m.Groups.Count > 2)
                 {
-                    _xmlTextWriter.WriteProcessingInstruction(m.Groups[1].Value, m.Groups[2].Value);
+                    XmlTextWriter.WriteProcessingInstruction(m.Groups[1].Value, m.Groups[2].Value);
                 }
             }
         }
 
-
+        /// <summary>
+        /// Tries to resolve a pair as a choice.
+        /// </summary>
+        /// <param name="pair">Pair being resolved.</param>
+        /// <param name="entities">Entities of the pair.</param>
+        /// <param name="implementationPair">If pair is an <see cref="Alias"/> then this parameter should get be an <see cref="DOM.AliasDefinition"/>.</param>
+        /// <returns>True if pair is choice.</returns>
         protected bool EnterChoiceContainer(Pair pair, PairCollection<Entity> entities, Pair implementationPair = null)
         {
             if (implementationPair == null) implementationPair = pair;
-            if (implementationPair.Delimiter != DelimiterEnum.CC && implementationPair.Delimiter != DelimiterEnum.ECC 
+            if (implementationPair.Assignment != AssignmentEnum.CC && implementationPair.Assignment != AssignmentEnum.ECC 
                     || entities == null || entities.Count == 0)
                 return false;
 
-            var choice = _choiceStack.Peek();
+            var choice = ChoiceStack.Peek();
             var choiceInfo = JsonGenerator.FindChoiceInfo(choice, pair);
             if (choice.ChoiceNode != pair)
             {
-                _choiceStack.Push(choiceInfo);
+                ChoiceStack.Push(choiceInfo);
             }
-            _choiceStack.Push(choiceInfo.Children[0]);
+            ChoiceStack.Push(choiceInfo.Children[0]);
             if (((Element)choiceInfo.Children[0].ChoiceNode).Entities.Count > 0)
                 Visit(((Element)choiceInfo.Children[0].ChoiceNode).Entities);
 
-            _choiceStack.Pop();
+            ChoiceStack.Pop();
             if (choice.ChoiceNode != pair)
-                _choiceStack.Pop();
+                ChoiceStack.Pop();
             return true;
 
         }
 
+        /// <inheritdoc />
         protected override string ResolveChoiceValue(Pair pair, out ValueType valueType)
         {
-            var choice = _choiceStack.Peek();
+            var choice = ChoiceStack.Peek();
             var choiceInfo = JsonGenerator.FindChoiceInfo(choice, pair);
             if (choice.ChoiceNode != pair)
             {
-                _choiceStack.Push(choiceInfo);
+                ChoiceStack.Push(choiceInfo);
             }
             string result = string.Empty;
             valueType = ValueType.OpenString;
             if (choice.Children != null)
             {
-                _choiceStack.Push(choiceInfo.Children[0]);
-                result = ResolveNodeValue((IMappedPair) choiceInfo.Children[0].ChoiceNode, out valueType);
-                _choiceStack.Pop();
+                ChoiceStack.Push(choiceInfo.Children[0]);
+                result = ResolvePairValue((IMappedPair) choiceInfo.Children[0].ChoiceNode, out valueType);
+                ChoiceStack.Pop();
             }
             if (choice.ChoiceNode != pair)
-                _choiceStack.Pop();
+                ChoiceStack.Pop();
             return result;
         }
 
-        public override void OnElement(Element element)
+        /// <inheritdoc />
+        public override void Visit(Element element)
         {
             //Getting namespace and prefix
-            string prefix, ns;
-            NamespaceResolver.GetPrefixAndNs(element, _currentDocument,
-                () => ScopeContext.Peek(),
-                out prefix, out ns);
+            NamespaceResolver.GetPrefixAndNs(element, CurrentDocument,
+                ScopeContext.Peek(),
+                out var prefix, out var ns);
 
             if (string.IsNullOrEmpty(element.NsPrefix)) prefix = null; 
             //Starting Element
             if (!string.IsNullOrEmpty(element.Name))
             {
-                if (element.Delimiter != DelimiterEnum.CCC)
+                if (element.Assignment != AssignmentEnum.CCC)
                 {
                     //not text node
-                    _xmlTextWriter.WriteStartElement(prefix, element.Name, ns);
-                    AddLocationMapRecord(_currentModuleMember.Module.FileName, (IMappedPair) element);
+                    XmlTextWriter.WriteStartElement(prefix, element.Name, ns);
+                    AddLocationMapRecord(CurrentModuleMember.Module.FileName, (IMappedPair) element);
 
                     //Write all namespace declarations in the root element
-                    if (!_rootElementAdded)
+                    if (!DocumentElementAdded)
                     {
                         WritePendingNamespaceDeclarations(ns);
-                        _rootElementAdded = true;
+                        DocumentElementAdded = true;
                     }
                 }
             }
             else
             {
-                if (element.Parent.Delimiter == DelimiterEnum.CCC && (element.Delimiter == DelimiterEnum.C || element.Delimiter == DelimiterEnum.CC))
+                if (element.Parent.Assignment == AssignmentEnum.CCC && (element.Assignment == AssignmentEnum.C || element.Assignment == AssignmentEnum.CC))
                 {
                     // This is item of explicit array (:::)
                     WriteExplicitArrayItem(element);
@@ -222,61 +264,66 @@ namespace Syntactik.Compiler.Generator
             }
 
             if (!ResolveValue(element) && !EnterChoiceContainer(element, element.Entities))
-                base.OnElement(element);
+                base.Visit(element);
 
             //End Element
             if (!string.IsNullOrEmpty(element.Name))
             {
-                if (element.Delimiter != DelimiterEnum.CCC) //not text node and not explicit array
-                    _xmlTextWriter.WriteEndElement();
+                if (element.Assignment != AssignmentEnum.CCC) //not text node and not explicit array
+                    XmlTextWriter.WriteEndElement();
             }
             else
             {
-                if (element.Parent.Delimiter == DelimiterEnum.CCC && (element.Delimiter == DelimiterEnum.C || element.Delimiter == DelimiterEnum.CC))
-                    _xmlTextWriter.WriteEndElement();
+                if (element.Parent.Assignment == AssignmentEnum.CCC && (element.Assignment == AssignmentEnum.C || element.Assignment == AssignmentEnum.CC))
+                    XmlTextWriter.WriteEndElement();
             }
         }
 
         private void WriteExplicitArrayItem(Element element)
         {
-            string prefix;
-            string ns;
-            NamespaceResolver.GetPrefixAndNs((INsNode) element.Parent, _currentDocument,
-                () => ScopeContext.Peek(),
-                out prefix, out ns);
+            NamespaceResolver.GetPrefixAndNs((INsNode) element.Parent, CurrentDocument,
+                ScopeContext.Peek(),
+                out var prefix, out var ns);
             if (string.IsNullOrEmpty(element.NsPrefix)) prefix = null;
-            _xmlTextWriter.WriteStartElement(prefix, element.Parent.Name, ns);
-            AddLocationMapRecord(_currentModuleMember.Module.FileName, (IMappedPair) element);
+            XmlTextWriter.WriteStartElement(prefix, element.Parent.Name, ns);
+            AddLocationMapRecord(CurrentModuleMember.Module.FileName, (IMappedPair) element);
         }
 
+        /// <summary>
+        /// Adds record about <see cref="IMappedPair"/> in the <see cref="LocationMap"/>.
+        /// </summary>
+        /// <param name="fileName">Module file name.</param>
+        /// <param name="pair">Mapped pair.</param>
         protected virtual void AddLocationMapRecord(string fileName, IMappedPair pair)
         {
             LocationMap.Add(new LexicalInfo(fileName, pair.NameInterval.Begin.Line,
                 pair.NameInterval.Begin.Column, pair.NameInterval.Begin.Index));
         }
 
-        public override void OnAlias(Alias alias)
+        /// <inheritdoc />
+        public override void Visit(Alias alias)
         {
             var aliasDef = ((DOM.Mapped.Alias)alias).AliasDefinition;
-            var prevCurrentModuleMember = _currentModuleMember;
-            _currentModuleMember = aliasDef;
+            var prevCurrentModuleMember = CurrentModuleMember;
+            CurrentModuleMember = aliasDef;
             if (aliasDef.IsValueNode)
             {
-                ValueType valueType;
-                OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out valueType), valueType);
+                OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out var valueType), valueType);
             }
-            AliasContext.Push(new AliasContext() { AliasDefinition = aliasDef, Alias = (DOM.Mapped.Alias)alias, AliasNsInfo = GetContextNsInfo() });
+            AliasContext.Push((DOM.Mapped.Alias) alias);
             if (!EnterChoiceContainer((DOM.Mapped.Alias) alias, aliasDef.Entities, aliasDef))
                 Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
             AliasContext.Pop();
-            _currentModuleMember = prevCurrentModuleMember;
+            CurrentModuleMember = prevCurrentModuleMember;
         }
 
+        /// <inheritdoc />
         public override void OnValue(string value, ValueType type)
         {
-            _xmlTextWriter.WriteString(value);
+            XmlTextWriter.WriteString(value);
         }
 
+        /// <inheritdoc />
         protected override void ResolveDqsEscape(EscapeMatch escapeMatch, StringBuilder sb)
         {
             char c = ResolveDqsEscapeChar(escapeMatch);
@@ -285,10 +332,11 @@ namespace Syntactik.Compiler.Generator
                 sb.Append(c);
             }
         }
-
         /// <summary>
         /// Whether a given character is allowed by XML 1.0.
         /// </summary>
+        /// <param name="character">Character.</param>
+        /// <returns>True of the character is allowed.</returns>
         public static bool IsLegalXmlChar(int character)
         {
             return
@@ -302,42 +350,44 @@ namespace Syntactik.Compiler.Generator
             );
         }
 
-        public override void OnAttribute(DOM.Attribute attribute)
+        /// <inheritdoc />
+        public override void Visit(DOM.Attribute attribute)
         {
             string prefix = string.Empty, ns = string.Empty;
             if (!string.IsNullOrEmpty(attribute.NsPrefix))
             {
-                NamespaceResolver.GetPrefixAndNs(attribute, _currentDocument,
-                    () => ScopeContext.Peek(),
+                NamespaceResolver.GetPrefixAndNs(attribute, CurrentDocument,
+                    ScopeContext.Peek(),
                     out prefix, out ns);
             }
-            _xmlTextWriter.WriteStartAttribute(prefix, attribute.Name, ns);
+            XmlTextWriter.WriteStartAttribute(prefix, attribute.Name, ns);
             if (!ResolveValue(attribute) )
             {
                 EnterChoiceContainer(attribute, new PairCollection<Entity>().AddRange(((DOM.Mapped.Attribute)attribute).InterpolationItems?.OfType<Entity>()));
             }
-            _xmlTextWriter.WriteEndAttribute();
+            XmlTextWriter.WriteEndAttribute();
             
-            AddLocationMapRecord(_currentModuleMember.Module.FileName, (IMappedPair) attribute);
+            AddLocationMapRecord(CurrentModuleMember.Module.FileName, (IMappedPair) attribute);
         }
 
-        public override void OnComment(Comment comment)
+        /// <inheritdoc />
+        public override void Visit(Comment comment)
         {
             if (_generateComments &&
                  !comment.Value.StartsWith("XmlDeclaration:") &&
                  !comment.Value.StartsWith("ProcessingInstruction"))
-                    _xmlTextWriter.WriteComment(comment.Value);
+                    XmlTextWriter.WriteComment(comment.Value);
         }
 
         private void WritePendingNamespaceDeclarations(string uri)
         {
-            NsInfo nsInfo = NamespaceResolver.GetNsInfo(_currentDocument);
+            NsInfo nsInfo = NamespaceResolver.GetNsInfo(CurrentDocument);
             if (nsInfo == null) return;
 
             foreach (var ns in nsInfo.Namespaces)
             {
                 if (ns.Value == uri) continue;
-                _xmlTextWriter.WriteAttributeString("xmlns", ns.Name, null, ns.Value);
+                XmlTextWriter.WriteAttributeString("xmlns", ns.Name, null, ns.Value);
 
             }
         }

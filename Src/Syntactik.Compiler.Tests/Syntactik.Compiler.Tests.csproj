@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Syntactik.Compiler.Tests</RootNamespace>
     <AssemblyName>Syntactik.Compiler.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -34,10 +34,6 @@
     <DefineConstants>$(DefineConstants);CI</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -48,11 +44,10 @@
     <Compile Include="TestUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Scenarios\AliasDefWithDefaultAndValueParameter\Module.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\ChoiceDelimiterOptionalArgument\ChoiceDelimiter.s4x">
+    <None Include="Scenarios\ChoiceAssignmentOptionalArgument\ChoiceDelimiter.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scenarios\EmptyModule\EmptyModule.s4x">
@@ -88,16 +83,16 @@
     <None Include="Scenarios\JsonExplicitArray\JsonArray.s4j">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\LiteralChoiceDelimiter\LiteralChoiceDelimiter.s4j">
+    <None Include="Scenarios\LiteralChoiceAssignment\LiteralChoiceDelimiter.s4j">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\LiteralChoiceDelimiter\LiteralChoiceDelimiter.s4x">
+    <None Include="Scenarios\LiteralChoiceAssignment\LiteralChoiceDelimiter.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\ChoiceDelimiter\ChoiceDelimiter.s4x">
+    <None Include="Scenarios\ChoiceAssignment\ChoiceAssignment.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scenarios\ChoiceDelimiter\ChoiceDelimiter.s4j">
+    <None Include="Scenarios\ChoiceAssignment\ChoiceAssignment.s4j">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scenarios\InvalidInterpolation\JsonDoc.s4j">
@@ -484,6 +479,14 @@
       <Project>{b36ec10c-824d-4023-a32e-8bc9369869ae}</Project>
       <Name>Syntactik</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="NUnit">
+      <Version>3.9.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

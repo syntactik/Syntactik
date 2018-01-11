@@ -3,6 +3,7 @@ branches:
   only:
   - master
   - /^v\d+(?:\.\d+)?$/
+  - /^(?:.)*?_setup$/
 skip_tags: true
 nuget:
   disable_publish_on_pr: true

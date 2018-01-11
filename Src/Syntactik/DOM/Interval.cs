@@ -19,34 +19,55 @@ using Syntactik.IO;
 
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// An immutable inclusive interval.
+    /// </summary>
     public class Interval
     {
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="begin">Starting position of the interval (inclusive).</param>
+        /// <param name="end">Ending position of the interval (inclusive).</param>
         public Interval(CharLocation begin, CharLocation end)
         {
             Begin = begin;
             End = end;
         }
 
-        static Interval()
-        {
-            Empty = new Interval(CharLocation.Empty, CharLocation.Empty);
-        }
-
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="input">Uses current position of the <see cref="ICharStream"/> to calculate start and end of the interval.</param>
         public Interval(ICharStream input) 
         {
             Begin = new CharLocation(input);
             End = new CharLocation(input);
         }
 
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="charLocation">Uses <see cref="CharLocation"/> to set start and end of the interval.</param>
         public Interval(CharLocation charLocation)
         {
             Begin = charLocation;
             End = charLocation;
         }
 
-        public static Interval Empty;
+        /// <summary>
+        /// Singleton instance of <see cref="Interval"/> representing "Empty" value.
+        /// </summary>
+        public static Interval Empty = new Interval(CharLocation.Empty, CharLocation.Empty);
 
+        /// <summary>
+        /// Starting position of the interval (inclusive).
+        /// </summary>
         public readonly CharLocation Begin;
+
+        /// <summary>
+        /// Ending position of the interval (inclusive).
+        /// </summary>
         public readonly CharLocation End;
     }
 }

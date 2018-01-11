@@ -22,25 +22,35 @@ using Syntactik.IO;
 
 namespace Syntactik.Compiler.Steps
 {
+    /// <summary>
+    /// <see cref="ICompilerStep"/> parsing Syntactik modules.
+    /// </summary>
     public class Parse : ICompilerStep
     {
-        protected CompilerContext _context;
 
+        /// <summary>
+        /// Compilation context.
+        /// </summary>
+        protected  CompilerContext Context { get; private set; }
+
+        /// <inheritdoc />
         public void Dispose()
         {
-            _context = null;
+            Context = null;
         }
 
+        /// <inheritdoc />
         public void Initialize(CompilerContext context)
         {
-            _context = context;
+            Context = context;
         }
 
+        /// <inheritdoc />
         public void Run()
         {
             try
             {
-                foreach (var input in _context.Parameters.Input)
+                foreach (var input in Context.Parameters.Input)
                 {
                     try
                     {
@@ -49,50 +59,65 @@ namespace Syntactik.Compiler.Steps
                     }
                     catch (Exception ex)
                     {
-                        _context.AddError(CompilerErrorFactory.InputError(input.Name, ex));
+                        Context.AddError(CompilerErrorFactory.InputError(input.Name, ex));
                     }
                 }
             }
             catch (Exception ex)
             {
-                _context.Errors.Add(CompilerErrorFactory.FatalError(ex));
+                Context.Errors.Add(CompilerErrorFactory.FatalError(ex));
             }
         }
 
+        /// <summary>
+        /// Do parsing of the single <see cref="Module"/>.
+        /// </summary>
+        /// <param name="fileName">Module file name.</param>
+        /// <param name="reader">Source code reader.</param>
         protected virtual void DoParse(string fileName, TextReader reader)
         {
             try
             {
                 var module = CreateModule(fileName);
-                _context.CompileUnit.AppendChild(module);
+                Context.CompileUnit.AppendChild(module);
                 Parser parser = GetParser(module, new InputStream(reader.ReadToEnd()));
-                var errorListener = new ErrorListener(_context, fileName);
+                var errorListener = new ErrorListener(Context, fileName);
                 parser.ErrorListeners.Add(errorListener);
-                parser.ParseModule(fileName);
+                parser.ParseModule();
             }
             catch (Exception ex)
             {
-                _context.AddError(CompilerErrorFactory.FatalError(ex));
+                Context.AddError(CompilerErrorFactory.FatalError(ex));
             }
         }
 
+        /// <summary>
+        /// Used to create instance of the <see cref="Module"/> for each <see cref="ICompilerInput"/> in <see cref="CompilerParameters"/>.
+        /// </summary>
+        /// <param name="fileName">File name.</param>
+        /// <returns>Instance of the <see cref="Module"/>.</returns>
         protected virtual Module CreateModule(string fileName)
         {
-            return new DOM.Mapped.Module { Name = Path.GetFileNameWithoutExtension(fileName), Value = null, FileName = fileName };
+            return new DOM.Mapped.Module(Path.GetFileNameWithoutExtension(fileName), fileName);
         }
 
+        /// <summary>
+        /// Creates instance of <see cref="Parser"/> to be used by this step.
+        /// </summary>
+        /// <param name="module">Instance of <see cref="Module"/>.</param>
+        /// <param name="input">Input stream for the parser.</param>
+        /// <returns>Instance of <see cref="Parser"/>.</returns>
         protected virtual Parser GetParser(Module module, ICharStream input)
         {
-            var m = module as DOM.Mapped.Module;
-            if (m == null) throw new ArgumentException("Invalid module type.");
+            if (!(module is DOM.Mapped.Module m)) throw new ArgumentException("Invalid module type.");
 
             if (m.TargetFormat == DOM.Mapped.Module.TargetFormats.Json)
             {
-                return new Parser(input, new PairFactoryForJson(_context, module), module);
+                return new Parser(input, new PairFactoryForJson(Context, module), module);
             }
             else
             {
-                return new Parser(input, new PairFactoryForXml(_context, module), module);
+                return new Parser(input, new PairFactoryForXml(Context, module), module);
             }
         }
     }

@@ -318,7 +318,7 @@ namespace Syntactik.Compiler.Tests
             PerformCompilerTest();
         }
         [Test, RecordedTest]
-        public void LiteralChoiceDelimiter()
+        public void LiteralChoiceAssignment()
         {
             PerformCompilerTest();
         }
@@ -469,12 +469,12 @@ namespace Syntactik.Compiler.Tests
         }
         
         [Test, RecordedTest]
-        public void ChoiceDelimiter()
+        public void ChoiceAssignment()
         {
             PerformCompilerTest();
         }
         [Test, RecordedTest]
-        public void ChoiceDelimiterOptionalArgument()
+        public void ChoiceAssignmentOptionalArgument()
         {
             PerformCompilerTest();
         }

@@ -27,221 +27,226 @@ using ValueType = Syntactik.DOM.Mapped.ValueType;
 
 namespace Syntactik.Compiler.Steps
 {
+    /// <summary>
+    /// Implementation of <see cref="IPairFactory"/> that creates <see cref="Pair"/> for JSON-modules.
+    /// </summary>
     public class PairFactoryForJson : IPairFactory
     {
         private readonly CompilerContext _context;
         private readonly DOM.Module _module;
 
+        /// <summary>
+        /// Creates instance of <see cref="PairFactoryForJson"/>.
+        /// </summary>
+        /// <param name="context"><see cref="CompilerContext"/> used to report errors.</param>
+        /// <param name="module">Current module.</param>
         public PairFactoryForJson(CompilerContext context, DOM.Module module)
         {
             _context = context;
             _module = module;
         }
 
-        public Pair CreateMappedPair(ICharStream input, int nameQuotesType, Interval nameInterval, DelimiterEnum delimiter,
-                                Interval delimiterInterval, int valueQuotesType, Interval valueInterval, int valueIndent)
+        /// <inheritdoc />
+        public Pair CreateMappedPair(ITextSource textSource, int nameQuotesType, Interval nameInterval, AssignmentEnum assignment,
+                                Interval assignmentInterval, int valueQuotesType, Interval valueInterval, int valueIndent)
         {
             Pair pair;
-            var name = PairFactoryForXml.GetNameText(input, nameQuotesType, nameInterval);
-            var value = PairFactoryForXml.GetValue(input, delimiter, valueQuotesType, valueInterval,
+            var name = PairFactoryForXml.GetNameText(textSource, nameQuotesType, nameInterval);
+            var value = PairFactoryForXml.GetValue(textSource, assignment, valueQuotesType, valueInterval,
                     valueIndent, _context, (Module) _module);
 
             if (nameQuotesType > 0)
             {
-                if (delimiter == DelimiterEnum.None)
+                if (assignment == AssignmentEnum.None)
                 {
-                    value = PairFactoryForXml.GetValue(input, delimiter, nameQuotesType, nameInterval,
+                    value = PairFactoryForXml.GetValue(textSource, assignment, nameQuotesType, nameInterval,
                     0, _context, (Module)_module);
                     valueQuotesType = nameQuotesType;
                 }
-                pair = new Element
-                {
-                    Name = name,
-                    NameQuotesType = nameQuotesType,
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
-
-                SetValueType((Element) pair, delimiter, value.Item1, valueQuotesType);
+                pair = new Element(
+                    name, 
+                    nameQuotesType : nameQuotesType,
+                    nameInterval : nameInterval,
+                    assignment : assignment,
+                    assignmentInterval : assignmentInterval,
+                    value : value.Item1,
+                    valueQuotesType : valueQuotesType,
+                    valueInterval : valueInterval,
+                    interpolationItems : value.Item2,
+                    valueIndent : valueIndent,
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
+                );
+                
             } else if (name.StartsWith("@"))
             {
-                pair = new DOM.Mapped.Attribute()
-                {
-                    Name = name.Substring(1),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
-
+                pair = new DOM.Mapped.Attribute(
+                    name.Substring(1),
+                    nameInterval : nameInterval,
+                    assignment : assignment,
+                    assignmentInterval : assignmentInterval,
+                    value : value.Item1,
+                    valueQuotesType : valueQuotesType,
+                    valueInterval : valueInterval,
+                    interpolationItems : value.Item2,
+                    valueIndent : valueIndent,
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
+                );
             } else if (name.StartsWith("!$"))
             {
                 pair = new DOM.Mapped.AliasDefinition
-                {
-                    Name = VerifyName(name.Substring(2), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyName(name.Substring(2), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
+                );
             } else if (name.StartsWith("!#"))
             {
                 pair = new DOM.Mapped.NamespaceDefinition
-                {
-                    Name = VerifyNsName(name.Substring(2), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyNsName(name.Substring(2), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
+                );
             } else if (name.StartsWith("!%"))
             {
                 pair = new DOM.Mapped.Parameter
-                {
-                    Name = VerifyNsName(name.Substring(2), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyNsName(name.Substring(2), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
+                );
             } else if (name.StartsWith("!"))
             {
                 pair = new DOM.Mapped.Document
-                {
-                    Name = VerifyName(name.Substring(1), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                (
+                    VerifyName(name.Substring(1), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
+                );
             } else if (name.StartsWith("$"))
             {
-                pair = new DOM.Mapped.Alias()
-                {
-                    Name = VerifyName(name.Substring(1), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
+                pair = new DOM.Mapped.Alias
+                (
+                    VerifyName(name.Substring(1), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
+                );
             } else if (name.StartsWith("%"))
             {
-                pair = new DOM.Mapped.Argument()
-                {
-                    Name = VerifyName(name.Substring(1), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
-
-                SetValueType((IMappedPair) pair, delimiter, value.Item1, valueQuotesType);
-            } else if (name.StartsWith("#"))
-            {
-                pair = new DOM.Mapped.Scope
-                {
-                    NsPrefix = VerifyScopeName(name.Substring(1), nameInterval, _module),
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval
-                };
-                SetValueType((IMappedPair) pair, delimiter, value.Item1, valueQuotesType);
+                pair = new DOM.Mapped.Argument
+                (
+                    VerifyName(name.Substring(1), nameInterval, _module),
+                    nameInterval: nameInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(assignment, value.Item1, valueQuotesType)
+                );
+                
             }
+            //else if (name.StartsWith("#"))
+            //{
+            //    pair = new DOM.Mapped.Scope
+            //    {
+            //        NsPrefix = VerifyScopeName(name.Substring(1), nameInterval, _module),
+            //        NameInterval = nameInterval,
+            //        Assignment = assignment,
+            //        AssignmentInterval = assignmentInterval
+            //    };
+            //    SetValueType((IMappedPair) pair, assignment, value.Item1, valueQuotesType);
+            //}
             else
             {
                 pair = new Element
-                {
-                    Name = name,
-                    NameQuotesType = nameQuotesType,
-                    NameInterval = nameInterval,
-                    Delimiter = delimiter,
-                    DelimiterInterval = delimiterInterval,
-                    Value = value.Item1,
-                    ValueQuotesType = valueQuotesType,
-                    ValueInterval = valueInterval,
-                    InterpolationItems = value.Item2,
-                    ValueIndent = valueIndent
-                };
-                if (delimiter == DelimiterEnum.None)
-                {
-                    value = PairFactoryForXml.GetValue(input, delimiter, nameQuotesType, nameInterval,
-                    0, _context, (Module)_module);
-                    valueQuotesType = nameQuotesType;
-                }
+                (
+                    name,
+                    nameInterval: nameInterval,
+                    assignment: assignment,
+                    assignmentInterval: assignmentInterval,
+                    value: value.Item1,
+                    valueQuotesType: valueQuotesType,
+                    valueInterval: valueInterval,
+                    interpolationItems: value.Item2,
+                    valueIndent: valueIndent,
+                    valueType: GetValueType(assignment, 
+                        (assignment == AssignmentEnum.None? PairFactoryForXml.GetValue(textSource, assignment, nameQuotesType, nameInterval,
+                            0, _context, (Module)_module).Item1:value.Item1),
+                        assignment == AssignmentEnum.None ? nameQuotesType: valueQuotesType)
+                );
             }
-            SetValueType((IMappedPair) pair, delimiter, value.Item1, valueQuotesType);
+            
             return pair;
         }
 
-        private void SetValueType(IMappedPair pair, DelimiterEnum delimiter, string value, int valueQuotesType)
+        private ValueType GetValueType(AssignmentEnum assignment, string value, int valueQuotesType)
         {
-            switch (delimiter)
+            switch (assignment)
             {
-                case DelimiterEnum.CE:
-                    pair.ValueType = ValueType.PairValue;
-                    return;
-                case DelimiterEnum.EC:
-                    pair.ValueType = ValueType.Concatenation;
-                    return;
-                case DelimiterEnum.ECC:
-                    pair.ValueType = ValueType.LiteralChoice;
-                    return;
-                case DelimiterEnum.C:
-                case DelimiterEnum.CC:
-                case DelimiterEnum.CCC:
-                    pair.ValueType = ValueType.Object;
-                    return;
+                case AssignmentEnum.CE:
+                    return ValueType.PairValue;
+                case AssignmentEnum.EC:
+                    return ValueType.Concatenation;
+                case AssignmentEnum.ECC:
+                    return ValueType.LiteralChoice;
+                case AssignmentEnum.C:
+                case AssignmentEnum.CC:
+                case AssignmentEnum.CCC:
+                    return ValueType.Object;
             }
-            if (value == null) return;
+            if (value == null) return ValueType.None;
 
             if (valueQuotesType == 1)
             {
-                pair.ValueType = ValueType.SingleQuotedString;
-                return;
+                return ValueType.SingleQuotedString;
             }
             if (valueQuotesType == 2)
             {
-                pair.ValueType = ValueType.DoubleQuotedString;
-                return;
+                return ValueType.DoubleQuotedString;
             }
-            if (delimiter == DelimiterEnum.E)
-                pair.ValueType = GetJsonValueType(value, ValueType.FreeOpenString); 
-            if (delimiter == DelimiterEnum.EE || delimiter == DelimiterEnum.None)
-                pair.ValueType = GetJsonValueType(value, ValueType.OpenString);
+            if (assignment == AssignmentEnum.E)
+                return GetJsonValueType(value, ValueType.FreeOpenString); 
+            if (assignment == AssignmentEnum.EE || assignment == AssignmentEnum.None)
+                return GetJsonValueType(value, ValueType.OpenString);
+            return ValueType.None;
         }
 
         private ValueType GetJsonValueType(string value, ValueType defaultType)
@@ -272,11 +277,8 @@ namespace Syntactik.Compiler.Steps
 
             return name;
         }
-        private string VerifyScopeName(string name, Interval nameInterval, DOM.Module module)
-        {
-            if (string.IsNullOrEmpty(name)) return name;
-            return VerifyNsName(name, nameInterval, module);
-        }
+
+        /// <inheritdoc />
         public void AppendChild(Pair parent, Pair child)
         {
             try
@@ -289,11 +291,13 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
+        /// <inheritdoc />
         public void EndPair(Pair pair, Interval endInterval, bool endedByEof)
         {
         }
 
-        public DOM.Comment ProcessComment(ICharStream input, int commentType, Interval commentInterval)
+        /// <inheritdoc />
+        public DOM.Comment ProcessComment(ITextSource textSource, int commentType, Interval commentInterval)
         {
             return null;
         }

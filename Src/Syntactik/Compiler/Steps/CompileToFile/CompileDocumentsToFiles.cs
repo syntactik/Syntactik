@@ -74,7 +74,7 @@ namespace Syntactik.Compiler.Steps
                     visitor = new XmlGenerator(XmlFileWriterDelegate, XmlFileReaderDelegate, context, _generateComments);
                 else visitor = new JsonGenerator(JsonFileWriterDelegate, context);
 
-                visitor.OnModule(module);
+                visitor.Visit(module);
             }
             catch (Exception ex)
             {
@@ -103,7 +103,7 @@ namespace Syntactik.Compiler.Steps
             var fileName = Path.Combine(_context.Parameters.OutputDirectory, documentName + ".json");
             if (File.Exists(fileName)) File.Delete(fileName);
             TextWriter writer = new StreamWriter(fileName);
-            return new JsonTextWriter(writer) {Formatting = Formatting.Indented}; //todo: add cmd line argument to change formatting.+
+            return new JsonTextWriter(writer) {Formatting = Formatting.Indented};
         }
     }
 }

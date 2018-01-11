@@ -17,11 +17,25 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents a definition of XML namespace.
+    /// </summary>
     public class NamespaceDefinition : Pair
     {
+        /// <summary>
+        /// Creates an instance of <see cref="NamespaceDefinition"/>.
+        /// </summary>
+        /// <param name="name">Namespace prefix.</param>
+        /// <param name="assignment">Must be a literal assignment.</param>
+        /// <param name="value">Namespace URI.</param>
+        public NamespaceDefinition(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null) : base(name, assignment, value)
+        {
+        }
+
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
-            visitor.OnNamespaceDefinition(this);
+            visitor.Visit(this);
         }
     }
 }

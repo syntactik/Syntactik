@@ -16,13 +16,19 @@
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using System;
+using Syntactik.DOM;
 
 namespace Syntactik.Compiler.Steps
 {
+    /// <summary>
+    /// <see cref="ICompilerStep"/> that uses <see cref="SyntactikDepthFirstVisitor"/> and 
+    /// <see cref="Steps.NamespaceResolver"/> to collect info about namespaces and aliases.
+    /// </summary>
     public class ProcessAliasesAndNamespaces : ICompilerStep    
     {
         CompilerContext _context;
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _context = null;
@@ -30,12 +36,14 @@ namespace Syntactik.Compiler.Steps
 
         private NamespaceResolver NamespaceResolver => (NamespaceResolver) _context.Properties["NamespaceResolver"];
 
+        /// <inheritdoc />
         public void Initialize(CompilerContext context)
         {
             _context = context;
             context.Properties.Add("NamespaceResolver", new NamespaceResolver(context));
         }
 
+        /// <inheritdoc />
         public void Run()
         {
             try
@@ -57,7 +65,7 @@ namespace Syntactik.Compiler.Steps
             try
             {
                 var visitor = new ProcessAliasesAndNamespacesVisitor(context);
-                visitor.OnModule(module);
+                visitor.Visit(module);
             }
             catch (Exception ex)
             {

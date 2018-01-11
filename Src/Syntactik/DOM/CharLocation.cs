@@ -15,12 +15,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+
+using System;
 using Syntactik.IO;
 
 namespace Syntactik.DOM
 {
-    public class CharLocation
+    /// <summary>
+    /// Represents immutable location of the character.
+    /// </summary>
+    public class CharLocation: IEquatable<CharLocation>, IComparable<CharLocation>
     {
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="line">Line number (starts from 1).</param>
+        /// <param name="column">Column number (starts from 1).</param>
+        /// <param name="index">Index of character in the file (starts from 0).</param>
         public CharLocation(int line, int column, int index)
         {
             Index = index;
@@ -28,6 +39,10 @@ namespace Syntactik.DOM
             Column = column;
         }
 
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="input">Instance of <see cref="ICharStream"/> used for initialization.</param>
         public CharLocation(ICharStream input)
         {
             Index = input.Index;
@@ -35,18 +50,27 @@ namespace Syntactik.DOM
             Column = input.Column;
         }
 
-        static CharLocation()
-        {
-            Empty = new CharLocation(0, 0, -1);
-        }
 
-        public static CharLocation Empty;
+        /// <summary>
+        /// Singleton instance of <see cref="CharLocation"/> representing "Empty" value.
+        /// </summary>
+        public static readonly CharLocation Empty = new CharLocation(0, 0, -1);
 
-        public int Index;
-        public int Line;
-        public int Column;
+        /// <summary>
+        /// Index of character in the file (starts from 0).
+        /// </summary>
+        public readonly int Index;
+        /// <summary>
+        /// Line number (starts from 1).
+        /// </summary>
+        public readonly int Line;
+        /// <summary>
+        /// Column number (starts from 1).
+        /// </summary>
+        public readonly int Column;
 
-        protected int CompareTo(CharLocation other)
+        /// <inheritdoc />
+        public int CompareTo(CharLocation other)
         {
             int num = Line.CompareTo(other.Line);
             if (num != 0)
@@ -56,6 +80,13 @@ namespace Syntactik.DOM
             return Column.CompareTo(other.Column);
         }
 
+        /// <inheritdoc />
+        public bool Equals(CharLocation other)
+        {
+            return other != null && Line == other.Line && Column == other.Column;
+        }
+
+        /// <inheritdoc />
         public override string ToString()
         {
             return $"({Line},{Column},{Index})";

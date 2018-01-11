@@ -16,16 +16,18 @@
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 
-using System;
-
 namespace Syntactik.Compiler.IO
 {
     /// <summary>
     /// String based compiler input.
     /// </summary>
-    [Serializable]
     public class StringInput : ReaderInput
     {
+        /// <summary>
+        /// Creates an instance of <see cref="ReaderInput"/>.
+        /// </summary>
+        /// <param name="name">File name associated with the input.</param>
+        /// <param name="contents">Underlying <see cref="string"/>.</param>
         public StringInput(string name, string contents) : base(name, new System.IO.StringReader(contents))
         {
         }

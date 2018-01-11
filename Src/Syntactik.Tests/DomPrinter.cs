@@ -53,84 +53,84 @@ namespace Syntactik.Tests
             }
         }
 
-        public override void OnModule(DOM.Module pair)
+        public override void Visit(DOM.Module pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnModule(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
-        public override void OnDocument(DOM.Document pair)
+        public override void Visit(DOM.Document pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnDocument(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
 
         }
 
-        public override void OnElement(Element pair)
+        public override void Visit(Element pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnElement(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
 
 
-        public override void OnAttribute(DOM.Attribute pair)
+        public override void Visit(DOM.Attribute pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnAttribute(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
-        public override void OnAlias(Alias pair)
+        public override void Visit(Alias pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnAlias(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
-        public override void OnArgument(DOM.Argument pair)
+        public override void Visit(DOM.Argument pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnArgument(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
-        public override void OnParameter(DOM.Parameter pair)
+        public override void Visit(DOM.Parameter pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnParameter(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
-        public override void OnAliasDefinition(DOM.AliasDefinition aliasDefinition)
+        public override void Visit(DOM.AliasDefinition aliasDefinition)
         {
             PrintNodeName(aliasDefinition);
             PrintNodeStart(aliasDefinition);
-            base.OnAliasDefinition(aliasDefinition);
+            base.Visit(aliasDefinition);
             PrintNodeEnd(aliasDefinition);
         }
 
-        public override void OnNamespaceDefinition(DOM.NamespaceDefinition pair)
+        public override void Visit(DOM.NamespaceDefinition pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnNamespaceDefinition(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
-        public override void OnScope(DOM.Scope pair)
+        public override void Visit(DOM.Scope pair)
         {
             PrintNodeName(pair);
             PrintNodeStart(pair);
-            base.OnScope(pair);
+            base.Visit(pair);
             PrintNodeEnd(pair);
         }
 
@@ -146,10 +146,10 @@ namespace Syntactik.Tests
                 _sb.Append("\t");
                 _sb.Append(pair.GetType().Name);
                 _sb.Append(" ");
-                _sb.Append(QuoteTypeToChar(pair.NameQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
                 PrintNsPrefix(pair);
                 _sb.Append(pair.Name);
-                _sb.Append(QuoteTypeToChar(pair.NameQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
             }
             else
             {
@@ -161,10 +161,10 @@ namespace Syntactik.Tests
                 _sb.Append("\t");
                 _sb.Append(pair.GetType().Name);
                 _sb.Append(" ");
-                _sb.Append(QuoteTypeToChar(pair.NameQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
                 PrintNsPrefix(pair);
                 _sb.Append(pair.Name);
-                _sb.Append(QuoteTypeToChar(pair.NameQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
             }
         }
 
@@ -198,11 +198,11 @@ namespace Syntactik.Tests
         {
             if (pair.Value != null)
             {
-                _sb.Append(Pair.DelimiterToString(pair.Delimiter));
+                _sb.Append(Pair.AssignmentToString(pair.Assignment));
                 _sb.Append(" ");
-                _sb.Append(QuoteTypeToChar(pair.ValueQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).ValueQuotesType));
                 PrintValue(pair);
-                _sb.Append(QuoteTypeToChar(pair.ValueQuotesType));
+                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).ValueQuotesType));
             }
             else if (pair.PairValue != null)
             {
@@ -213,7 +213,7 @@ namespace Syntactik.Tests
             }
             else
             {
-                _sb.AppendLine(Pair.DelimiterToString(pair.Delimiter));
+                _sb.AppendLine(Pair.AssignmentToString(pair.Assignment));
                 _indent++;
             }
             _valueNodeExpected.Push(false);

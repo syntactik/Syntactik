@@ -17,20 +17,34 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represent an Attribute.
+    /// </summary>
     public class Attribute : Entity, INsNode
     {
-        protected string _nsPrefix;
+        internal string _nsPrefix;
 
-        // Methods
+        /// <inheritdoc />
         public override void Accept(IDomVisitor visitor)
         {
-            visitor.OnAttribute(this);
+            visitor.Visit(this);
         }
 
-        public virtual string NsPrefix
+        /// <summary>
+        /// Creates an instance of <see cref="Attribute"/>.
+        /// </summary>
+        /// <param name="name">Attribute name.</param>
+        /// <param name="nsPrefix">Namespace prefix.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Attribute value.</param>
+        public Attribute(string name, string nsPrefix, AssignmentEnum assignment, string value) : base(name, assignment, value)
         {
-            get { return _nsPrefix; }
-            set { _nsPrefix = value; }
+            _nsPrefix = nsPrefix;
         }
+
+        /// <summary>
+        /// Namespace prefix of the attribute.
+        /// </summary>
+        public virtual string NsPrefix => _nsPrefix;
     }
 }

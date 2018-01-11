@@ -17,8 +17,14 @@
 #endregion
 namespace Syntactik.DOM
 {
+    /// <summary>
+    /// Represents node that has a namespace prefix.
+    /// </summary>
     public interface INsNode
     {
-        string NsPrefix { get; set; }
+        /// <summary>
+        /// Namespace prefix.
+        /// </summary>
+        string NsPrefix { get; }
     }
 }

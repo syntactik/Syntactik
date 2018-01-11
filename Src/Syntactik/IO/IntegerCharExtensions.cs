@@ -17,36 +17,62 @@
 #endregion
 namespace Syntactik.IO
 {
+    /// <summary>
+    /// Auxiliary static class that provides extension methods to process Unicode characters in the semantics of
+    /// the Syntactik parser.
+    /// </summary>
     public static class IntegerCharExtensions
     {
+        /// <summary>
+        /// Returns true if the character can be used in indentation.
+        /// </summary>
+        /// <param name="c">Target character.</param>
+        /// <returns>True if the character can be used in indentation.</returns>
         public static bool IsIndentCharacter(this int c)
         {
             return c == '\t' || c == ' ';
         }
 
+        /// <summary>
+        /// Returns true if the character represents whitespace.
+        /// </summary>
+        /// <param name="c">Target character.</param>
+        /// <returns>True if character represents whitespace.</returns>
         public static bool IsSpaceCharacter(this int c)
         {
             return c == ' ' || c == '\t';
         }
 
+        /// <summary>
+        /// Returns true if the character can't be included in the open string.
+        /// </summary>
+        /// <param name="c">Target character.</param>
+        /// <returns>True if the character can't be included in the open string.</returns>
         public static bool IsEndOfOpenString(this int c)
         {
             if (c > 61) return false;
             return c == '=' || c == ':' || c == ',' || c == '\'' || c == '"' || c == ')' || c == '(';
         }
 
+        /// <summary>
+        /// Returns true if the character can't be included in the open name.
+        /// </summary>
+        /// <param name="c">Target character.</param>
+        /// <returns>True if the character can't be included in the open name.</returns>
         public static bool IsEndOfOpenName(this int c)
         {
             if (c > 61) return false;
             return c == '=' || c == ':' ||c == '\r' || c == '\n' || c == ',' || c =='\'' || c == '"' || c == ')' || c == '(';
         }
 
+        /// <summary>
+        /// Returns true if the character represents newline.
+        /// </summary>
+        /// <param name="c">Target character.</param>
+        /// <returns>True if the character represents newline.</returns>
         public static bool IsNewLineCharacter(this int c)
         {
             return c == '\r' || c == '\n';
         }
-
-
-        
     }
 }

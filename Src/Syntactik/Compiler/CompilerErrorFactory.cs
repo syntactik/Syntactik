@@ -18,6 +18,7 @@
 using Syntactik.DOM.Mapped;
 using System;
 using System.Xml.Schema;
+using Syntactik.Compiler.Steps;
 using Syntactik.DOM;
 using Alias = Syntactik.DOM.Mapped.Alias;
 using AliasDefinition = Syntactik.DOM.Mapped.AliasDefinition;
@@ -36,78 +37,55 @@ namespace Syntactik.Compiler
     public static class CompilerErrorFactory
     {
         /// <summary>
-        /// Creates instance of class <see cref="CompilerError"/>.
+        /// Creates input/output related error.
         /// </summary>
-        /// <param name="inputName"></param>
-        /// <param name="ex"></param>
-        /// <returns></returns>
+        /// <param name="inputName">Unique name of the input, a file name, for example.</param>
+        /// <param name="ex">Inner exception.</param>
+        /// <returns>An instance of <see cref="CompilerError"/>.</returns>
         public static CompilerError InputError(string inputName, Exception ex)
         {
             return InputError(new LexicalInfo(inputName), ex);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="lexicalInfo"></param>
-        /// <param name="error"></param>
-        /// <returns></returns>
-        public static CompilerError InputError(LexicalInfo lexicalInfo, Exception error)
+        internal static CompilerError InputError(LexicalInfo lexicalInfo, Exception error)
         {
             return Instantiate("MCE0001", lexicalInfo, error, lexicalInfo.FileName, error.Message);
         }
 
         /// <summary>
-        /// 
+        /// Creates a fatal error.
         /// </summary>
-        /// <param name="ex"></param>
-        /// <returns></returns>
+        /// <param name="ex">Inner exception.</param>
+        /// <returns>An instance of <see cref="CompilerError"/>.</returns>
         public static CompilerError FatalError(Exception ex)
         {
             return new CompilerError("MCE0000", ex, ex.Message);
         }
 
         /// <summary>
-        /// 
+        /// Creates a fatal error.
         /// </summary>
-        /// <param name="ex"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
+        /// <param name="ex">Inner exception.</param>
+        /// <param name="message">Description of the error.</param>
+        /// <returns>An instance of <see cref="CompilerError"/>.</returns>
         public static CompilerError FatalError(Exception ex, string message)
         {
             return new CompilerError("MCE0000", ex, message);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="location"></param>
-        /// <param name="error"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        private static CompilerError Instantiate(string code, LexicalInfo location, Exception error, params object[] args)
+        private static CompilerError Instantiate(string code, LexicalInfo location, Exception ex, params object[] args)
         {
-            return new CompilerError(code, location, error, args);
+            return new CompilerError(code, location, ex, args);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="location"></param>
-        /// <param name="isParserError"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
         private static CompilerError Instantiate(string code, LexicalInfo location, bool isParserError, params object[] args)
         {
             return new CompilerError(code, location, isParserError, Array.ConvertAll(args, DisplayStringFor));
         }
 
-        internal static string DisplayStringFor(object o)
+        internal static object DisplayStringFor(object o)
         {
             if (o == null) return "";
-
             return  o.ToString();
         }
 
@@ -206,42 +184,42 @@ namespace Syntactik.Compiler
             return Instantiate("MCE0019", new LexicalInfo(fileName, node.NameInterval.Begin.Line, node.NameInterval.Begin.Column, node.NameInterval.Begin.Index), false);
         }
 
-        public static CompilerError PropertyIsExpected(IMappedPair node, string fileName)
+        internal static CompilerError PropertyIsExpected(IMappedPair node, string fileName)
         {
             return Instantiate("MCE0020", new LexicalInfo(fileName, node.NameInterval.Begin.Line, node.NameInterval.Begin.Column, node.NameInterval.Begin.Index), false);
         }
 
-        public static CompilerError DefaultParameterMustBeOnly(Parameter node, string fileName)
+        internal static CompilerError DefaultParameterMustBeOnly(Parameter node, string fileName)
         {
             return Instantiate("MCE0021", new LexicalInfo(fileName, node.NameInterval.Begin.Line, node.NameInterval.Begin.Column, node.NameInterval.Begin.Index), false);
         }
 
-        public static CompilerError ArgumentMustBeDefinedInAlias(Argument node, string fileName)
+        internal static CompilerError ArgumentMustBeDefinedInAlias(Argument node, string fileName)
         {
             return Instantiate("MCE0022", new LexicalInfo(fileName, node.NameInterval.Begin.Line, node.NameInterval.Begin.Column, node.NameInterval.Begin.Index), false);
         }
 
-        public static CompilerError DefaultBlockArgumentIsMissing(Alias alias, string fileName)
+        internal static CompilerError DefaultBlockArgumentIsMissing(Alias alias, string fileName)
         {
             return Instantiate("MCE0023", new LexicalInfo(fileName, alias.NameInterval.Begin.Line, alias.NameInterval.Begin.Column, alias.NameInterval.Begin.Index), false);
         }
 
-        public static CompilerError UnexpectedArgument(Argument argument, string fileName)
+        internal static CompilerError UnexpectedArgument(Argument argument, string fileName)
         {
             return Instantiate("MCE0024", new LexicalInfo(fileName, argument.NameInterval.Begin.Line, argument.NameInterval.Begin.Column, argument.NameInterval.Begin.Index), false);
         }
 
-        public static CompilerError UnexpectedDefaultBlockArgument(IMappedPair entity, string fileName)
+        internal static CompilerError UnexpectedDefaultBlockArgument(IMappedPair entity, string fileName)
         {
             return Instantiate("MCE0025", new LexicalInfo(fileName, entity.NameInterval.Begin.Line, entity.NameInterval.Begin.Column, entity.NameInterval.Begin.Index), false);
         }
 
-        public static CompilerError DefaultValueArgumentIsMissing(Alias alias, string fileName)
+        internal static CompilerError DefaultValueArgumentIsMissing(Alias alias, string fileName)
         {
             return Instantiate("MCE0026", new LexicalInfo(fileName, alias.NameInterval.Begin.Line, alias.NameInterval.Begin.Column, alias.NameInterval.Begin.Index), false);
         }
 
-        public static CompilerError UnexpectedDefaultValueArgument(Alias alias, string fileName)
+        internal static CompilerError UnexpectedDefaultValueArgument(Alias alias, string fileName)
         {
             return Instantiate("MCE0027", new LexicalInfo(fileName, alias.NameInterval.Begin.Line, alias.NameInterval.Begin.Column, alias.NameInterval.Begin.Index), false);
         }
@@ -251,28 +229,28 @@ namespace Syntactik.Compiler
             return Instantiate("MCE0029", new LexicalInfo(location.FileName, location.Line, location.Column, 0), false, sequence);
         }
 
-        public static CompilerError AliasOrParameterExpected(Interval nameInterval, string fileName)
+        internal static CompilerError AliasOrParameterExpected(Interval nameInterval, string fileName)
         {
             return Instantiate("MCE0030", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), false);
         }
-        public static CompilerError InvalidDelimiter(Interval nameInterval, string fileName, string delimiter)
+        internal static CompilerError InvalidAssignment(Interval nameInterval, string fileName, string assignment)
         {
-            return Instantiate("MCE0031", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), false, delimiter);
+            return Instantiate("MCE0031", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), false, assignment);
         }
-        public static CompilerError CantAppendChild(Interval nameInterval, string fileName, string message)
+        internal static CompilerError CantAppendChild(Interval nameInterval, string fileName, string message)
         {
             return Instantiate("MCE0032", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), true, message);
         }
-        public static CompilerError InvalidXmlElementName(Interval nameInterval, string fileName)
+        internal static CompilerError InvalidXmlElementName(Interval nameInterval, string fileName)
         {
             return Instantiate("MCE0100", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), true);
         }
 
-        public static CompilerError InvalidName(Interval nameInterval, string fileName)
+        internal static CompilerError InvalidName(Interval nameInterval, string fileName)
         {
             return Instantiate("MCE0101", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), true);
         }
-        public static CompilerError InvalidNsName(Interval nameInterval, string fileName)
+        internal static CompilerError InvalidNsName(Interval nameInterval, string fileName)
         {
             return Instantiate("MCE0102", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), true);
         }

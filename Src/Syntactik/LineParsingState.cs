@@ -15,26 +15,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using Pair = Syntactik.DOM.Pair;
+
+using Syntactik.DOM.Mapped;
 
 namespace Syntactik
 {
-    public enum ParserStateEnum
-    {
-        Indent = 1, //New line started. Indent is checked to calculate the current pair.
-        PairDelimiter = 2,
-        Name = 4,
-        Delimiter = 8,
-        Value = 16,
-        IndentMLS = 32 //Indent for multiline string
-    }
-
-    public struct LineParsingState
+    struct LineParsingState
     {
         public int Indent;
         public ParserStateEnum State;
         public bool ChainingStarted;
-        public Pair CurrentPair; //current pair in the current block.
+        public MappedPair CurrentPair; //current pair in the current block.
         public bool Inline; //If true then at least one pair is defined in this line already
 
         public void Reset()

@@ -19,18 +19,74 @@ using System.Collections.Generic;
 
 namespace Syntactik.DOM.Mapped
 {
+    /// <summary>
+    /// Represents an Argument mapped to the source code. 
+    /// </summary>
     public class Argument: DOM.Argument, IMappedPair, IPairWithInterpolation
     {
-        public Interval NameInterval { get; set; }
-        public Interval ValueInterval { get; set; }
-        public Interval DelimiterInterval { get; set; }
-        public ValueType ValueType { get; set; }
+        /// <inheritdoc />
+        public Interval NameInterval { get; }
+
+        /// <inheritdoc />
+        public int NameQuotesType { get; }
+
+        /// <inheritdoc />
+        public Interval ValueInterval { get; }
+
+        /// <inheritdoc />
+        public int ValueQuotesType { get; }
+
+        /// <inheritdoc />
+        public Interval AssignmentInterval { get; }
+
+        /// <inheritdoc />
+        public ValueType ValueType { get; }
+
+        /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
-        public List<object> InterpolationItems { get; set; }
-        public int ValueIndent { get; set; }
+
+        /// <summary>
+        /// List of interpolation objects.
+        /// </summary>
+        public List<object> InterpolationItems { get; private set; }
+
+        /// <inheritdoc />
+        public int ValueIndent { get; }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="Argument"/>.
+        /// </summary>
+        /// <param name="name">Pair name.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Pair value.</param>
+        /// <param name="nameInterval">Name <see cref="Interval"/>.</param>
+        /// <param name="valueInterval">Value <see cref="Interval"/>.</param>
+        /// <param name="assignmentInterval">Assignment <see cref="Interval"/>.</param>
+        /// <param name="nameQuotesType">Name quotes type.</param>
+        /// <param name="valueQuotesType">Value quotes type.</param>
+        /// <param name="valueType">Type of value.</param>
+        /// <param name="interpolationItems">List of interpolation objects.</param>
+        /// <param name="valueIndent">Indent of value in the source code.</param>
+        public Argument(string name = null, AssignmentEnum assignment = AssignmentEnum.None, string value = null,
+            Interval nameInterval = null, Interval valueInterval = null, Interval assignmentInterval = null,
+            int nameQuotesType = 0, int valueQuotesType = 0, ValueType valueType = ValueType.None, List<object> interpolationItems = null,
+            int valueIndent = 0
+        ) : base(name, assignment, value)
+        {
+            ValueInterval = valueInterval;
+            AssignmentInterval = assignmentInterval;
+            NameInterval = nameInterval;
+            NameQuotesType = nameQuotesType;
+            ValueQuotesType = valueQuotesType;
+            ValueType = valueType;
+            InterpolationItems = interpolationItems;
+            ValueIndent = valueIndent;
+        }
+
+        /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            if (Delimiter == DelimiterEnum.EC)
+            if (Assignment == AssignmentEnum.EC)
             {
                 if (InterpolationItems == null) InterpolationItems = new List<object>();
                 InterpolationItems.Add(child);

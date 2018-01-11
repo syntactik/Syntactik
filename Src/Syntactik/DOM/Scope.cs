@@ -15,41 +15,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-using System;
 
 namespace Syntactik.DOM
 {
-    [Serializable]
+    /// <summary>
+    /// Represents a Scope.
+    /// </summary>
     public class Scope : Entity, INsNode, IContainer
     {
-        // Fields
-        protected PairCollection<Entity> _entities;
-        protected string _nsPrefix;
+        private PairCollection<Entity> _entities;
+        internal string _nsPrefix;
 
-        // Methods
-        public override void Accept(IDomVisitor visitor)
-        {
-            visitor.OnScope(this);
-        }
-
-        public override void AppendChild(Pair child)
-        {
-            var item = child as Entity;
-            if (item != null)
-            {
-                Entities.Add(item);
-            }
-            else
-            {
-                base.AppendChild(child);
-            }
-        }
-
-        // Properties
-
+        /// <inheritdoc />
         public virtual PairCollection<Entity> Entities
         {
-            get { return _entities ?? (_entities = new PairCollection<Entity>(this)); }
+            get => _entities ?? (_entities = new PairCollection<Entity>(this));
             set
             {
                 if (value != _entities)
@@ -60,10 +40,47 @@ namespace Syntactik.DOM
             }
         }
 
-        public virtual string NsPrefix
+        /// <summary>
+        /// Creates an instance of <see cref="Scope"/>.
+        /// </summary>
+        /// <param name="name">Element name.</param>
+        /// <param name="nsPrefix">Namespace prefix.</param>
+        /// <param name="assignment">Pair assignment.</param>
+        /// <param name="value">Element value.</param>
+        public Scope(string name, string nsPrefix, AssignmentEnum assignment, string value) : base(name, assignment, value)
         {
-            get { return _nsPrefix; }
-            set { _nsPrefix = value; }
+            _nsPrefix = nsPrefix;
+        }
+
+        /// <summary>
+        /// Namespace prefix of the attribute.
+        /// </summary>
+        public virtual string NsPrefix => _nsPrefix;
+
+
+        /// <inheritdoc />
+        public override void Accept(IDomVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
+        /// <inheritdoc />
+        public override void AppendChild(Pair child)
+        {
+            if (Assignment == AssignmentEnum.CE)
+            {
+                base.AppendChild(child);
+                return;
+            }
+
+            if (child is Entity item)
+            {
+                Entities.Add(item);
+            }
+            else
+            {
+                base.AppendChild(child);
+            }
         }
     }
 }
