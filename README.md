@@ -1,7 +1,7 @@
 # ![Syntactik Logo](https://www.syntactik.com/img/syntactik_small.png "Syntactik Logo") [![Join the chat at https://gitter.im/syntactik/Syntactik](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/syntactik/Syntactik) [![Build status](https://ci.appveyor.com/api/projects/status/n9feo35bjsv2gdvq/branch/master?svg=true)](https://ci.appveyor.com/project/syntactik/syntactik/branch/master)
 **Syntactik** - if you want a better XML or JSON, but don't want a change.
 # Overview
-Syntactik is a people friendly markup language with code reuse features designed to be semantically compatible with XML and JSON.
+Syntactik is a people friendly markup language and preprocessor with code reuse features designed to be semantically compatible with XML and JSON.
 
 - Define data using clean and intuitive syntax.
 - Create aliases and reuse them as code fragments or document templates.
