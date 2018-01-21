@@ -1,2 +1,3 @@
-﻿!$Items.Jewelry.Necklaces.Lapis:
+﻿$Items.Jewelry.Necklaces.Lapis: %quantity == 2
+!$Items.Jewelry.Necklaces.Lapis:
 	quantity := !%quantity == 1 '''Parameter with default value
