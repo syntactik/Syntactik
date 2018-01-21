@@ -479,6 +479,12 @@ namespace Syntactik.Compiler.Tests
             PerformCompilerTest();
         }
         [Test, RecordedTest]
+        public void CommentsAfterPairValue()
+        {
+            PerformCompilerTest();
+        }
+
+        [Test, RecordedTest]
         public void DotEscapedInId()
         {
             PerformCompilerTest();

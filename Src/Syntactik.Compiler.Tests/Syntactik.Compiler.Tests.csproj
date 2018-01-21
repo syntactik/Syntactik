@@ -50,6 +50,7 @@
     <None Include="Scenarios\ChoiceAssignmentOptionalArgument\ChoiceDelimiter.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Scenarios\CommentsAfterPairValue\CommentsAfterPairValue.s4x" />
     <None Include="Scenarios\EmptyModule\EmptyModule.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -82,7 +82,7 @@ namespace Syntactik.DOM
         /// <param name="child">Child pair to be added</param>
         public override void AppendChild(Pair child)
         {
-            if (Assignment == AssignmentEnum.CE)
+            if (Assignment == AssignmentEnum.CE && !(child is Comment))
             {
                 base.AppendChild(child);
             }

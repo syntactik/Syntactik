@@ -86,7 +86,7 @@ namespace Syntactik.DOM.Mapped
 
 
         /// <inheritdoc />
-        public override void AppendChild(Pair child)
+        public override void AppendChild(Pair child) //todo: how to add comment to attribute?
         {
             if (Assignment == AssignmentEnum.EC || Assignment == AssignmentEnum.ECC)
             {

@@ -156,7 +156,8 @@ namespace Syntactik.DOM
             if (Assignment != AssignmentEnum.CE)
                 throw new NotSupportedException(new StringBuilder("Cannot add ").Append(child.GetType().Name)
                     .Append(" in ").Append(GetType().Name).ToString());
-            if (PairValue != null) throw new InvalidOperationException("PairValue is already initialized.");
+            if (PairValue != null)
+                throw new InvalidOperationException("PairValue is already initialized.");
             PairValue = child;
             child.InitializeParent(this);
         }

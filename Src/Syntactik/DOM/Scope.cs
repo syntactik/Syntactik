@@ -67,7 +67,7 @@ namespace Syntactik.DOM
         /// <inheritdoc />
         public override void AppendChild(Pair child)
         {
-            if (Assignment == AssignmentEnum.CE)
+            if (Assignment == AssignmentEnum.CE && !(child is Comment))
             {
                 base.AppendChild(child);
                 return;

@@ -84,7 +84,7 @@ namespace Syntactik.DOM.Mapped
         }
 
         /// <inheritdoc />
-        public override void AppendChild(Pair child)
+        public override void AppendChild(Pair child) //todo: how to add comment to nsDef?
         {
             if (Assignment == AssignmentEnum.EC)
             {
