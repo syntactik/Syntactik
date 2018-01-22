@@ -2,3 +2,5 @@
 01:01		Document `Module`
 01:01			Element `block`:
 02:02				Element `element`
+04:01			Element `ipo.comment1`:= 	Parameter `comment1`= ``
+05:01			Element `ipo.comment2`:= 	Parameter `comment2`== ``

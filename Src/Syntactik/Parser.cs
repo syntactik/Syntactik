@@ -224,11 +224,10 @@ namespace Syntactik
         private bool ParseMlValue()
         {
             var p = _lineState.CurrentPair;
-            var c = _input.Next;
             var valueStart = GetValueStart(p);
             while (true)
             {
-                if (c == valueStart)
+                if (_input.Next == valueStart)
                 {
                     //Quoted ML string ended
                     _input.Consume();
@@ -244,20 +243,19 @@ namespace Syntactik
                     return false;
                 }
 
-                if (c == '\\' && valueStart == '"') //escape symbol in DQS
+                if (_input.Next == '\\' && valueStart == '"') //escape symbol in DQS
                 {
                     _input.Consume();
-                    c = _input.Next;
                 }
 
-                if (c.IsNewLineCharacter())
+                if (_input.Next.IsNewLineCharacter())
                 {
                     p.ValueInterval =
                         new Interval(((IMappedPair) p).ValueInterval.Begin, new CharLocation(_input));
                     return true;
                 }
 
-                if (c == -1)
+                if (_input.Next == -1)
                 {
                     p.ValueInterval =
                         new Interval(((IMappedPair) p).ValueInterval.Begin, new CharLocation(_input));
@@ -279,7 +277,6 @@ namespace Syntactik
                 {
                     p.ValueInterval = new Interval(new CharLocation(_input), new CharLocation(_input));
                 }
-                c = _input.Next;
             }
         }
 
@@ -351,6 +348,11 @@ namespace Syntactik
             {
                 if (_input.Next.IsNewLineCharacter())
                 {
+                    if (begin.Index == -1)
+                    {
+                        begin = new CharLocation(_input.Line, _input.Column + 1, _input.Index + 1);
+                        end = CharLocation.Empty;
+                    }
                     if (_wsaStack.Count < 1 && !_lineState.Inline)
                     {
                         _lineState.State = ParserStateEnum.IndentMLS;
@@ -392,7 +394,7 @@ namespace Syntactik
                     if (begin.Index == -1)
                     {
                         begin = new CharLocation(_input.Line, _input.Column + 1, _input.Index + 1);
-                        end = new CharLocation(_input.Line, _input.Column + 1, _input.Index + 1);
+                        end = CharLocation.Empty;
                     }
                     if (_wsaStack.Count < 1 && !_lineState.Inline)
                     {
@@ -1157,18 +1159,7 @@ namespace Syntactik
             int currentIndent = _lineState.Indent;
             var indentBeforeComments = -1;
             var indentCounter = 0;
-
             int indentSum = 0;
-
-            if (_input.Next == '\t' || _input.Next == ' ')
-            {
-                if (_indentSymbol == 0) //First indent defines indent standard for the whole file.
-                {
-                    _indentSymbol = (char) _input.Next;
-                    _indentMultiplicity = 1;
-                }
-                if (_indentMultiplicity == 0) _indentMultiplicity = 1;
-            }
 
             while (true)
             {

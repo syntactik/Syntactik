@@ -227,7 +227,8 @@ namespace Syntactik.DOM
             bool folded = lines.Length > 1 && assignment == AssignmentEnum.EE &&
                           (valueQuotesType == (int) QuotesEnum.None || valueQuotesType == (int) QuotesEnum.Double);
 
-            var first = true;
+            var empty = true;
+            var first = true; //This is first line (it doesn't have indent)
             var firstEmptyLine = true; //If true then previous line was not empty therefor newline shouldn't be added
             var checkIfFirstLineIsEmpty = true;
 
@@ -247,6 +248,7 @@ namespace Syntactik.DOM
                 if (first)
                 {
                     sb.Append(line);
+                    empty = false;
                     first = false;
                     continue;
                 } //adding first line without appending new line symbol
@@ -261,7 +263,14 @@ namespace Syntactik.DOM
                             continue; //Ignore first empty line for folded string
                         }
                     }
-                    sb.AppendLine();
+                    if (!empty)
+                    {
+                        sb.AppendLine();
+                    }
+                    else
+                    {
+                        empty = false;
+                    }
                     continue;
                 }
 
@@ -274,15 +283,16 @@ namespace Syntactik.DOM
                 }
 
                 line = line.Substring(valueIndent); //Removing indents
-                if (sb.Length == 0) // If it is first line to be added just add it. No new line or spacing needed.
+                if (empty) // If it is first line to be added just add it. No new line or spacing needed.
                 {
                     sb.Append(line);
+                    empty = false;
                     continue;
                 }
                 if (folded && firstEmptyLine) sb.Append(" ");
                 if (!folded || !firstEmptyLine) sb.AppendLine();
                 firstEmptyLine = true; //reseting the flag for folded string logic
-                sb.Append(line); //Removing indents                    
+                sb.Append(line); //Removing indents
             }
             return sb.ToString();
         }
