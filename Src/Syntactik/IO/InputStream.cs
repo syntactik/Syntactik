@@ -146,7 +146,7 @@ namespace Syntactik.IO
         /// <inheritdoc />
         public string GetText(int begin, int end)
         {
-            if (begin < 0 || end < begin) return string.Empty;
+            if (begin < 0 || end < 0 || end < begin) return string.Empty;
             return Data.Substring(begin, end - begin + 1);
         }
 

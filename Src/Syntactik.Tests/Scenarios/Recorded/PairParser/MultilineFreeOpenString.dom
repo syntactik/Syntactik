@@ -4,3 +4,4 @@
 04:01			Element `el2`= `line1\nline2`
 07:01			Element `el3`= ` line1\nline2`
 11:01			Element `el4`= `line1\nline2`
+15:01			Element `el5`= `\nline1\n\nline2\n\t\n`
