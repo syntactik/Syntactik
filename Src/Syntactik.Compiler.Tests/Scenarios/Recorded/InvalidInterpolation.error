@@ -1,12 +1,12 @@
-MCE0007 JsonDoc.s4j(3,16,0): ParserError - 'Invalid escape sequence.'.
-MCE0004 JsonDoc.s4j(4,19,-1): Alias 'test' is not defined.
-MCE0007 JsonDoc.s4j(4,26,0): ParserError - 'Missing closing parenthesis.'.
-MCE0010 JsonDoc.s4j(5,19,-1): Parameters can't be declared in documents.
-MCE0007 JsonDoc.s4j(5,27,0): ParserError - 'Missing closing parenthesis.'.
-MCE0007 JsonDoc.s4j(7,19,0): ParserError - 'Invalid escape sequence.'.
-MCE0007 XmlDoc.s4x(3,16,0): ParserError - 'Invalid escape sequence.'.
-MCE0004 XmlDoc.s4x(4,19,-1): Alias 'test' is not defined.
-MCE0007 XmlDoc.s4x(4,26,0): ParserError - 'Missing closing parenthesis.'.
-MCE0010 XmlDoc.s4x(5,19,-1): Parameters can't be declared in documents.
-MCE0007 XmlDoc.s4x(5,27,0): ParserError - 'Missing closing parenthesis.'.
-MCE0007 XmlDoc.s4x(7,19,0): ParserError - 'Invalid escape sequence.'.
+SCE0007 JsonDoc.s4j(3,16,0): ParserError - 'Invalid escape sequence.'.
+SCE0004 JsonDoc.s4j(4,19,-1): Alias 'test' is not defined.
+SCE0007 JsonDoc.s4j(4,26,0): ParserError - 'Missing closing parenthesis.'.
+SCE0010 JsonDoc.s4j(5,19,-1): Parameters can't be declared in documents.
+SCE0007 JsonDoc.s4j(5,27,0): ParserError - 'Missing closing parenthesis.'.
+SCE0007 JsonDoc.s4j(7,19,0): ParserError - 'Invalid escape sequence.'.
+SCE0007 XmlDoc.s4x(3,16,0): ParserError - 'Invalid escape sequence.'.
+SCE0004 XmlDoc.s4x(4,19,-1): Alias 'test' is not defined.
+SCE0007 XmlDoc.s4x(4,26,0): ParserError - 'Missing closing parenthesis.'.
+SCE0010 XmlDoc.s4x(5,19,-1): Parameters can't be declared in documents.
+SCE0007 XmlDoc.s4x(5,27,0): ParserError - 'Missing closing parenthesis.'.
+SCE0007 XmlDoc.s4x(7,19,0): ParserError - 'Invalid escape sequence.'.

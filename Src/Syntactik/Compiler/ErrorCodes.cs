@@ -19,41 +19,41 @@ namespace Syntactik.Compiler
 {
     static class ErrorCodes
     {
-        public const string MCE0000 = "Fatal error - '{0}'";
-        public const string MCE0001 = "Error reading from '{0}': '{1}'.";
-        public const string MCE0002 = "File '{0}' was not found.";
-        public const string MCE0003 = "Namespace prefix '{0}' is not defined.";
-        public const string MCE0004 = "Alias '{0}' is not defined.";
-        public const string MCE0005 = "Alias Definition '{0}' has circular reference.";
-        public const string MCE0007 = "ParserError - '{0}'.";
-        public const string MCE0008 = "Duplicate document name - '{0}'.";
-        public const string MCE0009 = "Document '{0}' must have{1} one root element.";
-        public const string MCE0010 = "Parameters can't be declared in documents.";
-        public const string MCE0011 = "Duplicate argument name - '{0}'.";
-        public const string MCE0012 = "Duplicate alias definition name - '{0}'.";
-        public const string MCE0013 = "Argument '{0}' is missing.";
-        public const string MCE0014 = "Value argument is expected.";
-        public const string MCE0015 = "Block argument is expected.";
-        public const string MCE0016 = "Invalid usage of the value alias.";
-        public const string MCE0017 = "Can not use block alias as value.";
-        public const string MCE0018 = "XML validation error - '{0}'.";
-        public const string MCE0019 = "Array item is expected.";
-        public const string MCE0020 = "Array item is not expected.";
-        public const string MCE0021 = "Default parameter must be the only parameter.";
-        public const string MCE0022 = "Argument can be defined only in an alias' block.";
-        public const string MCE0023 = "Default block argument is missing.";
-        public const string MCE0024 = "Unexpected argument.";
-        public const string MCE0025 = "Unexpected default block argument.";
-        public const string MCE0026 = "Default value argument is missing.";
-        public const string MCE0027 = "Unexpected default value argument.";
-        public const string MCE0029 = "Invalid escape sequence - '{0}'.";
-        public const string MCE0030 = "Alias or Parameter expected after ':='.";
-        public const string MCE0031 = "Invalid assignment '{0}'.";
-        public const string MCE0032 = "{0}.";
-        public const string MCE0033 = "Duplicate namespace definition name - '{0}'.";
-        public const string MCE0100 = "Invalid XML element name.";
-        public const string MCE0101 = "Invalid name.";
-        public const string MCE0102 = "Invalid namespace prefix name.";
+        public const string SCE0000 = "Fatal error - '{0}'";
+        public const string SCE0001 = "Error reading from '{0}': '{1}'.";
+        public const string SCE0002 = "File '{0}' was not found.";
+        public const string SCE0003 = "Namespace prefix '{0}' is not defined.";
+        public const string SCE0004 = "Alias '{0}' is not defined.";
+        public const string SCE0005 = "Alias Definition '{0}' has circular reference.";
+        public const string SCE0007 = "ParserError - '{0}'.";
+        public const string SCE0008 = "Duplicate document name - '{0}'.";
+        public const string SCE0009 = "Document '{0}' must have{1} one root element.";
+        public const string SCE0010 = "Parameters can't be declared in documents.";
+        public const string SCE0011 = "Duplicate argument name - '{0}'.";
+        public const string SCE0012 = "Duplicate alias definition name - '{0}'.";
+        public const string SCE0013 = "Argument '{0}' is missing.";
+        public const string SCE0014 = "Value argument is expected.";
+        public const string SCE0015 = "Block argument is expected.";
+        public const string SCE0016 = "Invalid usage of the value alias.";
+        public const string SCE0017 = "Can not use block alias as value.";
+        public const string SCE0018 = "XML validation error - '{0}'.";
+        public const string SCE0019 = "Array item is expected.";
+        public const string SCE0020 = "Array item is not expected.";
+        public const string SCE0021 = "Default parameter must be the only parameter.";
+        public const string SCE0022 = "Argument can be defined only in an alias' block.";
+        public const string SCE0023 = "Default block argument is missing.";
+        public const string SCE0024 = "Unexpected argument.";
+        public const string SCE0025 = "Unexpected default block argument.";
+        public const string SCE0026 = "Default value argument is missing.";
+        public const string SCE0027 = "Unexpected default value argument.";
+        public const string SCE0029 = "Invalid escape sequence - '{0}'.";
+        public const string SCE0030 = "Alias or Parameter expected after ':='.";
+        public const string SCE0031 = "Invalid assignment '{0}'.";
+        public const string SCE0032 = "{0}.";
+        public const string SCE0033 = "Duplicate namespace definition name - '{0}'.";
+        public const string SCE0100 = "Invalid XML element name.";
+        public const string SCE0101 = "Invalid name.";
+        public const string SCE0102 = "Invalid namespace prefix name.";
 
         public static string Format(string name, params object[] args)
         {

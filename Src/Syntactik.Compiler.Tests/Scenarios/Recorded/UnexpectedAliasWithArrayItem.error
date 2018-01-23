@@ -1,4 +1,4 @@
-MCE0016 ModuleWithDocument .s4x(3,2,15): Invalid usage of the value alias.
-MCE0016 ModuleWithDocument .s4x(8,2,46): Invalid usage of the value alias.
-MCE0020 ModuleWithDocument.s4j(3,2,15): Array item is not expected.
-MCE0019 ModuleWithDocument.s4j(9,2,50): Array item is expected.
+SCE0016 ModuleWithDocument .s4x(3,2,15): Invalid usage of the value alias.
+SCE0016 ModuleWithDocument .s4x(8,2,46): Invalid usage of the value alias.
+SCE0020 ModuleWithDocument.s4j(3,2,15): Array item is not expected.
+SCE0019 ModuleWithDocument.s4j(9,2,50): Array item is expected.

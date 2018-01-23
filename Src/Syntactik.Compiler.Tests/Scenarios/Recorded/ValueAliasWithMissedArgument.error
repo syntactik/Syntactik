@@ -1,2 +1,2 @@
-MCE0013 ModuleWithDocument.s4x(4,15,56): Argument 'street' is missing.
-MCE0013 ModuleWithDocument.s4x(5,12,76): Argument 'name' is missing.
+SCE0013 ModuleWithDocument.s4x(4,15,56): Argument 'street' is missing.
+SCE0013 ModuleWithDocument.s4x(5,12,76): Argument 'name' is missing.

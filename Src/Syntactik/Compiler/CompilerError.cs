@@ -122,7 +122,7 @@ namespace Syntactik.Compiler
         /// <param name="message">Description of the error.</param>
         /// <param name="cause"><see cref="Exception"/> that caused the error.</param>
         /// <exception cref="ArgumentNullException">If parameter lexicalInfo is null.</exception>
-        public CompilerError(LexicalInfo lexicalInfo, string message, Exception cause) : this("MCE0000", lexicalInfo, message, cause)
+        public CompilerError(LexicalInfo lexicalInfo, string message, Exception cause) : this("SCE0000", lexicalInfo, message, cause)
         {
         }
 

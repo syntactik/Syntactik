@@ -1,2 +1,2 @@
-MCE0003 ModuleWithDocument.s4x(3,2,19): Namespace prefix 'ipo' is not defined.
-MCE0003 ModuleWithDocument.s4x(4,3,40): Namespace prefix 'ipo2' is not defined.
+SCE0003 ModuleWithDocument.s4x(3,2,19): Namespace prefix 'ipo' is not defined.
+SCE0003 ModuleWithDocument.s4x(4,3,40): Namespace prefix 'ipo2' is not defined.

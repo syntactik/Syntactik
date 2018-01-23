@@ -1,1 +1,1 @@
-MCE0018 ipo.xsd(15,5,0): XML validation error - 'Type 'http://www.example.com/myipo:Address' is not declared.'.
+SCE0018 ipo.xsd(15,5,0): XML validation error - 'Type 'http://www.example.com/myipo:Address' is not declared.'.

@@ -1,4 +1,4 @@
-MCE0007 UnclosedQuotedString.s4j(2,9,0): ParserError - 'Single quote is expected.'.
-MCE0007 UnclosedQuotedString.s4j(3,9,0): ParserError - 'Double quote is expected.'.
-MCE0007 UnclosedQuotedString.s4x(2,9,0): ParserError - 'Single quote is expected.'.
-MCE0007 UnclosedQuotedString.s4x(3,9,0): ParserError - 'Double quote is expected.'.
+SCE0007 UnclosedQuotedString.s4j(2,9,0): ParserError - 'Single quote is expected.'.
+SCE0007 UnclosedQuotedString.s4j(3,9,0): ParserError - 'Double quote is expected.'.
+SCE0007 UnclosedQuotedString.s4x(2,9,0): ParserError - 'Single quote is expected.'.
+SCE0007 UnclosedQuotedString.s4x(3,9,0): ParserError - 'Double quote is expected.'.
