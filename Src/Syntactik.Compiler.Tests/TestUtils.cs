@@ -290,7 +290,7 @@ namespace Syntactik.Compiler.Tests
                 }
                 catch (System.IO.FileNotFoundException)
                 {
-                    throw new CompilerError("MCE0002", new LexicalInfo(_fname), false, "");
+                    throw new CompilerError("SCE0002", new LexicalInfo(_fname), false, "");
                 }
                 catch (Exception e)
                 {

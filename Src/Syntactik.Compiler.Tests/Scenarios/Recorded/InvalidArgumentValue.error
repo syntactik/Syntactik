@@ -1,2 +1,2 @@
-MCE0030 JsonDoc.s4j(3,17,55): Alias or Parameter expected after ':='.
-MCE0030 XmlDoc.s4x(4,17,100): Alias or Parameter expected after ':='.
+SCE0030 JsonDoc.s4j(3,17,55): Alias or Parameter expected after ':='.
+SCE0030 XmlDoc.s4x(4,17,100): Alias or Parameter expected after ':='.

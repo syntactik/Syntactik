@@ -1,2 +1,2 @@
-MCE0004 EmptyModule.s4x(1,1,0): Alias 'alias' is not defined.
-MCE0009 EmptyModule.s4x(1,1,1): Document 'EmptyModule' must have at least one root element.
+SCE0004 EmptyModule.s4x(1,1,0): Alias 'alias' is not defined.
+SCE0009 EmptyModule.s4x(1,1,1): Document 'EmptyModule' must have at least one root element.
