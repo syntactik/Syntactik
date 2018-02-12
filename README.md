@@ -1123,7 +1123,7 @@ primary_colors:
 ```
 With the use of the [inline syntax](#inline-syntax) **XML arrays** can be defined in more compact form:
 ```
-primary_colors: color:
+primary_colors: color:::
     = red
     = green
     = blue
