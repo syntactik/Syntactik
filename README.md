@@ -1101,10 +1101,10 @@ Unlike JSON, XML doesn't support arrays but is used to serialize arrays anyway. 
 </colors>
 ```
 In the example above, each element `color` represents an array item.
-When Syntactik compiler finds an array in the [s4x-module](#s4x-module) it adds the name of the pair of the [array block](#array-block) to each [array item](#array-item). So the previous XML can be represented in the [s4x-module](#s4x-module) like this:
+When Syntactik compiler finds an array that is lead by [array assignment](#array-assignment) `:::`, it adds the name of the pair of the [array block](#array-block) to each [array item](#array-item). So the previous XML can be represented in the [s4x-module](#s4x-module) like this:
 ```
 colors:
-    color:
+    color:::
         == red ''' primary color
         = orange
         = yellow
@@ -1112,14 +1112,6 @@ colors:
         == blue  ''' primary color
         = indigo
         = violet
-```
-The [array assignment](#array-assignment) `:::` can be also used in this case, for example:
-```
-primary_colors:
-    color:::
-        == red
-        == green
-        == blue
 ```
 With the use of the [inline syntax](#inline-syntax) **XML arrays** can be defined in more compact form:
 ```
