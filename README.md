@@ -482,8 +482,8 @@ A **double quoted string** supports [string interpolation](https://en.wikipedia.
 Example:
 
 ```
-line1 == 'The customer name is \!%CustomerName' 
-line2 == 'The customer\'s phone number is $(Phone.AreaCode)-$(Phone.LocalNumber)-$Phone.Extention'
+line1 = "The customer name is \!%CustomerName"
+line2 = "The customer's phone number is $(Phone.AreaCode)-$(Phone.LocalNumber)-$Phone.Extention"
 ```
 
 ## Multiline open string
