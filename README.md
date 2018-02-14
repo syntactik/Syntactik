@@ -483,7 +483,7 @@ Example:
 
 ```
 line1 = "The customer name is \!%CustomerName"
-line2 = "The customer's phone number is $(Phone.AreaCode)-$(Phone.LocalNumber)-$Phone.Extention"
+line2 = "The customer's phone number is \$(Phone.AreaCode)-\$(Phone.LocalNumber)-\$Phone.Extention"
 ```
 
 ## Multiline open string
