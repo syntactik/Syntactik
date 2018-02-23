@@ -489,6 +489,11 @@
       <Version>3.9.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Scenarios\XmlArray\XmlArray.s4x">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rmdir $(TargetDir)Scenarios /s /q

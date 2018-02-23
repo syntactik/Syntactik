@@ -541,5 +541,10 @@ namespace Syntactik.Compiler.Tests
         {
             PerformCompilerTest(true);
         }
+        [Test, RecordedTest]
+        public void XmlArray()
+        {
+            PerformCompilerTest(true);
+        }
     }
 }

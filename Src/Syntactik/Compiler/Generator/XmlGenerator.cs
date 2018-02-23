@@ -256,7 +256,7 @@ namespace Syntactik.Compiler.Generator
             }
             else
             {
-                if (element.Parent.Assignment == AssignmentEnum.CCC && (element.Assignment == AssignmentEnum.C || element.Assignment == AssignmentEnum.CC))
+                if (element.Parent.Assignment == AssignmentEnum.CCC && (element.Assignment == AssignmentEnum.C || element.Assignment == AssignmentEnum.CC || element.Assignment == AssignmentEnum.E || element.Assignment == AssignmentEnum.EE))
                 {
                     // This is item of explicit array (:::)
                     WriteExplicitArrayItem(element);
@@ -274,7 +274,7 @@ namespace Syntactik.Compiler.Generator
             }
             else
             {
-                if (element.Parent.Assignment == AssignmentEnum.CCC && (element.Assignment == AssignmentEnum.C || element.Assignment == AssignmentEnum.CC))
+                if (element.Parent.Assignment == AssignmentEnum.CCC && (element.Assignment == AssignmentEnum.C || element.Assignment == AssignmentEnum.CC || element.Assignment == AssignmentEnum.E || element.Assignment == AssignmentEnum.EE))
                     XmlTextWriter.WriteEndElement();
             }
         }
