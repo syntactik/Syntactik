@@ -259,7 +259,7 @@ namespace Syntactik.Compiler.Generator
                 if (element.Parent.Assignment == AssignmentEnum.CCC && (element.Assignment == AssignmentEnum.C || element.Assignment == AssignmentEnum.CC || element.Assignment == AssignmentEnum.E || element.Assignment == AssignmentEnum.EE))
                 {
                     // This is item of explicit array (:::)
-                    WriteExplicitArrayItem(element);
+                    WriteExplicitArrayItem(element, prefix, ns);
                 }
             }
 
@@ -279,11 +279,8 @@ namespace Syntactik.Compiler.Generator
             }
         }
 
-        private void WriteExplicitArrayItem(Element element)
+        private void WriteExplicitArrayItem(Element element, string prefix, string ns)
         {
-            NamespaceResolver.GetPrefixAndNs((INsNode) element.Parent, CurrentDocument,
-                ScopeContext.Peek(),
-                out var prefix, out var ns);
             if (string.IsNullOrEmpty(element.NsPrefix)) prefix = null;
             XmlTextWriter.WriteStartElement(prefix, element.Parent.Name, ns);
             AddLocationMapRecord(CurrentModuleMember.Module.FileName, (IMappedPair) element);
