@@ -55,7 +55,10 @@ namespace Syntactik.Compiler
         public const string SCE0101 = "Invalid name.";
         public const string SCE0102 = "Invalid namespace prefix name.";
         public const string SCE0103 = "Unexpected start of object {{ or array [.";
+        public const string SCE0104 = "Double quotes must be used to define strings in JSON.";
 
+
+        
         public static string Format(string name, params object[] args)
         {
             return string.Format(GetString(name), args);

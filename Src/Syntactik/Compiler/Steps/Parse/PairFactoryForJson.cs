@@ -61,7 +61,7 @@ namespace Syntactik.Compiler.Steps
                 if (assignment == AssignmentEnum.None)
                 {
                     value = PairFactoryForXml.GetValue(textSource, assignment, nameQuotesType, nameInterval,
-                    0, _context, (Module)_module);
+                                    0, _context, (Module)_module);
                     valueQuotesType = nameQuotesType;
                 }
                 pair = new Element(
@@ -284,11 +284,28 @@ namespace Syntactik.Compiler.Steps
         {
             try
             {
+                CheckInlineJsonString(parent, child);
+
                 parent.AppendChild(child);
             }
             catch (Exception e)
             {
                 _context.Errors.Add(CompilerErrorFactory.CantAppendChild(((IMappedPair)child).NameInterval, _module.FileName, e.Message));
+            }
+        }
+
+        private void CheckInlineJsonString(Pair parent, Pair child)
+        {
+            var parentMapped = (IMappedPair) parent;
+            var childMapped = child as IMappedPair;
+            if (parentMapped.BlockType == BlockType.JsonArray || parentMapped.BlockType == BlockType.JsonObject)
+            {
+                if (!(child is Element) || childMapped.NameQuotesType == 2) return;
+                if (childMapped.NameQuotesType == 1 || childMapped.ValueType == ValueType.OpenString)
+                {
+                    _context.Errors.Add(CompilerErrorFactory.DoubleQuotesRequiredJson(((IMappedPair) child).NameInterval,
+                        _module.FileName));
+                }
             }
         }
 

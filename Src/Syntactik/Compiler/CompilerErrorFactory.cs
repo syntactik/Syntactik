@@ -242,7 +242,6 @@ namespace Syntactik.Compiler
             return Instantiate("SCE0032", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), true, message);
         }
 
-
         internal static CompilerError InvalidXmlElementName(Interval nameInterval, string fileName)
         {
             return Instantiate("SCE0100", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), true);
@@ -252,16 +251,20 @@ namespace Syntactik.Compiler
         {
             return Instantiate("SCE0101", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), true);
         }
+
         internal static CompilerError InvalidNsName(Interval nameInterval, string fileName)
         {
             return Instantiate("SCE0102", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), true);
         }
+
         internal static CompilerError InvalidInlineJsonDeclaration(Interval interval, string fileName)
         {
             return Instantiate("SCE0103", new LexicalInfo(fileName, interval.Begin.Line, interval.Begin.Column, interval.Begin.Index), true);
         }
 
-
-
+        internal static CompilerError DoubleQuotesRequiredJson(Interval nameInterval, string fileName)
+        {
+            return Instantiate("SCE0104", new LexicalInfo(fileName, nameInterval.Begin.Line, nameInterval.Begin.Column, nameInterval.Begin.Index), true);
+        }
     }
 }
