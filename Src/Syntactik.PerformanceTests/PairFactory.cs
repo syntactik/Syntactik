@@ -290,5 +290,10 @@ namespace Syntactik.PerformanceTests
         {
             return OnProcessComment?.Invoke(commentType, commentInterval);
         }
+
+        /// <inheritdoc />
+        public void ProcessBrackets(Pair currentPair, int bracket, Interval endInterval)
+        {
+        }
     }
 }

@@ -290,5 +290,9 @@ namespace TestEditor
         {
             return OnProcessComment?.Invoke(commentType, commentInterval);
         }
+
+        public void ProcessBrackets(Pair currentPair, int bracket, Interval endInterval)
+        {
+        }
     }
 }

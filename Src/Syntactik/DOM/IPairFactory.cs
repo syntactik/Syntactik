@@ -3,7 +3,7 @@
 namespace Syntactik.DOM
 {
     /// <summary>
-    /// <see cref="Parser"/> calls <see cref="IPairFactory"/> methods reporting all information necessary to create a Document Object Model. 
+    /// <see cref="Parser"/> calls <see cref="IPairFactory"/> methods reporting all information necessary to create a Document Object Model (AST). 
     /// <see cref="Parser"/> also calls <see cref="IPairFactory"/> methods to report data that can be useful for code editor, like comments and
     /// boundaries of blocks.
     /// </summary>
@@ -56,5 +56,13 @@ namespace Syntactik.DOM
         /// <param name="commentInterval">Interval of the comment in the source code.</param>
         /// <returns>Instance of <see cref="Comment"/>.</returns>
         Comment ProcessComment(ITextSource textSource, int commentType, Interval commentInterval);
+
+        /// <summary>
+        /// Reports valid brackets.
+        /// </summary>
+        /// <param name="currentPair">Parent pair of current block.</param>
+        /// <param name="bracket">Bracket char or open or closing bracket.</param>
+        /// <param name="endInterval"><see cref="Interval"/> of bracket in the source.</param>
+        void ProcessBrackets(Pair currentPair, int bracket, Interval endInterval);
     }
 }

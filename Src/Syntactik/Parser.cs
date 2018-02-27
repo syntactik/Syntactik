@@ -34,13 +34,14 @@ namespace Syntactik
     {
         private readonly ICharStream _input;
         private IList<IErrorListener> _errorListeners;
-        private Stack<Pair> _wsaStack; //In WSA mode counter.
+        private Stack<WsaInfo> _wsaStack; //WSA mode stack.
         private readonly Stack<PairIndentInfo> _pairStack;
         private LineParsingState _lineState;
         private char _indentSymbol;
         private int _indentMultiplicity;
         private readonly IPairFactory _pairFactory;
         private readonly Module _module;
+        private readonly bool _processJsonBrackets;
 
         /// <summary>
         /// List of error listeners.
@@ -54,13 +55,15 @@ namespace Syntactik
         /// <param name="input">Stream of characters for parsing.</param>
         /// <param name="pairFactory">Pair factory is used to create DOM structure of the Syntactik document.</param>
         /// <param name="root"><see cref="Module"/> object is used as root of DOM structure.</param>
-        public Parser(ICharStream input, IPairFactory pairFactory, Module root)
+        /// <param name="processJsonBrackets">If true, parser will process {} and [] brackets.</param>
+        public Parser(ICharStream input, IPairFactory pairFactory, Module root, bool processJsonBrackets = false)
         {
             _input = input;
             _pairFactory = pairFactory;
             _pairStack = new Stack<PairIndentInfo>();
             _pairStack.Push(new PairIndentInfo {Pair = root});
             _module = root;
+            _processJsonBrackets = processJsonBrackets;
         }
 
         /// <summary>
@@ -699,30 +702,28 @@ namespace Syntactik
                         return false;
                     }
                 }
-                else
-                    switch (c)
+                else if (c == ')' || _processJsonBrackets && (c == '}' || c == ']'))
+                {
+                    if (_wsaStack.Count > 0)
                     {
-                        case ')':
-                            if (_wsaStack.Count > 0)
-                            {
-                                _lineState.State = ParserStateEnum.PairDelimiter;
-                                return false;
-                            }
-                            _input.Consume();
-                            ReportUnexpectedCharacter(c);
-                            break;
-                        case '(':
-                            ExitNonBlockPair();
-                            _input.Consume();
-                            _wsaStack.Push(_pairStack.Peek().Pair);
-                            return false;
-                        //case ',':
-                        //case '\'':
-                        //case '"':
-                        default:
-                            _lineState.State = ParserStateEnum.PairDelimiter;
-                            return false;
+                        _lineState.State = ParserStateEnum.PairDelimiter;
+                        return false;
                     }
+                    _input.Consume();
+                    ReportUnexpectedCharacter(c);
+                }
+                else if (c == '(' || _processJsonBrackets && (c == '{' || c == '['))
+                {
+                    ExitNonBlockPair();
+                    _input.Consume();
+                    _wsaStack.Push(new WsaInfo(_pairStack.Peek().Pair, c));
+                    return false;
+                }
+                else
+                {
+                    _lineState.State = ParserStateEnum.PairDelimiter;
+                    return false;
+                }
                 c = _input.Next;
             }
             return true;
@@ -775,7 +776,7 @@ namespace Syntactik
                     _lineState.State = ParserStateEnum.Assignment;
                     break;
                 }
-                else if (c == '(' || c == ')' || c == ',')
+                else if (c == '(' || c == ')' || c == ',' || _processJsonBrackets && (c == '{' || c == '[' || c == ']' || c == '}'))
                 {
                     _input.Consume();
                     ReportUnexpectedCharacter(c);
@@ -938,8 +939,7 @@ namespace Syntactik
         private void ParsePairDelimiter()
         {
             var c = _input.Next;
-            while (c != -1
-            )
+            while (c != -1)
             {
                 if (_input.ConsumeSpaces())
                 {
@@ -947,7 +947,7 @@ namespace Syntactik
                 else if (_input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair))
                 {
                 }
-                else if (c == '(')
+                else if (c == '(' || _processJsonBrackets && (c == '{' || c == '['))
                 {
                     _lineState.Inline = true;
                     if (_lineState.CurrentPair != null)
@@ -956,9 +956,10 @@ namespace Syntactik
 
                     ExitNonBlockPair();
                     _input.Consume();
-                    _wsaStack.Push(_pairStack.Peek().Pair);
+                    _wsaStack.Push(new WsaInfo(_pairStack.Peek().Pair, c));
+                    _pairFactory.ProcessBrackets(_pairStack.Peek().Pair, c, new Interval(_input));
                 }
-                else if (c == ')')
+                else if (c == ')' || _processJsonBrackets && (c == '}' || c == ']'))
                 {
                     _lineState.Inline = true;
 
@@ -971,7 +972,7 @@ namespace Syntactik
                         }
                         _lineState.ChainingStarted = false;
 
-                        var wsaStartPair = _wsaStack.Pop();
+                        var wsaStartPair = _wsaStack.Pop().Pair;
 
                         var p1 = _pairStack.Peek().Pair;
                         while (_pairStack.Count > 1 && p1 != wsaStartPair)
@@ -982,6 +983,11 @@ namespace Syntactik
                         }
 
                         _pairFactory.EndPair(null, new Interval(_input)); //report end of parents
+
+                        if ((c == '}' || c == ']') && _pairStack.Count > 1) //JSON brackets end current block
+                        {
+                            EndPair(new Interval(_input));
+                        }
 
                         _lineState.CurrentPair = MappedPair.EmptyPair;
                     }
@@ -995,11 +1001,15 @@ namespace Syntactik
                     _lineState.Inline = true;
                     if (
                         (_pairStack.Peek().Indent == _lineState.Indent
-                         && (_wsaStack.Count == 0 || _pairStack.Peek().Pair != _wsaStack.Peek())) ||
+                         && (_wsaStack.Count == 0 || _pairStack.Peek().Pair != _wsaStack.Peek().Pair)) ||
                         _lineState.CurrentPair != null
                     )
                     {
                         ExitPair();
+                        if (_wsaStack.Count > 0 && _wsaStack.Peek().Bracket == '{' && _pairStack.Count > 1)
+                        {
+                            EndPair(new Interval(_input));
+                        }
                         _input.Consume();
                     }
                     else
@@ -1315,7 +1325,7 @@ namespace Syntactik
         private void ResetState()
         {
             _input.Reset();
-            _wsaStack = new Stack<Pair>();
+            _wsaStack = new Stack<WsaInfo>();
             _lineState = new LineParsingState();
             _indentMultiplicity = 0;
         }

@@ -39,7 +39,7 @@ namespace Syntactik.Tests
             PrintCode(code);
 #endif
 
-            var parser = new Parser(new InputStream(code), new PairFactory(), new Module("Module"));
+            var parser = new Parser(new InputStream(code), new PairFactory(), new Module("Module"), true);
             var errorListener = new ErrorListener();
             parser.ErrorListeners.Add(errorListener);
 

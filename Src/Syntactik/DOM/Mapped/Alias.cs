@@ -43,6 +43,9 @@ namespace Syntactik.DOM.Mapped
         public ValueType ValueType { get; }
 
         /// <inheritdoc />
+        public BlockType BlockType { get; set; }
+
+        /// <inheritdoc />
         public virtual bool IsValueNode { get; private set; }
 
         /// <summary>

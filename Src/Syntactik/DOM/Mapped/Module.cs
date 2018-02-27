@@ -44,6 +44,9 @@ namespace Syntactik.DOM.Mapped
         public ValueType ValueType => ValueType.None;
 
         /// <inheritdoc />
+        public BlockType BlockType { get; set; }
+
+        /// <inheritdoc />
         public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
 
         /// <inheritdoc />
@@ -105,6 +108,13 @@ namespace Syntactik.DOM.Mapped
                     throw new ApplicationException("Namespaces must be defined first");
             }
             base.AppendChild(child);
+        }
+
+        /// <inheritdoc />
+        protected override void CreateModuleDocument()
+        {
+            base.CreateModuleDocument();
+            ((Document) ModuleDocument).BlockType = BlockType;
         }
     }
 }
