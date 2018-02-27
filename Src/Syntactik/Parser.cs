@@ -291,14 +291,8 @@ namespace Syntactik
                 pair.ValueQuotesType, ((IMappedPair) pair).ValueInterval,
                 _lineState.Indent + (_indentMultiplicity > 0 ? _indentMultiplicity : 1));
 
-            if (!_lineState.ChainingStarted)
-                _pairFactory.AppendChild(_pairStack.Peek().Pair, newPair);
-            else
-            {
-                _pairStack.Peek().Pair.AppendChild(newPair);
-                //newPair.InitializeParent(_pairStack.Peek().Pair);
-                _lineState.ChainingStarted = false;
-            }
+            _pairFactory.AppendChild(_pairStack.Peek().Pair, newPair);
+            _lineState.ChainingStarted = false;
             return newPair;
         }
 
@@ -637,7 +631,7 @@ namespace Syntactik
             {
                 if (_lineState.ChainingStarted)
                 {
-                    _pairStack.Peek().Pair.AppendChild(_pairFactory.CreateMappedPair((ITextSource) _input, pair.NameQuotesType,
+                    _pairFactory.AppendChild(_pairStack.Peek().Pair, _pairFactory.CreateMappedPair((ITextSource) _input, pair.NameQuotesType,
                         ((IMappedPair) pair).NameInterval, pair.Assignment, ((IMappedPair) pair).AssignmentInterval,
                         pair.ValueQuotesType, ((IMappedPair) pair).ValueInterval,
                         _lineState.Indent + (_indentMultiplicity > 0 ? _indentMultiplicity : 1)));
@@ -988,7 +982,6 @@ namespace Syntactik
                         {
                             EndPair(new Interval(_input));
                         }
-
                         _lineState.CurrentPair = MappedPair.EmptyPair;
                     }
                     else
