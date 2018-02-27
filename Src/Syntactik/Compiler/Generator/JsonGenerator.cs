@@ -47,7 +47,11 @@ namespace Syntactik.Compiler.Generator
             /// <summary>
             /// Block is an array.
             /// </summary>
-            Array
+            Array,
+            /// <summary>
+            /// Block represents a value
+            /// </summary>
+            Value
         }
         /// <summary>
         /// Delegate is called to create JsonWriter for each <see cref="Document"/>.
@@ -106,9 +110,10 @@ namespace Syntactik.Compiler.Generator
 
                 if (BlockState.Count > 0)
                 {
-                    if (BlockState.Pop() == BlockStateEnum.Array)
+                    var blockState = BlockState.Pop();
+                    if (blockState == BlockStateEnum.Array)
                         JsonWriter.WriteEndArray();
-                    else
+                    else if (blockState == BlockStateEnum.Object)
                         JsonWriter.WriteEndObject();
                 }
                 //Empty document. Writing an empty object as a value.
@@ -260,9 +265,10 @@ namespace Syntactik.Compiler.Generator
 
             if (BlockState.Count > prevBlockStateCount)
             {
-                if (BlockState.Pop() == BlockStateEnum.Array)
+                var blockState = BlockState.Pop();
+                if (blockState == BlockStateEnum.Array)
                     JsonWriter.WriteEndArray();
-                else
+                else if (blockState == BlockStateEnum.Object)
                     JsonWriter.WriteEndObject();
                 return;
             }
@@ -314,8 +320,12 @@ namespace Syntactik.Compiler.Generator
         {
             if (!BlockIsStarting) return;
 
+            if ((node.Parent as IMappedPair)?.BlockType == BlockType.Default && (node.Parent?.Parent as IMappedPair)?.BlockType == BlockType.JsonObject)
+            {
+                BlockState.Push(BlockStateEnum.Value);
+            }
             //This element is the first element of the block. It decides if the block is array or object
-            if (string.IsNullOrEmpty(node.Name) || node.Assignment == AssignmentEnum.None)
+            else if (string.IsNullOrEmpty(node.Name) || node.Assignment == AssignmentEnum.None)
             {
                 JsonWriter.WriteStartArray(); //start array
                 BlockState.Push(BlockStateEnum.Array);

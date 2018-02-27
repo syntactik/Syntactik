@@ -678,7 +678,7 @@ namespace Syntactik.Compiler.Steps
                         n => CompilerErrorFactory.ArrayItemIsExpected((IMappedPair) n, _currentModule.FileName));
                     Context.AddError(CompilerErrorFactory.ArrayItemIsExpected((IMappedPair) pair, _currentModule.FileName));
                 }
-                else
+                else if (blockState == JsonGenerator.BlockStateEnum.Object)
                 {
                     if (!string.IsNullOrEmpty(pair.Name) && pair.Assignment != AssignmentEnum.None) return;
 

@@ -52,6 +52,9 @@ namespace Syntactik.DOM.Mapped
         /// </summary>
         public ValueType ValueType => ValueType.None;
 
+        /// <inheritdoc />
+        public BlockType BlockType { get; set; }
+
         /// <summary>
         /// True if pair has a literal value or pair value. Always <b>true</b>> for <see cref="Comment"/>.
         /// </summary>

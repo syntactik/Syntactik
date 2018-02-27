@@ -1,0 +1,15 @@
+00:00	Module `Module`:
+01:01		Document `Module`
+02:03			Element "colors":
+03:05				Element "red"
+04:05				Element "green"
+05:05				Element "blue"
+07:03			Element "shipTo":
+08:05				Element "name":
+08:13					Element "Helen Zoe"
+09:05				Element "street":
+09:15					Element "47 Eden Street"
+10:05				Element "city":
+10:13					Element "Cambridge"
+11:05				Element "postcode":
+11:17					Element `126`

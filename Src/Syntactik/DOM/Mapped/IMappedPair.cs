@@ -60,6 +60,11 @@ namespace Syntactik.DOM.Mapped
         ValueType ValueType { get; }
 
         /// <summary>
+        /// Type of the pair value.
+        /// </summary>
+        BlockType BlockType { get; set; }
+
+        /// <summary>
         /// True if pair has a literal value or pair value.
         /// </summary>
         bool IsValueNode { get; }

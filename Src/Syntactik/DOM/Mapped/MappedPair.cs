@@ -34,6 +34,7 @@ namespace Syntactik.DOM.Mapped
         public int ValueQuotesType { get; set; }
         public Interval AssignmentInterval { get; set; }
         public ValueType ValueType { get; set; }
+        public BlockType BlockType { get; set; }
         public bool IsValueNode { get; set; }
         public bool MissingNameQuote { get; set; }
         public bool MissingValueQuote { get; set; }

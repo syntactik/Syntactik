@@ -301,5 +301,19 @@ namespace Syntactik.Compiler.Steps
         {
             return null;
         }
+
+        /// <inheritdoc />
+        public void ProcessBrackets(Pair pair, int bracket, Interval endInterval)
+        {
+            if (bracket == '{')
+            {
+                ((IMappedPair) pair).BlockType = BlockType.JsonObject;
+            }
+            else if (bracket == '[')
+            {
+                ((IMappedPair)pair).BlockType = BlockType.JsonArray;
+            }
+        }
+
     }
 }
