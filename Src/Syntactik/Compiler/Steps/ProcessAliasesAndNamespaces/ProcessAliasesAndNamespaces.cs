@@ -16,6 +16,7 @@
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using System;
+using System.Linq;
 using Syntactik.DOM;
 
 namespace Syntactik.Compiler.Steps
@@ -48,6 +49,7 @@ namespace Syntactik.Compiler.Steps
         {
             try
             {
+                if (_context.Errors.Any(e => e.IsParserError)) return; //don't process if parser errors found.
                 foreach (var module in _context.CompileUnit.Modules)
                 {
                     DoProcessAliasesAndNamespaces(module, _context);

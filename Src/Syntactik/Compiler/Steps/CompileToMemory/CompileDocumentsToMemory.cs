@@ -53,8 +53,8 @@ namespace Syntactik.Compiler.Steps
         {
             try
             {
-                _context.InMemoryOutputObjects = new Dictionary<string, object>();
                 if (_context.Errors.Count > 0) return;
+                _context.InMemoryOutputObjects = new Dictionary<string, object>();
                 foreach (var module in _context.CompileUnit.Modules)
                 {
                     DoCompileDocumentsToMemory((Module) module, _context);
