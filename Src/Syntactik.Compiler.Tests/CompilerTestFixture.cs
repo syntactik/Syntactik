@@ -223,9 +223,13 @@ namespace Syntactik.Compiler.Tests
         {
             PerformCompilerTest();
         }
-
         [Test, RecordedTest]
         public void InlineJson()
+        {
+            PerformCompilerTest();
+        }
+        [Test, CompilerErrorRecorded]
+        public void InlineJsonErrors()
         {
             PerformCompilerTest();
         }
