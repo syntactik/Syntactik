@@ -16,6 +16,7 @@
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using System;
+using System.Diagnostics.PerformanceData;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Syntactik.DOM;
@@ -303,15 +304,24 @@ namespace Syntactik.Compiler.Steps
         }
 
         /// <inheritdoc />
-        public void ProcessBrackets(Pair pair, int bracket, Interval endInterval)
+        public void ProcessBrackets(Pair pair, int bracket, Interval interval)
         {
-            if (bracket == '{')
+            if (bracket == '{' || bracket == '[')
             {
-                ((IMappedPair) pair).BlockType = BlockType.JsonObject;
-            }
-            else if (bracket == '[')
-            {
-                ((IMappedPair)pair).BlockType = BlockType.JsonArray;
+                var mp = (IMappedPair) pair;
+                var count = (pair is IContainer container) ? container.Entities.Count : 100000;
+                if (pair is Module module)
+                {
+                    count = 0;
+                    if (module.ModuleDocument != null)
+                        count = module.ModuleDocument.Entities.Count;
+                }
+                if (mp.BlockType != BlockType.Default || count > 0 )
+                {
+                    _context.Errors.Add(CompilerErrorFactory.InvalidInlineJsonDeclaration(interval, _module.FileName));
+                }
+
+                mp.BlockType = bracket == '{' ? BlockType.JsonObject : BlockType.JsonArray;
             }
         }
 
