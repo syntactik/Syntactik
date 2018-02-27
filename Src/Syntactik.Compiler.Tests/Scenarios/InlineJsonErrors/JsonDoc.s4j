@@ -11,9 +11,10 @@
   ]
 }
 {
-  "colors": [
+  "colors2": [
     "red",
     "green",
     "blue"
-  ]
+  ] "attr1": "value" 
+
 }
