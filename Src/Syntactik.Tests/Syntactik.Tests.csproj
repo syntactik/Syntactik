@@ -193,6 +193,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scenarios\PairParser\InlineJsonErrors.s4j" />
     <Content Include="Scenarios\PairParser\InlineJson.s4j" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

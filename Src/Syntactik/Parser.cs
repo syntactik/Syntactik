@@ -958,7 +958,7 @@ namespace Syntactik
                     _lineState.Inline = true;
 
                     _input.Consume();
-                    if (_wsaStack.Count > 0)
+                    if (_wsaStack.Count > 0 && _wsaStack.Peek().ClosingBracket == c)
                     {
                         if (_lineState.CurrentPair != null)
                         {
