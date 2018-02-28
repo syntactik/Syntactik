@@ -4,3 +4,5 @@ SCE0103 JsonDoc.s4j(13,1,100): Unexpected start of object { or array [.
 SCE0007 JsonDoc.s4j(18,4,0): ParserError - 'Comma or closing parenthesis is expected.'.
 SCE0104 JsonDoc2.s4j(2,3,4): Double quotes must be used to define strings in JSON.
 SCE0104 JsonDoc2.s4j(3,5,20): Double quotes must be used to define strings in JSON.
+SCE0104 JsonDoc2.s4j(8,10,67): Double quotes must be used to define strings in JSON.
+SCE0104 JsonDoc2.s4j(9,3,76): Double quotes must be used to define strings in JSON.

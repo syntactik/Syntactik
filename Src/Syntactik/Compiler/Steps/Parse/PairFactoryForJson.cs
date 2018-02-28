@@ -294,16 +294,36 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
+
+
         private void CheckInlineJsonString(Pair parent, Pair child)
         {
             var parentMapped = (IMappedPair) parent;
             var childMapped = child as IMappedPair;
-            if (parentMapped.BlockType == BlockType.JsonArray || parentMapped.BlockType == BlockType.JsonObject)
+            if (parentMapped.BlockType == BlockType.Default && (!(parent?.Parent is IMappedPair grandParent) 
+                || !grandParent.BlockType.IsJsonBlock())) return;
+            if (!(child is Element)) return;
+
+            //Checking name
+            if (childMapped.NameQuotesType != 2 && 
+                (childMapped.NameQuotesType == 1 || 
+                 child.Assignment != AssignmentEnum.None || 
+                 childMapped.ValueType == ValueType.OpenString) //open name with no assignment.
+            )
             {
-                if (!(child is Element) || childMapped.NameQuotesType == 2) return;
-                if (childMapped.NameQuotesType == 1 || childMapped.ValueType == ValueType.OpenString)
+                _context.Errors.Add(CompilerErrorFactory.DoubleQuotesRequiredJson(((IMappedPair) child).NameInterval,
+                    _module.FileName));
+            }
+
+            //Checking value
+            if (child.Assignment != AssignmentEnum.None)
+            {
+                if (childMapped.ValueQuotesType != 2 &&
+                    (childMapped.ValueQuotesType == 1 ||
+                     childMapped.ValueType == ValueType.OpenString) 
+                )
                 {
-                    _context.Errors.Add(CompilerErrorFactory.DoubleQuotesRequiredJson(((IMappedPair) child).NameInterval,
+                    _context.Errors.Add(CompilerErrorFactory.DoubleQuotesRequiredJson(((IMappedPair)child).NameInterval,
                         _module.FileName));
                 }
             }
@@ -342,5 +362,13 @@ namespace Syntactik.Compiler.Steps
             }
         }
 
+    }
+
+    static class PairFactoryHelper
+    {
+        public static bool IsJsonBlock(this BlockType blocktype)
+        {
+            return blocktype == BlockType.JsonArray || blocktype == BlockType.JsonObject;
+        }
     }
 }
