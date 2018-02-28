@@ -361,7 +361,7 @@ namespace Syntactik.Compiler.Steps
             }
             else
             {
-                CheckArrayAssignment(element);
+                CheckExplicitBlockTypeDef(element);
                 base.Visit(element);
             }
             ExitChoiceNode(element);
@@ -371,8 +371,16 @@ namespace Syntactik.Compiler.Steps
                 _blockState.Pop();
         }
 
-        private void CheckArrayAssignment(Pair element)
+        private void CheckExplicitBlockTypeDef(Pair element)
         {
+            var mappedPair = (IMappedPair)element;
+            if (_blockStateUnknown && (mappedPair.BlockType == BlockType.JsonObject || mappedPair.BlockType == BlockType.JsonArray)) //If block types are defined explicitly
+            {
+                _blockState.Push(mappedPair.BlockType == BlockType.JsonObject ? JsonGenerator.BlockStateEnum.Object : JsonGenerator.BlockStateEnum.Array);
+                _blockStateUnknown = false;
+                return;
+            }
+
             if (element.Assignment == AssignmentEnum.CCC)
             {
                 _blockState.Push(JsonGenerator.BlockStateEnum.Array);
@@ -682,7 +690,7 @@ namespace Syntactik.Compiler.Steps
                 {
                     if (!string.IsNullOrEmpty(pair.Name) && pair.Assignment != AssignmentEnum.None) return;
 
-                    if(_currentModule.TargetFormat == Module.TargetFormats.Xml && ((IMappedPair)pair).IsValueNode ) return; 
+                    //if(_currentModule.TargetFormat == Module.TargetFormats.Xml && ((IMappedPair)pair).IsValueNode ) return;  
 
                     ReportErrorForEachNodeInAliasContext(
                         n => CompilerErrorFactory.PropertyIsExpected((IMappedPair) n, _currentModule.FileName));

@@ -1,0 +1,12 @@
+'''comment
+
+el1: {
+  "colors": {$MainColors}
+} 
+
+
+!$MainColors: [
+  "red",
+  "green",
+  "blue"
+]
