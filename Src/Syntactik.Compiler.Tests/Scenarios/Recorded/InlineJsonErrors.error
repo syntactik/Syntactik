@@ -6,3 +6,4 @@ SCE0104 JsonDoc2.s4j(2,3,4): Double quotes must be used to define strings in JSO
 SCE0104 JsonDoc2.s4j(3,5,20): Double quotes must be used to define strings in JSON.
 SCE0104 JsonDoc2.s4j(8,10,67): Double quotes must be used to define strings in JSON.
 SCE0104 JsonDoc2.s4j(9,3,76): Double quotes must be used to define strings in JSON.
+SCE0103 JsonDoc2.s4j(10,11,100): Unexpected start of object { or array [.

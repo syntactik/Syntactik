@@ -6,6 +6,7 @@
     null
   ],
   "el1": value,
-  el2: "value"
+  el2: "value",
+  "el3": {[]}
 }
 
