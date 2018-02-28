@@ -298,11 +298,12 @@ namespace Syntactik.Compiler.Steps
 
         private void CheckInlineJsonString(Pair parent, Pair child)
         {
+            if (!(child is Element)) return;
             var parentMapped = (IMappedPair) parent;
-            var childMapped = child as IMappedPair;
+            var childMapped = (IMappedPair) child;
             if (parentMapped.BlockType == BlockType.Default && (!(parent?.Parent is IMappedPair grandParent) 
                 || !grandParent.BlockType.IsJsonBlock())) return;
-            if (!(child is Element)) return;
+            
 
             //Checking name
             if (childMapped.NameQuotesType != 2 && 
