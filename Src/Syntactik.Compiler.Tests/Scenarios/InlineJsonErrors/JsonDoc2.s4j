@@ -4,6 +4,8 @@
     123,
     true,
     null
-  ]
+  ],
+  "el1": value,
+  el2: "value"
 }
 
