@@ -5,9 +5,11 @@
     "blue"
   ],
   "shipTo": {
-      "name": "Helen Zoe",
-      "street": "47 Eden Street",
-      "city": "Cambridge",
-      "postcode": 126
-   }
+    "name": "Helen Zoe",
+    "street": "47 Eden Street",
+    "city": "Cambridge",
+    "postcode": 126
+  },
+  "el1": [],
+  "el2": {}
 }

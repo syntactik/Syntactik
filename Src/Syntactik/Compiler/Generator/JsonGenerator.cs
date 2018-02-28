@@ -276,7 +276,7 @@ namespace Syntactik.Compiler.Generator
             //Element has no block and no value. Writing an empty object as a value.
             if (!string.IsNullOrEmpty(element.Name) || ((DOM.Mapped.Element)element).ValueType == ValueType.Object)
             {
-                if (element.Assignment == AssignmentEnum.CC)
+                if (element.Assignment == AssignmentEnum.CC || ((IMappedPair)element).BlockType == BlockType.JsonArray)
                 {
                     JsonWriter.WriteStartArray();
                     JsonWriter.WriteEndArray();
