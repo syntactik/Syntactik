@@ -991,15 +991,17 @@ namespace Syntactik
                 }
                 else if (c == ',')
                 {
-                    _lineState.Inline = true;
                     if (
-                        (_pairStack.Peek().Indent == _lineState.Indent
-                         && (_wsaStack.Count == 0 || _pairStack.Peek().Pair != _wsaStack.Peek().Pair)) ||
-                        _lineState.CurrentPair != null
+                        _lineState.CurrentPair != null || //comma ends any pair which is in parsing state.
+                        (_pairStack.Peek().Indent == _lineState.Indent //in inline block
+                         && (_wsaStack.Count == 0 || _pairStack.Peek().Pair != _wsaStack.Peek().Pair)) //comma can't close block that started before current wsa block
+                        
                     )
                     {
+                        var commaEndsEmptyPair = _lineState.CurrentPair == MappedPair.EmptyPair;
                         ExitPair();
-                        if (_wsaStack.Count > 0 && _wsaStack.Peek().Bracket == '{' && _pairStack.Count > 1)
+                        if (!commaEndsEmptyPair && _wsaStack.Count > 0
+                            && _wsaStack.Peek().Bracket == '{' && _pairStack.Count > 1)
                         {
                             EndPair(new Interval(_input));
                         }

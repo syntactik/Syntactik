@@ -1,4 +1,12 @@
-﻿{
+﻿root: {
+  "colors": [
+    "red",
+    "blue"
+  ],
+  "el1": "value"
+} 
+
+{
   "colors": [
     "red",
     "green",
@@ -10,6 +18,6 @@
     "city": "Cambridge",
     "postcode": 126
   },
-  "el1": value,
-  el2: "value"
+  "el1": "value",
+  "el2": "value"
 }
