@@ -380,7 +380,7 @@ namespace Syntactik
             var end = CharLocation.Empty;
             while (true)
             {
-                if (c.IsEndOfOpenString() || c == -1)
+                if (c.IsEndOfOpenString(_processJsonBrackets) || c == -1)
                 {
                     AssignValueToCurrentPair(begin, end);
                     return;
@@ -711,6 +711,7 @@ namespace Syntactik
                     ExitNonBlockPair();
                     _input.Consume();
                     _wsaStack.Push(new WsaInfo(_pairStack.Peek().Pair, c));
+                    _pairFactory.ProcessBrackets(_pairStack.Peek().Pair, c, new Interval(_input));
                     return false;
                 }
                 else
@@ -822,7 +823,7 @@ namespace Syntactik
             var end = CharLocation.Empty;
             while (c != -1)
             {
-                if (c.IsEndOfOpenName())
+                if (c.IsEndOfOpenName(_processJsonBrackets))
                 {
                     break;
                 }

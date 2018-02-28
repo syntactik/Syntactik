@@ -228,6 +228,16 @@ namespace Syntactik.Compiler.Tests
         {
             PerformCompilerTest();
         }
+        [Test, RecordedTest]
+        public void InlineJsonAlias()
+        {
+            PerformCompilerTest();
+        }
+        [Test, CompilerErrorRecorded]
+        public void InlineJsonAliasErrors()
+        {
+            PerformCompilerTest();
+        }
         [Test, CompilerErrorRecorded]
         public void InlineJsonErrors()
         {

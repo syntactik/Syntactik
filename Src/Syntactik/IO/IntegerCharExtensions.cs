@@ -47,10 +47,12 @@ namespace Syntactik.IO
         /// Returns true if the character can't be included in the open string.
         /// </summary>
         /// <param name="c">Target character.</param>
+        /// <param name="processJsonBrackets">If true the it is searching for {}[].</param>
         /// <returns>True if the character can't be included in the open string.</returns>
-        public static bool IsEndOfOpenString(this int c)
+        public static bool IsEndOfOpenString(this int c, bool processJsonBrackets = false)
         {
-            if (c > 61) return false;
+            if (c > 125) return false;
+            if (processJsonBrackets && (c == '}' || c == '{' || c == ']' || c == '[')) return true;
             return c == '=' || c == ':' || c == ',' || c == '\'' || c == '"' || c == ')' || c == '(';
         }
 
@@ -58,10 +60,12 @@ namespace Syntactik.IO
         /// Returns true if the character can't be included in the open name.
         /// </summary>
         /// <param name="c">Target character.</param>
+        /// <param name="processJsonBrackets">If true the it is searching for {}[].</param>
         /// <returns>True if the character can't be included in the open name.</returns>
-        public static bool IsEndOfOpenName(this int c)
+        public static bool IsEndOfOpenName(this int c, bool processJsonBrackets = false)
         {
-            if (c > 61) return false;
+            if (c > 125) return false;
+            if (processJsonBrackets && (c == '}' || c == '{' || c == ']' || c == '[')) return true;
             return c == '=' || c == ':' ||c == '\r' || c == '\n' || c == ',' || c =='\'' || c == '"' || c == ')' || c == '(';
         }
 
