@@ -136,6 +136,13 @@ namespace Syntactik.Tests
         {
             DoTest();
         }
+
+        [Test, ParserErrorRecorded]
+        public void InlineJsonErrors()
+        {
+            DoTest();
+        }
+
         [Test, DomRecorded, ParserErrorRecorded]
         public void InvalidMixedIndentation()
         {
