@@ -688,7 +688,7 @@ namespace Syntactik
                     if (_wsaStack.Count > 0)
                     {
                         _input.ConsumeNewLine();
-                        ConsumeLeadingSpaces();
+                        ConsumeLeadingSpacesInWsa();
                     }
                     else
                     {
@@ -724,29 +724,16 @@ namespace Syntactik
             return true;
         }
 
-        private void ConsumeLeadingSpaces()
+        private void ConsumeLeadingSpacesInWsa()
         {
             var c = _input.Next;
-            if (c == '\t' || c == ' ')
-            {
-                if (_indentSymbol == 0) _indentSymbol = (char) c;
-            }
-            else return;
-
-            int indentSum = c;
-            var indent = 1;
-            while (true)
+            if (!c.IsSpaceCharacter()) return;
+            if (_indentSymbol == 0) _indentSymbol = (char) c;
+            do
             {
                 _input.Consume();
                 c = _input.Next;
-                if (!c.IsSpaceCharacter()) break;
-                indent++;
-                indentSum += c;
-            }
-
-            if (indentSum != _indentSymbol * indent)
-                ReportInvalidIndentation(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent),
-                    new CharLocation(_input)));
+            } while (c.IsSpaceCharacter());
         }
 
         /// <summary>
@@ -797,7 +784,7 @@ namespace Syntactik
                     if (_wsaStack.Count > 0)
                     {
                         _input.ConsumeNewLine();
-                        ConsumeLeadingSpaces();
+                        ConsumeLeadingSpacesInWsa();
                     }
                     else
                         break;
@@ -1019,7 +1006,7 @@ namespace Syntactik
                     if (_wsaStack.Count > 0)
                     {
                         _input.ConsumeNewLine();
-                        ConsumeLeadingSpaces();
+                        ConsumeLeadingSpacesInWsa();
                     }
                     else
                     {

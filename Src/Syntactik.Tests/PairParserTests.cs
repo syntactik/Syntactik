@@ -116,11 +116,6 @@ namespace Syntactik.Tests
             DoTest();
         }
 
-        [Test, DomRecorded, ParserErrorRecorded]
-        public void InvalidWsaIndent()
-        {
-            DoTest();
-        }
         [Test, DomRecorded]
         public void MultilineBlock()
         {
