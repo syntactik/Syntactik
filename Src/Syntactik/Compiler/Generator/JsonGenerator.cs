@@ -190,7 +190,7 @@ namespace Syntactik.Compiler.Generator
             if (choice.Children != null)
             {
                 ChoiceStack.Push(choiceInfo.Children[0]);
-                result = ResolvePairValue((IMappedPair) choiceInfo.Children[0].ChoiceNode, out valueType);
+                result = ResolveValue((IMappedPair) choiceInfo.Children[0].ChoiceNode, out valueType);
                 ChoiceStack.Pop();
             }
             if (choice.ChoiceNode != pair)

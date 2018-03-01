@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using Syntactik.DOM;
@@ -103,7 +104,7 @@ namespace Syntactik.Compiler.Steps
         /// <param name="pair"><see cref="Pair"/> with the literal value.</param>
         /// <param name="valueType">Calculated type of the value.</param>
         /// <returns>String representing literal value of the pair.</returns>
-        protected string ResolvePairValue(IMappedPair pair, out ValueType valueType)
+        protected string ResolveValue(IMappedPair pair, out ValueType valueType)
         {
             if (pair.ValueType != ValueType.DoubleQuotedString &&
                 pair.ValueType != ValueType.Concatenation)
@@ -112,6 +113,12 @@ namespace Syntactik.Compiler.Steps
                 {
                     return ResolvePairValue(((Pair) pair).PairValue, out valueType);
                 }
+
+                if (pair.ValueType == ValueType.Object && pair.IsValueNode) //JSONObject block type. Value is defined by the first child
+                {
+                    return ResolveValue((IMappedPair) ((IContainer)pair).Entities.First(), out valueType);
+                }
+
                 valueType = pair.ValueType;
                 return ((Pair) pair).Assignment != AssignmentEnum.None ? ((Pair) pair).Value : ((Pair) pair).Name;
             }
@@ -170,7 +177,7 @@ namespace Syntactik.Compiler.Steps
                     }
                     if (item is Element element)
                     {
-                        sb.Append(ResolvePairValue(element, out valueType));
+                        sb.Append(ResolveValue(element, out valueType));
                         previousLine = item;
                         continue;
                     }
@@ -251,7 +258,7 @@ namespace Syntactik.Compiler.Steps
             }
             else
                 result = aliasDef.PairValue == null
-                    ? ResolvePairValue(aliasDef, out valueType)
+                    ? ResolveValue(aliasDef, out valueType)
                     : ResolvePairValue(aliasDef.PairValue, out valueType);
 
             AliasContext.Pop();
@@ -308,7 +315,7 @@ namespace Syntactik.Compiler.Steps
             }
             if (((IMappedPair) pair).IsValueNode)
             {
-                OnValue(ResolvePairValue((IMappedPair) pair, out valueType), valueType);
+                OnValue(ResolveValue((IMappedPair) pair, out valueType), valueType);
                 return true;
             }
 
@@ -352,7 +359,7 @@ namespace Syntactik.Compiler.Steps
                     }
                     else if (((IMappedPair) item).IsValueNode)
                     {
-                        sb.Append(ResolvePairValue((IMappedPair) item, out valueType));
+                        sb.Append(ResolveValue((IMappedPair) item, out valueType));
                     }
                 }
                 resultValueType = resultValueType == ValueType.None ? valueType : ValueType.Concatenation;
@@ -387,7 +394,7 @@ namespace Syntactik.Compiler.Steps
                 {
                     return ResolvePairValue(aliasContext.PairValue, out valueType);
                 }
-                return ResolvePairValue(aliasContext, out valueType);
+                return ResolveValue(aliasContext, out valueType);
             }
 
 

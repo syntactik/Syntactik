@@ -1,0 +1,41 @@
+$Templates.PurchaseOrder: 
+	%orderDate = 2017-01-14
+	%shipTo: $Address.UK.Cambridge
+	%billTo: $Address.US.AK	
+	%items: 
+		$Items.Jewelry.Earings.Jade: %quantity = 5	
+
+
+!$Templates.PurchaseOrder: {
+  "purchaseOrder": {
+    "orderDate": !%orderDate,
+    "shipTo": {!%shipTo},
+    "billTo": {!%billTo},
+    "Items": [!%items]
+  }
+}
+
+!$Address.UK.Cambridge: {
+      "export-code": 1,
+      "name": "Helen Zoe",
+      "street": "47 Eden Street",
+      "city": "Cambridge",
+      "postcode": 126
+    }
+
+!$Address.US.AK: {
+      "name": "Robert Smith",
+      "street": "8 Oak Avenue",
+      "city": "Old Town",
+      "state": "AK",
+      "zip": 95819
+    }
+
+!$Items.Jewelry.Earings.Jade:
+	:
+		partNum = 128-UL
+		productName = Jade earring
+		quantity := !%quantity = 1
+		price = 179.90
+		shipDate = 2000-02-14
+

@@ -1,10 +1,6 @@
 '''comment
 
 el1: {
-  "colors": $MainColors
-} 
-
-el2: {
   "colors": [$MainColors]
 } 
 
