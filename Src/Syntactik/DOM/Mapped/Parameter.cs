@@ -97,7 +97,10 @@ namespace Syntactik.DOM.Mapped
         public override void InitializeParent(Pair parent)
         {
             base.InitializeParent(parent);
-            IsValueNode = Parent?.Assignment == AssignmentEnum.EC || Parent?.Assignment == AssignmentEnum.CE;
+            IsValueNode = Parent?.Assignment == AssignmentEnum.EC || Parent?.Assignment == AssignmentEnum.CE ||
+                //JSON value
+                Parent?.Assignment == AssignmentEnum.C && Parent is IMappedPair mp && mp.BlockType == BlockType.Default 
+                && Parent?.Parent is IMappedPair pmp && pmp.BlockType == BlockType.JsonObject; 
         }
 
         /// <inheritdoc />
@@ -107,6 +110,12 @@ namespace Syntactik.DOM.Mapped
             {
                 if (InterpolationItems == null) InterpolationItems = new List<object>();
                 InterpolationItems.Add(child);
+                child.InitializeParent(this);
+            }
+            else if (BlockType == BlockType.Default && Parent is IMappedPair mp && mp.BlockType == BlockType.JsonObject &&
+                     (child is DOM.Alias || child is DOM.Parameter))
+            {
+                PairValue = child;
                 child.InitializeParent(this);
             }
             else

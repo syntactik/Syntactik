@@ -43,7 +43,7 @@ namespace Syntactik.DOM
         /// <summary>
         /// Pair value of the pair. Use method <see cref="AppendChild"/> to set value of this property.
         /// </summary>
-        public virtual Pair PairValue { get; private set; }
+        public virtual Pair PairValue { get; protected set; }
 
         /// <summary>
         /// Literal value of the pair.

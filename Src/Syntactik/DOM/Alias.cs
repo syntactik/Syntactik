@@ -90,10 +90,12 @@ namespace Syntactik.DOM
             {
                 Arguments.Add(item);
             }
-            else
+            else if (child is Entity)
             {
                 Entities.Add((Entity)child);
             }
+            else
+                base.AppendChild(child);
         }
     }
 }

@@ -1,4 +1,5 @@
 SCE0020 JsonDoc.s4j(4,14,32): Array item is not expected.
-SCE0020 JsonDoc.s4j(9,3,68): Array item is not expected.
-SCE0020 JsonDoc.s4j(10,3,77): Array item is not expected.
-SCE0020 JsonDoc.s4j(11,3,88): Array item is not expected.
+SCE0020 JsonDoc.s4j(5,13,58): Array item is not expected.
+SCE0020 JsonDoc.s4j(10,3,93): Array item is not expected.
+SCE0020 JsonDoc.s4j(11,3,102): Array item is not expected.
+SCE0020 JsonDoc.s4j(12,3,113): Array item is not expected.

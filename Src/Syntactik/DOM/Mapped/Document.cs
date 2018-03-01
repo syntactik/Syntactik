@@ -107,6 +107,12 @@ namespace Syntactik.DOM.Mapped
                 InterpolationItems.Add(child);
                 child.InitializeParent(this);
             }
+            else if (BlockType == BlockType.Default && Parent is IMappedPair mp && mp.BlockType == BlockType.JsonObject &&
+                     (child is DOM.Alias || child is DOM.Parameter))
+            {
+                PairValue = child;
+                child.InitializeParent(this);
+            }
             else
                 base.AppendChild(child);
         }

@@ -77,7 +77,6 @@
     <None Include="Scenarios\PairParser\InvalidIndent.s4x" />
     <None Include="Scenarios\PairParser\InvalidIndentMultiplicity.s4x" />
     <None Include="Scenarios\PairParser\InvalidMixedIndentation.s4x" />
-    <None Include="Scenarios\PairParser\InvalidWsaIndent.s4x" />
     <None Include="Scenarios\PairParser\MultilineBlock.s4x" />
     <None Include="Scenarios\PairParser\MultilineDqString.s4x" />
     <None Include="Scenarios\PairParser\MultilineDqString2.s4x" />
