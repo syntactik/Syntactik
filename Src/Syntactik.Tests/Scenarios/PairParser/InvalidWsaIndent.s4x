@@ -1,7 +1,0 @@
-﻿bl: 
-	el1 ''' Indent is defined as single tab
-el2:(
-    el3 ''' Using spaces as indentation in WSA
-	el4 ''' Using tabs as indentation in WSA
-)
-
