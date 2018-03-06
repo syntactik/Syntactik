@@ -230,12 +230,15 @@ namespace Syntactik.Compiler.Steps
 
         public override void Visit(DOM.Alias alias)
         {
-            CheckBlockIntegrityForValueAlias(alias);
-            CheckPairValue(alias);
             CheckAliasIsDefined(alias);
             var aliasDef = ((Alias)alias).AliasDefinition;
             //Do not resolve alias without AliasDef or having circular reference
             if (aliasDef == null || aliasDef.HasCircularReference) return;
+
+            CheckBlockIntegrityForValueAlias(alias);
+            CheckBlockIntegrityForEmptyJsonAlias(alias);
+            CheckPairValue(alias);
+
 
             AliasContext.Push((Alias) alias);
             CheckForUnexpectedArguments((Alias)alias, aliasDef, _currentModule.FileName);
@@ -248,11 +251,32 @@ namespace Syntactik.Compiler.Steps
             }
             else
             {
-                Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
+                if (_blockState.Count > 0 && _blockState.Peek() == JsonGenerator.BlockStateEnum.Array && aliasDef.BlockType == BlockType.JsonObject)
+                {
+                    _blockState.Push(JsonGenerator.BlockStateEnum.Object);
+                    Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
+                    _blockState.Pop();
+                }
+                else
+                    Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
             }
             AliasContext.Pop();
         }
 
+        private void CheckBlockIntegrityForEmptyJsonAlias(DOM.Alias alias)
+        {
+            if (_currentModule.TargetFormat == Module.TargetFormats.Xml) return;
+
+            if (_blockStateUnknown) return;
+
+            var mp = (IMappedPair)((Alias)alias).AliasDefinition;
+            if (mp.BlockType == BlockType.Default) return;
+
+            if (mp.BlockType == BlockType.JsonArray && _blockState.Peek() == JsonGenerator.BlockStateEnum.Object)
+            {
+                Context.AddError(CompilerErrorFactory.PropertyIsExpected((IMappedPair)alias, _currentModule.FileName));
+            }
+        }
 
         private void CheckAliasIsDefined(DOM.Alias alias)
         {

@@ -342,7 +342,7 @@ namespace Syntactik.Compiler.Steps
         }
 
         /// <inheritdoc />
-        public void ProcessBrackets(Pair pair, int bracket, Interval interval)
+        public Pair ProcessBrackets(Pair pair, int bracket, Interval interval)
         {
             if (bracket == '{' || bracket == '[')
             {
@@ -356,13 +356,21 @@ namespace Syntactik.Compiler.Steps
                 }
                 if (mp.BlockType != BlockType.Default || count > 0 )
                 {
+                    if (count == 0 && !(mp.BlockType == BlockType.JsonObject && bracket == '[') )
+                    {
+                        var newPair = new Element
+                        (
+                            String.Empty, nameInterval:interval
+                        ) {BlockType = bracket == '{' ? BlockType.JsonObject : BlockType.JsonArray};
+                        AppendChild(pair, newPair);
+                        return newPair;
+                    }
                     _context.Errors.Add(CompilerErrorFactory.InvalidInlineJsonDeclaration(interval, _module.FileName));
                 }
-
                 mp.BlockType = bracket == '{' ? BlockType.JsonObject : BlockType.JsonArray;
             }
+            return pair;
         }
-
     }
 
     static class PairFactoryHelper

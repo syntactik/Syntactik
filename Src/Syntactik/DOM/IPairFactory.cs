@@ -63,6 +63,6 @@ namespace Syntactik.DOM
         /// <param name="currentPair">Parent pair of current block.</param>
         /// <param name="bracket">Bracket char or open or closing bracket.</param>
         /// <param name="interval"><see cref="Interval"/> of bracket in the source.</param>
-        void ProcessBrackets(Pair currentPair, int bracket, Interval interval);
+        Pair ProcessBrackets(Pair currentPair, int bracket, Interval interval);
     }
 }

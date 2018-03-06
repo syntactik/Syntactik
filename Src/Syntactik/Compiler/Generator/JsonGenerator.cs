@@ -257,8 +257,28 @@ namespace Syntactik.Compiler.Generator
             if (ResolveValue(element)) return; //Block has value therefore it has no block.
 
             //Working with node's block
-            BlockIsStarting = true;
+            
             var prevBlockStateCount = BlockState.Count;
+            var mp = (IMappedPair) element;
+            if (mp.BlockType != BlockType.Default)
+            {
+                BlockIsStarting = false;
+                if (mp.BlockType == BlockType.JsonArray)
+                {
+                    JsonWriter.WriteStartArray(); //start array
+                    BlockState.Push(BlockStateEnum.Array);
+                }
+                else
+                {
+                    JsonWriter.WriteStartObject(); //start array
+                    BlockState.Push(BlockStateEnum.Object);
+                }
+            }
+            else
+            {
+                BlockIsStarting = true;
+            }
+
             base.Visit(element);
 
             BlockIsStarting = false;
@@ -295,20 +315,36 @@ namespace Syntactik.Compiler.Generator
             var aliasDef = ((DOM.Mapped.Alias)alias).AliasDefinition;
             if (aliasDef.IsValueNode)
             {
-                CheckBlockStartForAlias();
+                CheckBlockStartForValueAlias();
                 OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out var valueType), valueType);
             }
 
             AliasContext.Push((DOM.Mapped.Alias) alias);
             if (!EnterChoiceContainer((DOM.Mapped.Alias) alias, aliasDef.Entities, aliasDef))
-                Visit(aliasDef.Entities.Where(e => !(e is Attribute)));
+            {
+                if (BlockState.Count > 0 && BlockState.Peek() == BlockStateEnum.Array && aliasDef.BlockType == BlockType.JsonObject)
+                {
+                    if (BlockIsStarting)
+                    {
+                        JsonWriter.WriteStartArray();
+                    }
+                    BlockState.Push(BlockStateEnum.Object);
+                    JsonWriter.WriteStartObject();
+                    Visit(aliasDef.Entities.Where(e => !(e is Attribute)));
+                    JsonWriter.WriteEndObject();
+                    BlockState.Pop();
+                }
+                else
+                    Visit(aliasDef.Entities.Where(e => !(e is Attribute)));
+            }
+                
             AliasContext.Pop();
         }
 
         /// <summary>
         /// Starts array if the value alias is first item in the array
         /// </summary>
-        protected virtual void CheckBlockStartForAlias()
+        protected virtual void CheckBlockStartForValueAlias()
         {
             if (!BlockIsStarting) return;
             JsonWriter.WriteStartArray(); //start array

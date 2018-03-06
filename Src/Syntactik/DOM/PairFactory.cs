@@ -320,8 +320,9 @@ namespace Syntactik.DOM
             return OnProcessComment?.Invoke(commentType, commentInterval);
         }
 
-        public void ProcessBrackets(Pair currentPair, int bracket, Interval endInterval)
+        public Pair ProcessBrackets(Pair currentPair, int bracket, Interval endInterval)
         {
+            return currentPair;
         }
     }
 }

@@ -1,0 +1,22 @@
+$Template: 
+	%value := $EmptyObject
+	%object: $EmptyArray
+	%array: 
+		$Object: %quantity = 5
+
+!$Template: {
+  "object": {
+    "value": !%value,
+    "object": {!%object},
+    "array": [!%array]
+  }
+}
+
+!$EmptyObject: {    }
+
+!$EmptyArray: []
+
+!$Object:  {
+        "partNum": "128-UL",
+        "quantity": !%quantity = 1
+      }

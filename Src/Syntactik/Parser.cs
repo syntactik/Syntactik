@@ -108,8 +108,7 @@ namespace Syntactik
                     case ParserStateEnum.Indent:
                     {
                         ParseIndent();
-                        if (_input.Next != -1)
-                            _lineState.State = ParserStateEnum.PairDelimiter;
+                        _lineState.State = ParserStateEnum.PairDelimiter;
                         break;
                     }
                     case ParserStateEnum.Name:
@@ -710,8 +709,10 @@ namespace Syntactik
                 {
                     ExitNonBlockPair();
                     _input.Consume();
-                    _wsaStack.Push(new WsaInfo(_pairStack.Peek().Pair, c));
-                    _pairFactory.ProcessBrackets(_pairStack.Peek().Pair, c, new Interval(_input));
+                    var pair = _pairStack.Peek().Pair;
+                    var bracketPair = _pairFactory.ProcessBrackets(pair, c, new Interval(_input));
+                    if (bracketPair != pair) _pairStack.Push(new PairIndentInfo { Pair = bracketPair, Indent = _lineState.Indent, BlockIndent = _pairStack.Peek().BlockIndent });
+                    _wsaStack.Push(new WsaInfo(bracketPair, c));
                     return false;
                 }
                 else
@@ -938,8 +939,10 @@ namespace Syntactik
 
                     ExitNonBlockPair();
                     _input.Consume();
-                    _wsaStack.Push(new WsaInfo(_pairStack.Peek().Pair, c));
-                    _pairFactory.ProcessBrackets(_pairStack.Peek().Pair, c, new Interval(_input));
+                    var pair = _pairStack.Peek().Pair;
+                    var bracketPair = _pairFactory.ProcessBrackets(pair, c, new Interval(_input));
+                    if (bracketPair != pair) _pairStack.Push(new PairIndentInfo { Pair = bracketPair, Indent = _lineState.Indent, BlockIndent = _pairStack.Peek().BlockIndent });
+                    _wsaStack.Push(new WsaInfo(bracketPair, c));
                 }
                 else if (c == ')' || _processJsonBrackets && (c == '}' || c == ']'))
                 {
@@ -1054,12 +1057,6 @@ namespace Syntactik
             ReportSyntaxError(0,
                 new Interval(_input),
                 ((char) c).ToString());
-        }
-
-        private void ReportInvalidIndentation(Interval interval)
-        {
-            var proxy = new ProxyErrorListener(_errorListeners);
-            proxy.OnError(2, interval);
         }
 
         private void ReportInvalidIndentationSize(Interval interval)
