@@ -31,11 +31,11 @@ $Templates.PurchaseOrder:
       "zip": 95819
     }
 
-!$Items.Jewelry.Earings.Jade:
-	:
-		partNum = 128-UL
-		productName = Jade earring
-		quantity := !%quantity = 1
-		price = 179.90
-		shipDate = 2000-02-14
+!$Items.Jewelry.Earings.Jade:  {
+        "partNum": "128-UL",
+        "productName": "Jade earring",
+        "quantity": !%quantity = 1,
+        "price": 179.90,
+        "shipDate": "2000-02-14"
+      }
 

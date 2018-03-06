@@ -647,8 +647,9 @@ namespace Syntactik.Compiler.Steps
         }
 
         /// <inheritdoc />
-        public void ProcessBrackets(Pair currentPair, int bracket, Interval endInterval)
+        public Pair ProcessBrackets(Pair currentPair, int bracket, Interval endInterval)
         {
+            return currentPair;
         }
     }
 }
