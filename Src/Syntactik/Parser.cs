@@ -1,5 +1,4 @@
 ﻿#region license
-
 // Copyright © 2017 Maxim O. Trushin (trushin@gmail.com)
 //
 // This file is part of Syntactik.
@@ -15,15 +14,12 @@
 
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
-
 #endregion
 
 using System.Collections.Generic;
 using Syntactik.DOM;
 using Syntactik.DOM.Mapped;
 using Syntactik.IO;
-using Module = Syntactik.DOM.Module;
-using Pair = Syntactik.DOM.Pair;
 
 namespace Syntactik
 {
@@ -40,23 +36,22 @@ namespace Syntactik
         private char _indentSymbol;
         private int _indentMultiplicity;
         private readonly IPairFactory _pairFactory;
-        private readonly Module _module;
+        private readonly DOM.Module _module;
         private readonly bool _processJsonBrackets;
 
         /// <summary>
         /// List of error listeners.
         /// </summary>
-        public virtual IList<IErrorListener> ErrorListeners =>
-            _errorListeners ?? (_errorListeners = new List<IErrorListener>());
+        public virtual IList<IErrorListener> ErrorListeners => _errorListeners ?? (_errorListeners = new List<IErrorListener>());
 
         /// <summary>
         /// Creates instance of the <see cref="Parser"/>.
         /// </summary>
         /// <param name="input">Stream of characters for parsing.</param>
         /// <param name="pairFactory">Pair factory is used to create DOM structure of the Syntactik document.</param>
-        /// <param name="root"><see cref="Module"/> object is used as root of DOM structure.</param>
+        /// <param name="root"><see cref="DOM.Module"/> object is used as root of DOM structure.</param>
         /// <param name="processJsonBrackets">If true, parser will process {} and [] brackets.</param>
-        public Parser(ICharStream input, IPairFactory pairFactory, Module root, bool processJsonBrackets = false)
+        public Parser(ICharStream input, IPairFactory pairFactory, DOM.Module root, bool processJsonBrackets = false)
         {
             _input = input;
             _pairFactory = pairFactory;
@@ -70,10 +65,9 @@ namespace Syntactik
         /// Starts parsing.
         /// </summary>
         /// <returns>Root object of the parsed DOM structure.</returns>
-        public virtual Module ParseModule()
+        public virtual DOM.Module ParseModule()
         {
             ResetState();
-
             while (_input.Next != -1)
                 ParseLine();
             if (_lineState.State == ParserStateEnum.IndentMLS) ParseMlStringIndent();
@@ -85,7 +79,7 @@ namespace Syntactik
             _module.IndentMultiplicity = _indentMultiplicity;
             _module.IndentSymbol = _indentSymbol;
 
-            return (Module) _pairStack.Peek().Pair;
+            return (DOM.Module) _pairStack.Peek().Pair;
         }
 
         private void EndPair(Interval interval, bool endedByEof = false)
@@ -106,11 +100,8 @@ namespace Syntactik
                 switch (_lineState.State)
                 {
                     case ParserStateEnum.Indent:
-                    {
                         ParseIndent();
-                        _lineState.State = ParserStateEnum.PairDelimiter;
                         break;
-                    }
                     case ParserStateEnum.Name:
                         ParseName();
                         break;
@@ -119,12 +110,9 @@ namespace Syntactik
                         break;
                     case ParserStateEnum.Value:
                         ParseValue();
-                        if (_lineState.State != ParserStateEnum.IndentMLS)
-                            _lineState.State = ParserStateEnum.PairDelimiter;
                         break;
                     case ParserStateEnum.PairDelimiter:
                         ParsePairDelimiter();
-                        _lineState.State = ParserStateEnum.Name;
                         break;
                     case ParserStateEnum.IndentMLS:
                         if (ParseMlStringIndent())
@@ -197,7 +185,10 @@ namespace Syntactik
         {
             var p = _lineState.CurrentPair;
             if (p.Assignment != AssignmentEnum.E && p.Assignment != AssignmentEnum.EE)
+            {
+                _lineState.State = ParserStateEnum.PairDelimiter;
                 return;
+            }
             _input.ConsumeSpaces();
             if (_input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair))
             {
@@ -217,6 +208,9 @@ namespace Syntactik
             }
             else
                 ParseOpenString();
+
+            if (_lineState.State != ParserStateEnum.IndentMLS)
+                _lineState.State = ParserStateEnum.PairDelimiter;
         }
 
         /// <summary>
@@ -727,14 +721,10 @@ namespace Syntactik
 
         private void ConsumeLeadingSpacesInWsa()
         {
-            var c = _input.Next;
-            if (!c.IsSpaceCharacter()) return;
-            if (_indentSymbol == 0) _indentSymbol = (char) c;
-            do
+            while (_input.Next.IsSpaceCharacter())
             {
                 _input.Consume();
-                c = _input.Next;
-            } while (c.IsSpaceCharacter());
+            } 
         }
 
         /// <summary>
@@ -1034,6 +1024,7 @@ namespace Syntactik
                 }
                 c = _input.Next;
             }
+            _lineState.State = ParserStateEnum.Name;
         }
 
         private void ExitNonBlockPair()
@@ -1104,9 +1095,11 @@ namespace Syntactik
         /// </summary>
         private void ParseIndent()
         {
+            
             if (_wsaStack.Count > 0) //Do not calculate indent for inline pair or wsa mode
             {
                 _input.ConsumeSpaces();
+                _lineState.State = ParserStateEnum.PairDelimiter;
                 return;
             }
             int indentSum = 0;
@@ -1134,10 +1127,11 @@ namespace Syntactik
                 }
             }
             ProcessIndent(begin, end, indentSum);
+            _lineState.State = ParserStateEnum.PairDelimiter;
         }
 
         /// <summary>
-        /// Consumes indent.
+        /// Consumes indent of the multiline string line.
         /// Returns true if indent is greater than current indent
         /// </summary>
         /// <returns></returns>
@@ -1147,20 +1141,19 @@ namespace Syntactik
             var end = -2;
             var p = _lineState.CurrentPair;
             int currentIndent = _lineState.Indent;
-            var indentBeforeComments = -1;
             var indentCounter = 0;
             int indentSum = 0;
+            var endedByComment = false;
 
             while (true)
             {
-                if (_input.Next == '\t' || _input.Next == ' ')
+                if (_input.Next.IsSpaceCharacter())
                 {
                     if (_indentSymbol == 0) //First indent defines indent standard for the whole file.
                     {
                         _indentSymbol = (char) _input.Next;
                         _indentMultiplicity = 1;
                     }
-                    if (_indentMultiplicity == 0) _indentMultiplicity = 1;
 
                     indentCounter++;
                     if (indentCounter <= currentIndent + _indentMultiplicity)
@@ -1192,18 +1185,18 @@ namespace Syntactik
                     end = -2;
                 }
                 else if (end - begin < currentIndent && _input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair))
-                {
-                    indentBeforeComments = end - begin + 1;
+                { //consuming dedented comments and storing comments indent
+                    endedByComment = true;
                 }
                 else
                 {
                     break;
                 }
             }
-            var indent = indentBeforeComments < 0 ? end - begin + 1 : indentBeforeComments;
-
-            if (_input.Next != -1 && (indent > currentIndent))
-            {
+            var indent = end - begin + 1;
+            
+            if (_input.Next != -1 && !endedByComment && indent > currentIndent)
+            { //Dedent in comments ends ML string
                 CheckIndentErrors(indent, indentSum);
                 return true;
             }
@@ -1239,9 +1232,7 @@ namespace Syntactik
                     indent > currentIndent); //Special case used in completion. Value context. True- means value is ended by EOF but not by dedent.
             }
 
-
             _lineState.CurrentPair = null;
-            indent = end - begin + 1;
             _lineState.Indent = indent;
 
             while (_pairStack.Peek().Indent >= indent) EndPair(new Interval(_input));
