@@ -106,8 +106,8 @@ namespace Syntactik
                             _lineState.State = ParserStateEnum.PairDelimiter;
                         break;
                 }
-                if (_wsaStack.Count != 0) continue;
-                if (_lineState.State != ParserStateEnum.Value && !ConsumeEol()) continue;
+                if (_wsaStack.Count != 0) continue; //don't end line if this is wsa
+                if (_lineState.State != ParserStateEnum.Value && !ConsumeEol()) continue; 
                 ExitInlinePair();
                 if (_input.Next == -1 && _lineState.State != ParserStateEnum.Indent)
                 {
@@ -136,10 +136,8 @@ namespace Syntactik
                     //Report end of pair
                     var newPair = AppendCurrentPair();
                     _pairFactory.EndPair(newPair,
-                        new Interval(
-                            GetPairEnd(
+                        new Interval(GetPairEnd(
                                 (IMappedPair) newPair)) /*endedByEof is always false because this method is called after ConsumeEol consuming eol.*/);
-                    _lineState.CurrentPair = null;
                 }
                 if (pi.Pair.Assignment == AssignmentEnum.E || pi.Pair.Assignment == AssignmentEnum.EE ||
                     pi.Pair.Assignment == AssignmentEnum.CE || pi.Pair.Assignment == AssignmentEnum.None)
@@ -167,7 +165,7 @@ namespace Syntactik
         {
             var p = _lineState.CurrentPair;
             if (p.Assignment != AssignmentEnum.E && p.Assignment != AssignmentEnum.EE)
-            {
+            { //No literal value
                 _lineState.State = ParserStateEnum.PairDelimiter;
                 return;
             }
@@ -216,7 +214,6 @@ namespace Syntactik
                     var newPair = AppendCurrentPair();
                     //Report end of pair
                     _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair) newPair)));
-                    _lineState.CurrentPair = null;
                     EnsureNothingElseBeforeEol();
                     return false;
                 }
@@ -271,13 +268,13 @@ namespace Syntactik
 
             _pairFactory.AppendChild(_pairStack.Peek().Pair, newPair);
             _lineState.ChainingStarted = false;
+            _lineState.CurrentPair = null;
             return newPair;
         }
         private void AppendAndPushCurrentPair()
         {
             var newPair = AppendCurrentPair();
             _pairStack.Push(new PairIndentInfo {Pair = newPair, Indent = _lineState.Indent, BlockIndent = -1});
-            _lineState.CurrentPair = null;
         }
         /// <summary>
         /// Consumes till EOL or EOF. Reports any symbols other than spaces as unexpected.
@@ -295,7 +292,6 @@ namespace Syntactik
                 c = _input.Next;
             }
         }
-
         /// <summary>
         /// Returns first symbol of quoted multiline string.
         /// If the value is open ml string the it returns -2. 
@@ -1019,7 +1015,6 @@ namespace Syntactik
                 var newPair = AppendCurrentPair();
                 //Report end of pair
                 _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair) newPair)), _input.Next == -1);
-                _lineState.CurrentPair = null;
             }
         }
 
@@ -1124,19 +1119,67 @@ namespace Syntactik
 
         /// <summary>
         /// Consumes indent of the multiline string line.
-        /// Returns true if indent is greater than current indent
+        /// Returns true if indent is greater than current indent (ml string continues)
         /// </summary>
         /// <returns></returns>
         private bool ParseMlStringIndent()
         {
-            var begin = -1;
-            var end = -2;
-            var p = _lineState.CurrentPair;
-            int currentIndent = _lineState.Indent;
-            var indentCounter = 0;
-            int indentSum = 0;
-            var endedByComment = false;
+            var currentPair = _lineState.CurrentPair;
+            var indent = CalcMlStringIndent(_lineState.Indent, currentPair, out var indentSum, out var endedByComment);
 
+            if (_input.Next != -1 && indent > _lineState.Indent && // Indent is greater than current indent (ml string continues).
+                !endedByComment //Dedent in comments ends ML string
+            )
+            { 
+                //CheckIndentErrors(indent, indentSum);
+                return true;
+            }
+            //At this point we know that ml string is ended.
+            var valueStart = GetValueStart(currentPair);
+            if (valueStart > 0)
+            { //Quoted string ended by indentation (missing quote)
+                currentPair.MissingValueQuote = true;
+                //newPair = AppendCurrentPair();
+                ReportMLSSyntaxError(1, new Interval(currentPair.ValueInterval.End, currentPair.ValueInterval.End), valueStart);
+            }
+            else
+            { //Multiline Open string
+                if (indent == _lineState.Indent && _input.Next == '=' && _input.La(2) == '=' && _input.La(3) == '=')
+                {//Checking if it is ended with ===
+                    _input.Consume();_input.Consume();_input.Consume();
+                    currentPair.ValueInterval = new Interval(currentPair.ValueInterval.Begin, new CharLocation(_input));
+                }
+            }
+            var newPair = AppendCurrentPair();
+            //Report end of pair
+            if (_input.Next != -1)
+                _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair) newPair)));
+            else
+            {
+                _pairFactory.EndPair(newPair,
+                    indent <= _lineState.Indent ? new Interval(GetPairEnd((IMappedPair) newPair)) : new Interval(_input),
+                    _lineState.State == ParserStateEnum.Value ||
+                    indent > _lineState.Indent); //Special case used in completion. Value context. True- means value is ended by EOF but not by dedent.
+            }
+            _lineState.Indent = indent;
+
+            while (_pairStack.Peek().Indent >= indent) EndPair(new Interval(_input));
+
+            if (_input.Next != -1 && //ignore indent mismatch in the EOF
+                _pairStack.Peek().BlockIndent != indent)
+                ReportBlockIndentationMismatch(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent),
+                    new CharLocation(_input)));
+
+            //CheckIndentErrors(indent, indentSum);
+            return false;
+        }
+
+        private int CalcMlStringIndent(int currentIndent, MappedPair p, out int indentSum, out bool endedByComment)
+        {
+            var begin = -1; var end = -2;
+            var indentCounter = 0;
+            indentSum = 0;
+            endedByComment = false;
             while (_input.Next != -1)
             {
                 if (_input.Next.IsSpaceCharacter())
@@ -1170,59 +1213,16 @@ namespace Syntactik
                     end = -2;
                 }
                 else if (end - begin < currentIndent && _input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair))
-                { //consuming dedented comments and storing comments indent
+                { //consuming less indented comments and storing comment indent
                     endedByComment = true;
                 }
                 else break;
             }
             var indent = end - begin + 1;
-            if (_input.Next != -1 && !endedByComment && indent > currentIndent)
-            { //Dedent in comments ends ML string
-                CheckIndentErrors(indent, indentSum);
-                return true;
-            }
-            var valueStart = GetValueStart(p);
-            Pair newPair;
-            if (valueStart > 0)
-            {
-                _lineState.CurrentPair.MissingValueQuote = true;
-                newPair = AppendCurrentPair();
-                var valueEnd = p.ValueInterval.End;
-                ReportMLSSyntaxError(1, new Interval(valueEnd, valueEnd), valueStart);
-            }
-            else
-            {
-                if (indent == currentIndent && _input.Next == '=' && _input.La(2) == '=' && _input.La(3) == '=')
-                {
-                    _input.Consume();_input.Consume();_input.Consume();
-                    _lineState.CurrentPair.ValueInterval = new Interval(_lineState.CurrentPair.ValueInterval.Begin, new CharLocation(_input));
-                }
-                newPair = AppendCurrentPair();
-            }
-            //Report end of pair
-            if (_input.Next != -1)
-                _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair) newPair)));
-            else
-            {
-                _pairFactory.EndPair(newPair,
-                    indent <= currentIndent ? new Interval(GetPairEnd((IMappedPair) newPair)) : new Interval(_input),
-                    _lineState.State == ParserStateEnum.Value ||
-                    indent > currentIndent); //Special case used in completion. Value context. True- means value is ended by EOF but not by dedent.
-            }
-
-            _lineState.CurrentPair = null;
-            _lineState.Indent = indent;
-
-            while (_pairStack.Peek().Indent >= indent) EndPair(new Interval(_input));
-
-            if (_input.Next != -1 && //ignore indent mismatch in the EOF
-                _pairStack.Peek().BlockIndent != indent)
-                ReportBlockIndentationMismatch(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent),
-                    new CharLocation(_input)));
-
             CheckIndentErrors(indent, indentSum);
-            return false;
+            return indent;
         }
+
         private void CheckIndentErrors(int indent, int indentSum)
         {
             if (_input.Next == -1) return;
@@ -1230,8 +1230,7 @@ namespace Syntactik
             if (_indentMultiplicity > 0 && indent % _indentMultiplicity > 0)
                 ReportInvalidIndentationMultiplicity(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent), new CharLocation(_input)));
             //Indent must be increased exactly with number of symbols defined by indent multiplicity
-            if (_indentMultiplicity > 0 && indent > _lineState.Indent && indent != _lineState.Indent + _indentMultiplicity &&
-                indent % _indentMultiplicity == 0)
+            if (_indentMultiplicity > 0 && indent > _lineState.Indent && indent != _lineState.Indent + _indentMultiplicity && indent % _indentMultiplicity == 0)
                     ReportInvalidIndentationSize(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent), new CharLocation(_input)));
             //Indent must consists of the either tab or space but both are not allowed.
             if ((indent > 0) && indentSum != _indentSymbol * indent)
@@ -1244,7 +1243,7 @@ namespace Syntactik
             _lineState = new LineParsingState();
             _indentMultiplicity = 0;
         }
-        private CharLocation GetPairEnd(IMappedPair child)
+        private static CharLocation GetPairEnd(IMappedPair child)
         {
             if (child.ValueInterval != null) return child.ValueInterval.End;
             if (child.AssignmentInterval != null) return child.AssignmentInterval.End;
