@@ -79,7 +79,7 @@ namespace Syntactik.Tests
             }
         }
 
-        private static void PrintErrors(List<string> errors, string title)
+        private static void PrintErrors(IEnumerable<string> errors, string title)
         {
             TestContext.WriteLine(title);
 
@@ -191,7 +191,7 @@ namespace Syntactik.Tests
             File.WriteAllText(fileName, serialLexerErrors);
         }
 
-        private static string SerializeErrors(List<string> errors)
+        private static string SerializeErrors(IEnumerable<string> errors)
         {
             var sb = new StringBuilder();
             foreach (var item in errors)
