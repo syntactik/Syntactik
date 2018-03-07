@@ -1,26 +1,21 @@
 ﻿#region license
 // Copyright © 2017 Maxim O. Trushin (trushin@gmail.com)
-//
 // This file is part of Syntactik.
 // Syntactik is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-
 // Syntactik is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-
 using System.Collections.Generic;
 using Syntactik.DOM;
 using Syntactik.DOM.Mapped;
 using Syntactik.IO;
-
 namespace Syntactik
 {
     /// <summary>
@@ -38,12 +33,10 @@ namespace Syntactik
         private readonly IPairFactory _pairFactory;
         private readonly DOM.Module _module;
         private readonly bool _processJsonBrackets;
-
         /// <summary>
         /// List of error listeners.
         /// </summary>
         public virtual IList<IErrorListener> ErrorListeners => _errorListeners ?? (_errorListeners = new List<IErrorListener>());
-
         /// <summary>
         /// Creates instance of the <see cref="Parser"/>.
         /// </summary>
@@ -60,7 +53,6 @@ namespace Syntactik
             _module = root;
             _processJsonBrackets = processJsonBrackets;
         }
-
         /// <summary>
         /// Starts parsing.
         /// </summary>
@@ -68,25 +60,15 @@ namespace Syntactik
         public virtual DOM.Module ParseModule()
         {
             ResetState();
-            while (_input.Next != -1)
-                ParseLine();
+            while (_input.Next != -1) ParseLine();
             if (_lineState.State == ParserStateEnum.IndentMLS) ParseMlStringIndent();
             ExitNonBlockPair();
             while (_pairStack.Peek().Indent >= 0) EndPair(new Interval(_input), true);
-            if (_wsaStack.Count > 0)
-                ReportSyntaxError(1, new Interval(_input), "Closing parenthesis");
-
+            if (_wsaStack.Count > 0) ReportSyntaxError(1, new Interval(_input), "Closing parenthesis");
             _module.IndentMultiplicity = _indentMultiplicity;
             _module.IndentSymbol = _indentSymbol;
-
             return (DOM.Module) _pairStack.Peek().Pair;
         }
-
-        private void EndPair(Interval interval, bool endedByEof = false)
-        {
-            _pairFactory.EndPair(_pairStack.Pop().Pair, interval, endedByEof);
-        }
-
         /// <summary>
         /// Parses one line.
         /// WSA region is treated as one line.
@@ -275,7 +257,10 @@ namespace Syntactik
                 }
             }
         }
-
+        private void EndPair(Interval interval, bool endedByEof = false)
+        {
+            _pairFactory.EndPair(_pairStack.Pop().Pair, interval, endedByEof);
+        }
         private Pair AppendCurrentPair()
         {
             var pair = _lineState.CurrentPair;
@@ -288,14 +273,12 @@ namespace Syntactik
             _lineState.ChainingStarted = false;
             return newPair;
         }
-
         private void AppendAndPushCurrentPair()
         {
             var newPair = AppendCurrentPair();
             _pairStack.Push(new PairIndentInfo {Pair = newPair, Indent = _lineState.Indent, BlockIndent = -1});
             _lineState.CurrentPair = null;
         }
-
         /// <summary>
         /// Consumes till EOL or EOF. Reports any symbols other than spaces as unexpected.
         ///  </summary>
@@ -304,10 +287,7 @@ namespace Syntactik
             var c = _input.Next;
             while (c != -1 && !c.IsNewLineCharacter())
             {
-                if (_input.ConsumeSpaces() || _input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair))
-                {
-                }
-                else
+                if (!(_input.ConsumeSpaces() || _input.ConsumeComments(_pairFactory, _pairStack.Peek().Pair)))
                 {
                     _input.Consume();
                     ReportUnexpectedCharacter(c);
@@ -1091,23 +1071,22 @@ namespace Syntactik
         }
 
         /// <summary>
-        /// Parsing and processes line indent.
+        /// Parses and processes line indent.
         /// </summary>
         private void ParseIndent()
         {
-            
             if (_wsaStack.Count > 0) //Do not calculate indent for inline pair or wsa mode
             {
                 _input.ConsumeSpaces();
                 _lineState.State = ParserStateEnum.PairDelimiter;
                 return;
             }
-            int indentSum = 0;
+            var indentSum = 0;
             var begin = -1;
             var end = -2;
             while (true)
             {
-                if (_input.Next == '\t' || _input.Next == ' ')
+                if (_input.Next.IsSpaceCharacter())
                 {
                     indentSum += _input.Next;
                     _input.Consume();
@@ -1126,7 +1105,20 @@ namespace Syntactik
                     break;
                 }
             }
-            ProcessIndent(begin, end, indentSum);
+            var indent = end - begin + 1;
+            while (_pairStack.Peek().Indent >= indent) EndPair(new Interval(_input)); //Ending pairs with bigger indent
+            if (_pairStack.Peek().BlockIndent == -1) _pairStack.Peek().BlockIndent = indent;
+            else
+            {
+                if (_input.Next != -1 /*ignore indent mismatch in the EOF*/ && _pairStack.Peek().BlockIndent != indent)
+                    ReportBlockIndentationMismatch(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent), new CharLocation(_input)));
+            }
+            if (_indentSymbol == 0 && indent > 0) //First indent defines indent standard for the whole file.
+                _indentSymbol = ((ITextSource)_input).GetChar(begin);
+            if (_indentMultiplicity == 0 && _input.Next != -1 && indent > 0)
+                _indentMultiplicity = indent;
+            CheckIndentErrors(indent, indentSum);
+            _lineState.Indent = indent;
             _lineState.State = ParserStateEnum.PairDelimiter;
         }
 
@@ -1145,7 +1137,7 @@ namespace Syntactik
             int indentSum = 0;
             var endedByComment = false;
 
-            while (true)
+            while (_input.Next != -1)
             {
                 if (_input.Next.IsSpaceCharacter())
                 {
@@ -1154,7 +1146,6 @@ namespace Syntactik
                         _indentSymbol = (char) _input.Next;
                         _indentMultiplicity = 1;
                     }
-
                     indentCounter++;
                     if (indentCounter <= currentIndent + _indentMultiplicity)
                     {
@@ -1166,15 +1157,9 @@ namespace Syntactik
                     else
                     {
                         _input.Consume();
-                        if (p.ValueInterval == null ||
-                            p.ValueInterval.Begin.Index == -1)
-                            p.ValueInterval =
-                                new Interval(new CharLocation(_input), new CharLocation(_input));
+                        if (p.ValueInterval == null || p.ValueInterval.Begin.Index == -1)
+                            p.ValueInterval = new Interval(new CharLocation(_input), new CharLocation(_input));
                     }
-                }
-                else if (_input.Next == -1)
-                {
-                    break;
                 }
                 else if (_input.Next.IsNewLineCharacter())
                 {
@@ -1188,13 +1173,9 @@ namespace Syntactik
                 { //consuming dedented comments and storing comments indent
                     endedByComment = true;
                 }
-                else
-                {
-                    break;
-                }
+                else break;
             }
             var indent = end - begin + 1;
-            
             if (_input.Next != -1 && !endedByComment && indent > currentIndent)
             { //Dedent in comments ends ML string
                 CheckIndentErrors(indent, indentSum);
@@ -1213,11 +1194,8 @@ namespace Syntactik
             {
                 if (indent == currentIndent && _input.Next == '=' && _input.La(2) == '=' && _input.La(3) == '=')
                 {
-                    _input.Consume();
-                    _input.Consume();
-                    _input.Consume();
-                    var cp = _lineState.CurrentPair;
-                    cp.ValueInterval = new Interval(cp.ValueInterval.Begin, new CharLocation(_input));
+                    _input.Consume();_input.Consume();_input.Consume();
+                    _lineState.CurrentPair.ValueInterval = new Interval(_lineState.CurrentPair.ValueInterval.Begin, new CharLocation(_input));
                 }
                 newPair = AppendCurrentPair();
             }
@@ -1245,54 +1223,20 @@ namespace Syntactik
             CheckIndentErrors(indent, indentSum);
             return false;
         }
-
-        private void ProcessIndent(int begin, int end, int indentSum)
-        {
-            var indent = end - begin + 1;
-
-            if (_indentSymbol == 0 && indent > 0) //First indent defines indent standard for the whole file.
-            {
-                _indentSymbol = ((ITextSource) _input).GetChar(begin);
-            }
-
-            while (_pairStack.Peek().Indent >= indent) EndPair(new Interval(_input));
-
-            if (_pairStack.Peek().BlockIndent == -1) _pairStack.Peek().BlockIndent = indent;
-            else
-            {
-                if (_input.Next != -1 && //ignore indent mismatch in the EOF
-                    _pairStack.Peek().BlockIndent != indent)
-                    ReportBlockIndentationMismatch(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent),
-                        new CharLocation(_input)));
-            }
-            if (_indentMultiplicity == 0 && _input.Next != -1 && indent > 0)
-            {
-                _indentMultiplicity = indent;
-            }
-            CheckIndentErrors(indent, indentSum);
-            _lineState.Indent = indent;
-        }
-
         private void CheckIndentErrors(int indent, int indentSum)
         {
             if (_input.Next == -1) return;
             // Multiplicity of the indent symbols must be the same for the whole document
             if (_indentMultiplicity > 0 && indent % _indentMultiplicity > 0)
-                ReportInvalidIndentationMultiplicity(new Interval(
-                    new CharLocation(_input.Line, 1, _input.Index - indent),
-                    new CharLocation(_input)));
+                ReportInvalidIndentationMultiplicity(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent), new CharLocation(_input)));
             //Indent must be increased exactly with number of symbols defined by indent multiplicity
-            if (_indentMultiplicity > 0 && indent > _lineState.Indent &&
-                indent != _lineState.Indent + _indentMultiplicity &&
+            if (_indentMultiplicity > 0 && indent > _lineState.Indent && indent != _lineState.Indent + _indentMultiplicity &&
                 indent % _indentMultiplicity == 0)
-                ReportInvalidIndentationSize(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent),
-                    new CharLocation(_input)));
+                    ReportInvalidIndentationSize(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent), new CharLocation(_input)));
             //Indent must consists of the either tab or space but both are not allowed.
             if ((indent > 0) && indentSum != _indentSymbol * indent)
-                ReportMixedIndentation(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent),
-                    new CharLocation(_input)));
+                ReportMixedIndentation(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent), new CharLocation(_input)));
         }
-
         private void ResetState()
         {
             _input.Reset();
@@ -1300,7 +1244,6 @@ namespace Syntactik
             _lineState = new LineParsingState();
             _indentMultiplicity = 0;
         }
-
         private CharLocation GetPairEnd(IMappedPair child)
         {
             if (child.ValueInterval != null) return child.ValueInterval.End;
