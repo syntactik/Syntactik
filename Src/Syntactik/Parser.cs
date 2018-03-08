@@ -82,55 +82,48 @@ namespace Syntactik
                 switch (_lineState.State)
                 {
                     case ParserStateEnum.Indent:
-                        ParseIndent();
-                        break;
+                        ParseIndent(); break;
                     case ParserStateEnum.Name:
-                        ParseName();
-                        break;
+                        ParseName(); break;
                     case ParserStateEnum.Assignment:
-                        ParseAssignment();
-                        break;
+                        ParseAssignment(); break;
                     case ParserStateEnum.Value:
-                        ParseValue();
-                        break;
+                        ParseValue(); break;
                     case ParserStateEnum.PairDelimiter:
-                        ParsePairDelimiter();
-                        break;
+                        ParsePairDelimiter(); break;
                     case ParserStateEnum.IndentMLS:
                         if (ParseMlStringIndent())
                         {
-                            if (!ParseMlValue())
-                                _lineState.State = ParserStateEnum.Indent;
+                            if (!ParseMlValue()) _lineState.State = ParserStateEnum.Indent;
                         }
-                        else
-                            _lineState.State = ParserStateEnum.PairDelimiter;
+                        else _lineState.State = ParserStateEnum.PairDelimiter;
                         break;
                 }
                 if (_wsaStack.Count != 0) continue; //don't end line if this is wsa
-                if (_lineState.State != ParserStateEnum.Value && !ConsumeEol()) continue; 
-                ExitInlinePair();
+                if (_lineState.State == ParserStateEnum.Value) continue; //Value state must be processed even if this is eol.
+                if (!ConsumeEol()) continue; //line is not ended.
+                ExitAllInlinePairs();
                 if (_input.Next == -1 && _lineState.State != ParserStateEnum.Indent)
                 {
                     if (_lineState.State == ParserStateEnum.IndentMLS || _lineState.State == ParserStateEnum.Value)
                         ParseMlStringIndent();
-                    _lineState.Reset();
                     ParseIndent();
                 }
                 break;
             }
         }
 
-        private void ExitInlinePair()
+        //Ends all inline pairs
+        private void ExitAllInlinePairs()
         {
             if (_lineState.CurrentPair == MappedPair.EmptyPair)
             {
                 _lineState.CurrentPair = null;
             }
-            if (_lineState.State == ParserStateEnum.IndentMLS || _lineState.State == ParserStateEnum.Value) return;
+            if (_lineState.State == ParserStateEnum.IndentMLS) return; //ML String can't start for inline pair
             while (_pairStack.Count > 0)
             {
                 var pi = _pairStack.Peek();
-
                 if (_lineState.CurrentPair != null)
                 {
                     //Report end of pair
@@ -199,18 +192,16 @@ namespace Syntactik
         /// <returns>Return false if multi line value ended.</returns>
         private bool ParseMlValue()
         {
-            var p = _lineState.CurrentPair;
-            var valueStart = GetStartingQuote(p);
+            var currentPair = _lineState.CurrentPair;
+            var startQuote = GetStartQuote(currentPair);
             while (true)
             {
-                if (_input.Next == valueStart)
+                if (_input.Next == startQuote)
                 {
                     //Quoted ML string ended
                     _input.Consume();
-                    p.ValueInterval =
-                        new Interval(((IMappedPair) p).ValueInterval.Begin, new CharLocation(_input));
-                    AssignValueToCurrentPair(((IMappedPair) p).ValueInterval.Begin,
-                        ((IMappedPair) p).ValueInterval.End);
+                    currentPair.ValueInterval = new Interval(currentPair.ValueInterval.Begin, new CharLocation(_input));
+                    AssignValueToCurrentPair(currentPair.ValueInterval.Begin, currentPair.ValueInterval.End);
                     var newPair = AppendCurrentPair();
                     //Report end of pair
                     _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair) newPair)));
@@ -218,39 +209,35 @@ namespace Syntactik
                     return false;
                 }
 
-                if (_input.Next == '\\' && valueStart == '"') //escape symbol in DQS
+                if (_input.Next == '\\' && startQuote == '"') //escape symbol in DQS
                 {
                     _input.Consume();
                 }
 
                 if (_input.Next.IsNewLineCharacter())
                 {
-                    p.ValueInterval =
-                        new Interval(((IMappedPair) p).ValueInterval.Begin, new CharLocation(_input));
+                    currentPair.ValueInterval = new Interval(currentPair.ValueInterval.Begin, new CharLocation(_input));
                     return true;
                 }
 
                 if (_input.Next == -1)
                 {
-                    p.ValueInterval =
-                        new Interval(((IMappedPair) p).ValueInterval.Begin, new CharLocation(_input));
-                    if (valueStart > 0)
+                    currentPair.ValueInterval = new Interval(currentPair.ValueInterval.Begin, new CharLocation(_input));
+                    if (startQuote > 0)
                     {
-                        ReportMLSSyntaxError(1, new Interval(_input), valueStart);
-                        AssignValueToCurrentPair(((IMappedPair) p).ValueInterval.Begin,
-                            ((IMappedPair) p).ValueInterval.End, true);
+                        ReportMLSSyntaxError(1, new Interval(_input), startQuote);
+                        AssignValueToCurrentPair(currentPair.ValueInterval.Begin, currentPair.ValueInterval.End, true);
                     }
                     else
                     {
-                        AssignValueToCurrentPair(((IMappedPair) p).ValueInterval.Begin,
-                            ((IMappedPair) p).ValueInterval.End);
+                        AssignValueToCurrentPair(currentPair.ValueInterval.Begin, currentPair.ValueInterval.End);
                     }
                     return false;
                 }
                 _input.Consume();
-                if (((IMappedPair) p).ValueInterval == null || ((IMappedPair) p).ValueInterval.Begin.Index == -1)
+                if (currentPair.ValueInterval == null || currentPair.ValueInterval.Begin.Index == -1)
                 {
-                    p.ValueInterval = new Interval(new CharLocation(_input), new CharLocation(_input));
+                    currentPair.ValueInterval = new Interval(new CharLocation(_input), new CharLocation(_input));
                 }
             }
         }
@@ -258,6 +245,7 @@ namespace Syntactik
         {
             _pairFactory.EndPair(_pairStack.Pop().Pair, interval, endedByEof);
         }
+        //Creates new pair and appends it to parent
         private Pair AppendCurrentPair()
         {
             var pair = _lineState.CurrentPair;
@@ -298,7 +286,7 @@ namespace Syntactik
         /// </summary>
         /// <param name="mappedPair"></param>
         /// <returns></returns>
-        private static int GetStartingQuote(MappedPair mappedPair)
+        private static int GetStartQuote(MappedPair mappedPair)
         {
             if (mappedPair.ValueQuotesType == (int) QuotesEnum.Double) return '"';
             if (mappedPair.ValueQuotesType == (int) QuotesEnum.Single) return '\'';
@@ -308,8 +296,7 @@ namespace Syntactik
         private void ParseFreeOpenString()
         {
             _input.ConsumeSpaces();
-            var begin = CharLocation.Empty;
-            var end = CharLocation.Empty;
+            CharLocation begin = CharLocation.Empty, end = CharLocation.Empty;
             while (_input.Next != -1)
             {
                 if (_input.Next.IsNewLineCharacter())
@@ -345,8 +332,7 @@ namespace Syntactik
         private void ParseOpenString()
         {
             var c = _input.Next;
-            var begin = CharLocation.Empty;
-            var end = CharLocation.Empty;
+            CharLocation begin = CharLocation.Empty, end = CharLocation.Empty;
             while (true)
             {
                 if (c.IsEndOfOpenString(_processJsonBrackets) || c == -1)
@@ -1005,17 +991,10 @@ namespace Syntactik
 
         private void ExitNonBlockPair()
         {
-            if (_lineState.CurrentPair == MappedPair.EmptyPair)
-            {
-                _lineState.CurrentPair = null;
-            }
-
-            if (_lineState.CurrentPair != null)
-            {
-                var newPair = AppendCurrentPair();
-                //Report end of pair
-                _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair) newPair)), _input.Next == -1);
-            }
+            if (_lineState.CurrentPair == MappedPair.EmptyPair) _lineState.CurrentPair = null;
+            if (_lineState.CurrentPair == null) return;
+            var newPair = AppendCurrentPair();
+            _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair) newPair)), _input.Next == -1);
         }
 
         private void ReportUnexpectedCharacter(int c)
@@ -1102,7 +1081,7 @@ namespace Syntactik
             ) return true;
             
             // At this point we know that ml string is ended.
-            var valueStart = GetStartingQuote(currentPair);
+            var valueStart = GetStartQuote(currentPair);
             if (valueStart > 0)
             { //Quoted string ended by indentation (missing quote)
                 currentPair.MissingValueQuote = true;
@@ -1117,8 +1096,8 @@ namespace Syntactik
                     currentPair.ValueInterval = new Interval(currentPair.ValueInterval.Begin, new CharLocation(_input));
                 }
             }
-            var newPair = AppendCurrentPair();
-            //Report end of pair
+            var newPair = AppendCurrentPair();//Creating the new pair and appending it to parent
+            //Reporting end of pair
             if (_input.Next != -1)
                 _pairFactory.EndPair(newPair, new Interval(GetPairEnd((IMappedPair) newPair)));
             else
@@ -1128,10 +1107,10 @@ namespace Syntactik
                     _lineState.State == ParserStateEnum.Value ||
                     indent > _lineState.Indent); //Special case used in completion. Value context. True- means value is ended by EOF but not by dedent.
             }
-            _lineState.Indent = indent;
-
+            _lineState.Indent = indent; //Saving new value of indent in the lineState
+            //Ending pair with bigger indents.
             while (_pairStack.Peek().Indent >= indent) EndPair(new Interval(_input));
-
+            //Checking for BlockIndentationMismatch error
             if (_input.Next != -1 && //ignore indent mismatch in the EOF
                 _pairStack.Peek().BlockIndent != indent)
                 ReportBlockIndentationMismatch(new Interval(new CharLocation(_input.Line, 1, _input.Index - indent),
