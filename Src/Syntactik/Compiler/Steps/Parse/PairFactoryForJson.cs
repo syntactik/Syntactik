@@ -235,11 +235,11 @@ namespace Syntactik.Compiler.Steps
             }
             if (value == null) return ValueType.None;
 
-            if (valueQuotesType == 1)
+            if (valueQuotesType == '\'')
             {
                 return ValueType.SingleQuotedString;
             }
-            if (valueQuotesType == 2)
+            if (valueQuotesType == '"')
             {
                 return ValueType.DoubleQuotedString;
             }
@@ -306,8 +306,8 @@ namespace Syntactik.Compiler.Steps
             
 
             //Checking name
-            if (childMapped.NameQuotesType != 2 && 
-                (childMapped.NameQuotesType == 1 || 
+            if (childMapped.NameQuotesType != '"' && 
+                (childMapped.NameQuotesType == '\'' || 
                  child.Assignment != AssignmentEnum.None || 
                  childMapped.ValueType == ValueType.OpenString) //open name with no assignment.
             )
@@ -319,8 +319,8 @@ namespace Syntactik.Compiler.Steps
             //Checking value
             if (child.Assignment != AssignmentEnum.None)
             {
-                if (childMapped.ValueQuotesType != 2 &&
-                    (childMapped.ValueQuotesType == 1 ||
+                if (childMapped.ValueQuotesType != '"' &&
+                    (childMapped.ValueQuotesType == '\'' ||
                      childMapped.ValueType == ValueType.OpenString) 
                 )
                 {

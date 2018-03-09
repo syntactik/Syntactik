@@ -47,20 +47,6 @@ namespace TestEditor
         }
 
 
-        char QuoteTypeToChar(int quoteType)
-        {
-            switch (quoteType)
-            {
-                case  (int)QuotesEnum.Double:
-                    return '"';
-                case (int)QuotesEnum.Single:
-                    return '\'';
-                default:
-                    return '`';
-
-            }
-        }
-
         public override void Visit(Module pair)
         {
             PrintNodeName(pair);
@@ -154,10 +140,10 @@ namespace TestEditor
                 _sb.Append("\t");
                 _sb.Append(pair.GetType().Name);
                 _sb.Append(" ");
-                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
+                _sb.Append(((IMappedPair)pair).NameQuotesType > 0 ? (char)((IMappedPair)pair).NameQuotesType : '`');
                 PrintNsPrefix(pair);
                 _sb.Append(pair.Name);
-                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
+                _sb.Append(((IMappedPair)pair).NameQuotesType > 0 ? (char)((IMappedPair)pair).NameQuotesType : '`');
             }
             else
             {
@@ -169,10 +155,10 @@ namespace TestEditor
                 _sb.Append("\t");
                 _sb.Append(pair.GetType().Name);
                 _sb.Append(" ");
-                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
+                _sb.Append(((IMappedPair)pair).NameQuotesType > 0 ? (char)((IMappedPair)pair).NameQuotesType : '`');
                 PrintNsPrefix(pair);
                 _sb.Append(pair.Name);
-                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).NameQuotesType));
+                _sb.Append(((IMappedPair)pair).NameQuotesType > 0 ? (char)((IMappedPair)pair).NameQuotesType : '`');
             }
         }
 
@@ -208,9 +194,9 @@ namespace TestEditor
             {
                 _sb.Append(AssignmentToString(pair.Assignment));
                 _sb.Append(" ");
-                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).ValueQuotesType));
+                _sb.Append(((IMappedPair)pair).ValueQuotesType > 0 ? (char)((IMappedPair)pair).ValueQuotesType : '`');
                 PrintValue(pair);
-                _sb.Append(QuoteTypeToChar(((IMappedPair)pair).ValueQuotesType));
+                _sb.Append(((IMappedPair)pair).ValueQuotesType > 0 ? (char)((IMappedPair)pair).ValueQuotesType : '`');
             }
             else if (pair.PairValue != null)
             {

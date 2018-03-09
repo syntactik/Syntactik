@@ -176,7 +176,7 @@ namespace Syntactik.DOM
             if (nameQuotesType == 0)
                 return input.GetText(nameInterval.Begin.Index, nameInterval.End.Index);
             var c = input.GetChar(nameInterval.End.Index);
-            if (nameQuotesType == 1)
+            if (nameQuotesType == '\'')
                 return c == '\''
                     ? input.GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index - 1)
                     : input.GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index);
@@ -199,11 +199,11 @@ namespace Syntactik.DOM
             {
                 return string.Empty;
             }
-            if (valueQuotesType == (int) QuotesEnum.Single || valueQuotesType == (int) QuotesEnum.Double)
+            if (valueQuotesType == '\'' || valueQuotesType == '"')
             {
                 var c = input.GetChar(valueInterval.End.Index);
-                var missingValueQuote = valueQuotesType == (int) QuotesEnum.Single && c != '\'' ||
-                                        valueQuotesType == (int) QuotesEnum.Double && c != '"';
+                var missingValueQuote = valueQuotesType == '\'' && c != '\'' ||
+                                        valueQuotesType == '"' && c != '"';
                 if (!missingValueQuote)
                 {
                     return GetValueFromValueInterval(input, assignment, valueQuotesType,
@@ -225,7 +225,7 @@ namespace Syntactik.DOM
             var lines = charStream.GetText(begin, end).Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
 
             bool folded = lines.Length > 1 && assignment == AssignmentEnum.EE &&
-                          (valueQuotesType == (int) QuotesEnum.None || valueQuotesType == (int) QuotesEnum.Double);
+                          (valueQuotesType == 0 || valueQuotesType == '"');
 
             var empty = true;
             var first = true; //This is first line (it doesn't have indent)
@@ -238,7 +238,7 @@ namespace Syntactik.DOM
                 if (checkIfFirstLineIsEmpty) //ignoring first empty line for open strings
                 {
                     checkIfFirstLineIsEmpty = false;
-                    if (valueQuotesType == (int) QuotesEnum.None && line == string.Empty)
+                    if (valueQuotesType == 0 && line == string.Empty)
                     {
                         first = false;
                         continue;
