@@ -114,7 +114,7 @@ namespace Syntactik
                     continue; 
                 if (!ConsumeEol()) continue; //line is not ended.
                 //line ended with eol
-                ExitAllInlinePairs();//Exit all inline pair cause line is ended
+                ExitAllInlinePairs();//Exit all inline pair because line is ended
                 if (_input.Next == -1) 
                 {
                     //This is part of "ended by eof logic"
@@ -180,13 +180,9 @@ namespace Syntactik
             {
                 AssignValueToCurrentPair(CharLocation.Empty, CharLocation.Empty);
             }
-            else if (_input.Next == '\'')
+            else if (_input.Next == '\'' || _input.Next == '"')
             {
-                ParseSQValue();
-            }
-            else if (_input.Next == '"')
-            {
-                ParseDQValue();
+                ParseQuotedValue(_input.Next);
             }
             else if (p.Assignment == AssignmentEnum.E && _wsaStack.Count == 0)
             {
@@ -389,69 +385,30 @@ namespace Syntactik
         }
 
         /// <summary>
-        /// Parses single line or multiline single quoted value.
-        /// The function can be called only if the next symbol is a double quote.
+        /// Parses single line or multiline quoted value.
+        /// The function can be called only if the next symbol is a quote.
         /// </summary>
-        private void ParseSQValue()
+        private void ParseQuotedValue(int quote)
         {
-            _lineState.CurrentPair.ValueQuotesType = '\'';
+            _lineState.CurrentPair.ValueQuotesType = quote;
             _input.Consume(); // Consume starting '
             var begin = new CharLocation(_input);
             var c = _input.Next;
 
             while (true)
             {
-                if (c == '\'')
+                if (c == quote)
                 {
                     _input.Consume();
                     AssignValueToCurrentPair(begin, new CharLocation(_input));
                     break;
                 }
-
-                if (c.IsNewLineCharacter())
-                {
-                    if (_wsaStack.Count < 1 && !_lineState.Inline)
-                    {
-                        AssignValueToCurrentPair(begin, new CharLocation(_input));
-                        _lineState.State = ParserStateEnum.IndentMLS;
-                        break;
-                    }
-
-                    ReportSyntaxError(1, new Interval(_input), "Single quote");
-                    AssignValueToCurrentPair(begin, new CharLocation(_input), true);
-                    break;
-                }
-
-                if (c == -1)
-                {
-                    ReportSyntaxError(1, new Interval(_input), "Single quote");
-                    AssignValueToCurrentPair(begin, new CharLocation(_input), true);
-                    break;
-                }
-                _input.Consume();
-                c = _input.Next;
-            }
-        }
-
-        private void ParseDQValue()
-        {
-            _lineState.CurrentPair.ValueQuotesType = '"';
-            _input.Consume(); // Consume starting "
-            var begin = new CharLocation(_input);
-            var c = _input.Next;
-            while (true)
-            {
-                if (c == '"')
-                {
-                    _input.Consume();
-                    AssignValueToCurrentPair(begin, new CharLocation(_input));
-                    break;
-                }
-                if (c == '\\')
+                if (quote == '"' && c == '\\') //Escape character in DQ value
                 {
                     _input.Consume();
                     c = _input.Next;
                 }
+
                 if (c.IsNewLineCharacter())
                 {
                     if (_wsaStack.Count < 1 && !_lineState.Inline)
@@ -460,14 +417,15 @@ namespace Syntactik
                         _lineState.State = ParserStateEnum.IndentMLS;
                         break;
                     }
-                    ReportSyntaxError(1, new Interval(_input), "Double quote");
+
+                    ReportSyntaxError(1, new Interval(_input), quote == '"' ? "Double quote" : "Single quote");
                     AssignValueToCurrentPair(begin, new CharLocation(_input), true);
                     break;
                 }
 
                 if (c == -1)
                 {
-                    ReportSyntaxError(1, new Interval(_input), "Double quote");
+                    ReportSyntaxError(1, new Interval(_input), quote == '"' ? "Double quote" : "Single quote");
                     AssignValueToCurrentPair(begin, new CharLocation(_input), true);
                     break;
                 }
@@ -475,7 +433,7 @@ namespace Syntactik
                 c = _input.Next;
             }
         }
-
+  
         /// <summary>
         /// Recognizes the following assignments:
         ///  `:`  `::`  `=`  `==`  `=:`  `=::`  `:::` `:=`
@@ -670,15 +628,9 @@ namespace Syntactik
             var c = _input.Next;
             while (c != -1)
             {
-                if (c == '\'')
+                if (c == '\'' || c == '"')
                 {
-                    ParseSQName();
-                    _lineState.State = ParserStateEnum.Assignment;
-                    break;
-                }
-                if (c == '"')
-                {
-                    ParseDQName();
+                    ParseQuotedName(c);
                     _lineState.State = ParserStateEnum.Assignment;
                     break;
                 }
@@ -764,7 +716,7 @@ namespace Syntactik
             }
         }
 
-        private void ParseDQName()
+        private void ParseQuotedName(int quote)
         {
             _input.Consume(); // Consume starting "
             var begin = new CharLocation(_input);
@@ -772,14 +724,14 @@ namespace Syntactik
 
             while (true)
             {
-                if (c == '"')
+                if (c == quote)
                 {
                     _input.Consume();
                     break;
                 }
                 if (c.IsNewLineCharacter() || c == -1)
                 {
-                    ReportSyntaxError(1, new Interval(_input), "Double quote");
+                    ReportSyntaxError(1, new Interval(_input), quote == '"'?"Double quote": "Single quote");
                     break;
                 }
                 _input.Consume();
@@ -791,7 +743,7 @@ namespace Syntactik
                 {
                     NameInterval = new Interval(begin, new CharLocation(_input)),
                     Assignment = AssignmentEnum.None,
-                    NameQuotesType = '"'
+                    NameQuotesType = quote
                 };
             }
             else
@@ -800,38 +752,9 @@ namespace Syntactik
                 {
                     NameInterval = new Interval(begin, new CharLocation(_input)),
                     Assignment = AssignmentEnum.None,
-                    NameQuotesType = '"'
+                    NameQuotesType = quote
                 };
             }
-        }
-
-        private void ParseSQName()
-        {
-            _input.Consume(); // Consume starting "
-            var begin = new CharLocation(_input);
-            var c = _input.Next;
-
-            while (true)
-            {
-                if (c == '\'')
-                {
-                    _input.Consume();
-                    break;
-                }
-                if (c.IsNewLineCharacter() || c == -1)
-                {
-                    ReportSyntaxError(1, new Interval(_input), "Single quote");
-                    break;
-                }
-                _input.Consume();
-                c = _input.Next;
-            }
-            _lineState.CurrentPair = new MappedPair
-            {
-                NameInterval = new Interval(begin, new CharLocation(_input)),
-                Assignment = AssignmentEnum.None,
-                NameQuotesType = '\''
-            };
         }
 
         /// <summary>
