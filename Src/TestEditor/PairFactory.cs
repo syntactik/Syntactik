@@ -180,11 +180,11 @@ namespace TestEditor
             {
                 return string.Empty;
             }
-            if (valueQuotesType == (int)QuotesEnum.Single || valueQuotesType == (int)QuotesEnum.Double)
+            if (valueQuotesType == '\'' || valueQuotesType == '"')
             {
                 var c = input.GetChar(valueInterval.End.Index);
-                var missingValueQuote = valueQuotesType == (int)QuotesEnum.Single && c != '\'' ||
-                                        valueQuotesType == (int)QuotesEnum.Double && c != '"';
+                var missingValueQuote = valueQuotesType == '\'' && c != '\'' ||
+                                        valueQuotesType == '"' && c != '"';
                 if (!missingValueQuote)
                 {
                     return GetValueFromValueInterval(input, assignment, valueQuotesType,
@@ -206,7 +206,7 @@ namespace TestEditor
             var lines = charStream.GetText(begin, end).Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
             bool folded = lines.Length > 1 && assignment == AssignmentEnum.EE &&
-                          (valueQuotesType == (int)QuotesEnum.None || valueQuotesType == (int)QuotesEnum.Double);
+                          (valueQuotesType == 0 || valueQuotesType == '"');
 
             var first = true;
             var firstEmptyLine = true; //If true then previous line was not empty therefor newline shouldn't be added
@@ -218,7 +218,7 @@ namespace TestEditor
                 if (checkIfFirstLineIsEmpty) //ignoring first empty line for open strings
                 {
                     checkIfFirstLineIsEmpty = false;
-                    if (valueQuotesType == (int)QuotesEnum.None && line == string.Empty)
+                    if (valueQuotesType == 0 && line == string.Empty)
                     {
                         first = false;
                         continue;

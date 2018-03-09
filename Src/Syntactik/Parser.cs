@@ -205,7 +205,7 @@ namespace Syntactik
         private void ParseMlValue()
         {
             var currentPair = _lineState.CurrentPair;
-            var startQuote = GetStartQuote(currentPair);
+            var startQuote = currentPair.ValueQuotesType;
             while (true)
             {
                 if (_input.Next == startQuote)
@@ -294,19 +294,6 @@ namespace Syntactik
                 }
                 c = _input.Next;
             }
-        }
-
-        /// <summary>
-        /// Returns first symbol of quoted multiline string.
-        /// If the value is open ml string the it returns -2. 
-        /// </summary>
-        /// <param name="mappedPair"></param>
-        /// <returns></returns>
-        private static int GetStartQuote(MappedPair mappedPair)
-        {
-            if (mappedPair.ValueQuotesType == (int) QuotesEnum.Double) return '"';
-            if (mappedPair.ValueQuotesType == (int) QuotesEnum.Single) return '\'';
-            return -2;
         }
 
         private void ParseFreeOpenString()
@@ -407,7 +394,7 @@ namespace Syntactik
         /// </summary>
         private void ParseSQValue()
         {
-            _lineState.CurrentPair.ValueQuotesType = (int) QuotesEnum.Single;
+            _lineState.CurrentPair.ValueQuotesType = '\'';
             _input.Consume(); // Consume starting '
             var begin = new CharLocation(_input);
             var c = _input.Next;
@@ -448,7 +435,7 @@ namespace Syntactik
 
         private void ParseDQValue()
         {
-            _lineState.CurrentPair.ValueQuotesType = (int) QuotesEnum.Double;
+            _lineState.CurrentPair.ValueQuotesType = '"';
             _input.Consume(); // Consume starting "
             var begin = new CharLocation(_input);
             var c = _input.Next;
@@ -804,7 +791,7 @@ namespace Syntactik
                 {
                     NameInterval = new Interval(begin, new CharLocation(_input)),
                     Assignment = AssignmentEnum.None,
-                    NameQuotesType = 2
+                    NameQuotesType = '"'
                 };
             }
             else
@@ -813,7 +800,7 @@ namespace Syntactik
                 {
                     NameInterval = new Interval(begin, new CharLocation(_input)),
                     Assignment = AssignmentEnum.None,
-                    NameQuotesType = 2
+                    NameQuotesType = '"'
                 };
             }
         }
@@ -843,7 +830,7 @@ namespace Syntactik
             {
                 NameInterval = new Interval(begin, new CharLocation(_input)),
                 Assignment = AssignmentEnum.None,
-                NameQuotesType = 1
+                NameQuotesType = '\''
             };
         }
 
@@ -1030,7 +1017,7 @@ namespace Syntactik
             }
 
             // At this point we know that ml string is ended.
-            var valueStart = GetStartQuote(currentPair);
+            var valueStart = currentPair.ValueQuotesType;
             if (valueStart > 0)
             {
                 //Quoted string ended by indentation (missing quote)

@@ -488,7 +488,7 @@ namespace Syntactik.Compiler.Steps
 
         private void CheckInterpolation(IPairWithInterpolation pair)
         {
-            if (((IMappedPair) pair).ValueQuotesType != 2) return;
+            if (((IMappedPair) pair).ValueQuotesType != '"') return;
             foreach (var item in pair.InterpolationItems)
             {
                 if (item is Alias alias)

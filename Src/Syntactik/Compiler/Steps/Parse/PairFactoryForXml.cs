@@ -269,7 +269,7 @@ namespace Syntactik.Compiler.Steps
             if (nameQuotesType == 0)
                 return input.GetText(nameInterval.Begin.Index, nameInterval.End.Index);
             var c = input.GetChar(nameInterval.End.Index);
-            if (nameQuotesType == 1)
+            if (nameQuotesType == '\'')
                 return c == '\''
                     ? input.GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index - 1)
                     : input.GetText(nameInterval.Begin.Index + 1, nameInterval.End.Index);
@@ -336,11 +336,11 @@ namespace Syntactik.Compiler.Steps
             }
             if (value == null) return ValueType.None;
 
-            if (valueQuotesType == 1)
+            if (valueQuotesType == '\'')
             {
                 return ValueType.SingleQuotedString;
             }
-            if (valueQuotesType == 2)
+            if (valueQuotesType == '"')
             {
                 return ValueType.DoubleQuotedString;
             }
@@ -377,7 +377,7 @@ namespace Syntactik.Compiler.Steps
             {
                 return new Tuple<string, List<object>>(string.Empty, null);
             }
-            if (valueQuotesType == (int) QuotesEnum.Single)
+            if (valueQuotesType == '\'')
             {
                 if (!ValueIsMissingQuote(input, valueQuotesType, valueInterval))
                 {
@@ -390,7 +390,7 @@ namespace Syntactik.Compiler.Steps
                     valueQuotesType,
                     valueInterval.Begin.Index + 1, valueInterval.End.Index, valueIndent), null);
             }
-            if (valueQuotesType == (int) QuotesEnum.Double)
+            if (valueQuotesType == '"')
             {
                 var ii = GetInterpolationItems(input, valueInterval, context, module);
                 string value = (string) (ii.Count == 1 && ii[0] is string ? ii[0] : string.Empty);
@@ -404,8 +404,8 @@ namespace Syntactik.Compiler.Steps
         private static bool ValueIsMissingQuote(ITextSource input, int valueQuotesType, Interval valueInterval)
         {
             var c = input.GetChar(valueInterval.End.Index);
-            return valueQuotesType == (int) QuotesEnum.Single && c != '\'' ||
-                   valueQuotesType == (int) QuotesEnum.Double && c != '"';
+            return valueQuotesType == '\'' && c != '\'' ||
+                   valueQuotesType == '"' && c != '"';
         }
 
         static string GetValueFromValueInterval(ITextSource charStream, AssignmentEnum assignment,
@@ -416,7 +416,7 @@ namespace Syntactik.Compiler.Steps
             var lines = charStream.GetText(begin, end).Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
 
             bool folded = lines.Length > 1 && assignment == AssignmentEnum.EE &&
-                          (valueQuotesType == (int) QuotesEnum.None || valueQuotesType == (int) QuotesEnum.Double);
+                          (valueQuotesType == 0 || valueQuotesType == '"');
 
             var first = true;
             var firstEmptyLine = true; //If true then previous line was not empty therefor newline shouldn't be added
@@ -428,7 +428,7 @@ namespace Syntactik.Compiler.Steps
                 if (checkIfFirstLineIsEmpty) //ignoring first empty line for open strings
                 {
                     checkIfFirstLineIsEmpty = false;
-                    if (valueQuotesType == (int) QuotesEnum.None && line == string.Empty)
+                    if (valueQuotesType == 0 && line == string.Empty)
                     {
                         first = false;
                         continue;
@@ -491,7 +491,7 @@ namespace Syntactik.Compiler.Steps
         {
             var intItems = new List<object>();
 
-            var i = ValueIsMissingQuote(input, 2, valueInterval) ? 0 : -1;
+            var i = ValueIsMissingQuote(input, '"', valueInterval) ? 0 : -1;
             var value = input.GetText(valueInterval.Begin.Index + 1, valueInterval.End.Index + i);
             var matches = Regex.Matches(value,
                 //Escape characters
