@@ -284,49 +284,11 @@ namespace Syntactik.Compiler.Steps
         {
             try
             {
-                CheckInlineJsonString(parent, child);
-
                 parent.AppendChild(child);
             }
             catch (Exception e)
             {
                 _context.Errors.Add(CompilerErrorFactory.CantAppendChild(((IMappedPair)child).NameInterval, _module.FileName, e.Message));
-            }
-        }
-
-
-
-        private void CheckInlineJsonString(Pair parent, Pair child)
-        {
-            if (!(child is Element)) return;
-            var parentMapped = (IMappedPair) parent;
-            var childMapped = (IMappedPair) child;
-            if (parentMapped.BlockType == BlockType.Default && (!(parent?.Parent is IMappedPair grandParent) 
-                || !grandParent.BlockType.IsJsonBlock())) return;
-            
-
-            //Checking name
-            if (childMapped.NameQuotesType != '"' && 
-                (childMapped.NameQuotesType == '\'' || 
-                 child.Assignment != AssignmentEnum.None || 
-                 childMapped.ValueType == ValueType.OpenString) //open name with no assignment.
-            )
-            {
-                _context.Errors.Add(CompilerErrorFactory.DoubleQuotesRequiredJson(((IMappedPair) child).NameInterval,
-                    _module.FileName));
-            }
-
-            //Checking value
-            if (child.Assignment != AssignmentEnum.None)
-            {
-                if (childMapped.ValueQuotesType != '"' &&
-                    (childMapped.ValueQuotesType == '\'' ||
-                     childMapped.ValueType == ValueType.OpenString) 
-                )
-                {
-                    _context.Errors.Add(CompilerErrorFactory.DoubleQuotesRequiredJson(((IMappedPair)child).NameInterval,
-                        _module.FileName));
-                }
             }
         }
 
