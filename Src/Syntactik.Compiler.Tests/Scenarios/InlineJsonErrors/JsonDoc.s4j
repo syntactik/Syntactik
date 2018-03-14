@@ -3,7 +3,7 @@
     "red",
     "green",
     "blue"
-  ]
+  ],
   [
     "red",
     "green",
@@ -15,6 +15,6 @@
     "red",
     "green",
     "blue"
-  ] "attr1": "value" 
+  ], "attr1": "value" 
 
 }

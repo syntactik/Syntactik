@@ -1,7 +1,7 @@
 SCE0020 JsonDoc.s4j(4,14,32): Array item is not expected.
 SCE0020 JsonDoc.s4j(5,13,58): Array item is not expected.
-SCE0020 JsonDoc.s4j(10,3,93): Array item is not expected.
-SCE0020 JsonDoc.s4j(11,3,102): Array item is not expected.
-SCE0020 JsonDoc.s4j(12,3,113): Array item is not expected.
+SCE0020 JsonDoc.s4j(9,15,89): Array item is not expected.
+SCE0020 JsonDoc2.s4j(1,1,0): Array item is not expected.
 SCE0017 JsonDoc2.s4j(2,12,23): Can not use block alias as value.
 SCE0020 JsonDoc2.s4j(3,11,46): Array item is not expected.
+SCE0020 JsonDoc2.s4j(17,15,237): Array item is not expected.

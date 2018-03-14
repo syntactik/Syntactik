@@ -69,6 +69,9 @@
     <None Include="Scenarios\FreeOpenString\FreeOpenString.s4x">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Scenarios\InlineJsonAlias\JsonDoc3.s4j">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Scenarios\InvalidArgumentValue\JsonDoc.s4j">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

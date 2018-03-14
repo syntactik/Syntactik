@@ -1,25 +1,30 @@
 00:00	Module `Module`:
 01:01		Document `Module`
 01:01			Element `root`:
-02:03				Element "colors":
-03:05					Element "red"
-04:05					Element "blue"
-06:03				Element "el1":
-06:10					Element "value"
-10:03			Element "colors":
-11:05				Element "red"
-12:05				Element "green"
-13:05				Element "blue"
-15:03			Element "shipTo":
-16:05				Element "name":
-16:13					Element "Helen Zoe"
-17:05				Element "street":
-17:15					Element "47 Eden Street"
-18:05				Element "city":
-18:13					Element "Cambridge"
-19:05				Element "postcode":
-19:17					Element `126`
-21:03			Element "el1":
-21:10				Element "value"
-22:03			Element "el2":
-22:10				Element "value"
+01:07				Element `{`
+02:03					Element "colors":
+02:13						Element `[`
+03:05							Element "red"
+04:05							Element "blue"
+06:03					Element "el1":
+06:10						Element "value"
+09:01			Element `{`
+10:03				Element "colors":
+10:13					Element `[`
+11:05						Element "red"
+12:05						Element "green"
+13:05						Element "blue"
+15:03				Element "shipTo":
+15:13					Element `{`
+16:05						Element "name":
+16:13							Element "Helen Zoe"
+17:05						Element "street":
+17:15							Element "47 Eden Street"
+18:05						Element "city":
+18:13							Element "Cambridge"
+19:05						Element "postcode":
+19:17							Element `126`
+21:03				Element "el1":
+21:10					Element "value"
+22:03				Element "el2":
+22:10					Element "value"

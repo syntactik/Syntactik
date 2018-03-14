@@ -1,5 +1,2 @@
-SCE0007 JsonDoc.s4j(7,2,0): ParserError - 'Comma or closing parenthesis is expected.'.
-SCE0103 JsonDoc.s4j(7,3,57): Unexpected start of object { or array [.
-SCE0103 JsonDoc.s4j(13,1,100): Unexpected start of object { or array [.
-SCE0007 JsonDoc.s4j(18,4,0): ParserError - 'Comma or closing parenthesis is expected.'.
-SCE0103 JsonDoc2.s4j(10,11,100): Unexpected start of object { or array [.
+SCE0020 JsonDoc.s4j(7,3,58): Array item is not expected.
+SCE0020 JsonDoc2.s4j(10,11,100): Array item is not expected.

@@ -1,0 +1,33 @@
+{$Templates.PurchaseOrder2:
+  {
+		%orderDate= 2017-01-14,
+		%shipTo: $Address.UK.Cambridge, 
+		%billTo: $Address.US.AK,
+		%items: [
+			$Items.Jewelry.Earings.Jade: {%quantity = 5}
+		]
+  }
+}
+
+{$Templates.PurchaseOrder2:
+  {
+		%orderDate:  2017-01-14,
+		%shipTo: $Address.UK.Cambridge, 
+		%billTo: $Address.US.AK,
+		%items: [
+			$Items.Jewelry.Earings.Jade: {%quantity = 5}
+		]
+  }
+}
+
+!$Templates.PurchaseOrder2: {
+  "purchaseOrder": {
+    "orderDate": !%orderDate,
+    "shipTo": {!%shipTo},
+    "billTo": {!%billTo},
+    "Items": [!%items]
+  }
+
+}
+
+
