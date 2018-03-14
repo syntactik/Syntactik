@@ -15,6 +15,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+
+using System.Collections.Generic;
+
 namespace Syntactik.DOM
 {
     /// <summary>
@@ -22,7 +25,7 @@ namespace Syntactik.DOM
     /// </summary>
     public class Alias : Entity, IContainer
     {
-        private PairCollection<Argument> _arguments;
+        private List<Argument> _arguments;
         private PairCollection<Entity> _entities;
 
         /// <summary>
@@ -44,17 +47,10 @@ namespace Syntactik.DOM
         /// <summary>
         /// Collection of arguments.
         /// </summary>
-        public virtual PairCollection<Argument> Arguments
+        public virtual List<Argument> Arguments
         {
-            get => _arguments ?? (_arguments = new PairCollection<Argument>(this));
-            set
-            {
-                if (value != _arguments)
-                {
-                    value?.InitializeParent(this);
-                    _arguments = value;
-                }
-            }
+            get => _arguments ?? (_arguments = new List<Argument>());
+            set => _arguments = value;
         }
 
         /// <summary>
@@ -89,6 +85,7 @@ namespace Syntactik.DOM
             else if (child is Argument item)
             {
                 Arguments.Add(item);
+                if (item.Parent == null) item.InitializeParent(this);
             }
             else if (child is Entity)
             {

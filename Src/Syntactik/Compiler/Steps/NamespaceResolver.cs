@@ -423,10 +423,11 @@ namespace Syntactik.Compiler.Steps
         /// </summary>
         /// <param name="node">Target <see cref="INsNode"/>.</param>
         /// <param name="document">Current <see cref="Document"/>.</param>
+        /// <param name="currentModuleMember">Current module member.</param>
         /// <param name="scope">Current <see cref="Scope"/>.</param>
         /// <param name="prefix">Output namespace prefix parameter.</param>
         /// <param name="ns">Output namespace parameter.</param>
-        public void GetPrefixAndNs(INsNode node, DOM.Document document, Scope scope, out string prefix,
+        public void GetPrefixAndNs(INsNode node, DOM.Document document, ModuleMember currentModuleMember, Scope scope, out string prefix,
                 out string ns)
         {
             prefix = null;
@@ -438,7 +439,7 @@ namespace Syntactik.Compiler.Steps
                 if (scope == null) return;
                 nsPrefix = scope.NsPrefix;
             }
-            GetPrefixAndNs(nsPrefix, node, document, out prefix, out ns);
+            GetPrefixAndNs(nsPrefix, node, document, currentModuleMember, out prefix, out ns);
         }
 
         /// <summary>
@@ -447,9 +448,10 @@ namespace Syntactik.Compiler.Steps
         /// <param name="nsPrefix">Effective namespace prefix of the node. Could be different than the actual prefix.</param>
         /// <param name="node">Target <see cref="INsNode"/>.</param>
         /// <param name="document">Current <see cref="Document"/>.</param>
+        /// <param name="currentModuleMember"></param>
         /// <param name="prefix">Output namespace prefix parameter.</param>
         /// <param name="ns">Output namespace parameter.</param>
-        public void GetPrefixAndNs(string nsPrefix, INsNode node, DOM.Document document, out string prefix,
+        public void GetPrefixAndNs(string nsPrefix, INsNode node, DOM.Document document, ModuleMember currentModuleMember, out string prefix,
                 out string ns)
         {
             prefix = null;
@@ -457,7 +459,7 @@ namespace Syntactik.Compiler.Steps
 
             //Getting namespace info for the generated document.
             var targetNsInfo = ModuleMembersNsInfo.First(n => n.ModuleMember == document);
-            var moduleMember = GetModuleMember((Pair)node);
+            var moduleMember = currentModuleMember;// GetModuleMember((Pair)node); _
             if (moduleMember is ModuleMember member)
             {
                 //Resolving namespace first using aliasDef context NsInfo

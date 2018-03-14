@@ -40,13 +40,13 @@ namespace Syntactik.DOM.Mapped
         public Interval AssignmentInterval { get; }
 
         /// <inheritdoc />
-        public ValueType ValueType { get; }
+        public ValueType ValueType { get; private set; }
 
         /// <inheritdoc />
         public BlockType BlockType { get; set; }
 
         /// <inheritdoc />
-        public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
+        public virtual bool IsValueNode => ValueType != ValueType.None;
 
         /// <summary>
         /// List of interpolation objects.
@@ -95,14 +95,16 @@ namespace Syntactik.DOM.Mapped
                 InterpolationItems.Add(child);
                 child.InitializeParent(this);
             }
-            else if (BlockType == BlockType.Default && Parent is IMappedPair mp && mp.BlockType == BlockType.JsonObject &&
-                     (child is DOM.Alias || child is DOM.Parameter))
-            {
-                PairValue = child;
-                child.InitializeParent(this);
-            }
             else
+            {
+                if (Assignment == AssignmentEnum.C && Parent is IMappedPair mp && mp.BlockType == BlockType.JsonObject &&
+                    child is Element el && el.NameInterval != null && el.NameInterval != Interval.Empty && el.Assignment == AssignmentEnum.None)
+                {
+                    ValueType = ValueType.Empty; //JSON value
+                }
+
                 base.AppendChild(child);
+            }
         }
 
     }

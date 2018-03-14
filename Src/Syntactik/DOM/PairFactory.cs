@@ -21,6 +21,7 @@
 using System;
 using System.Linq;
 using System.Text;
+using Syntactik.DOM.Mapped;
 using Syntactik.IO;
 
 namespace Syntactik.DOM
@@ -320,9 +321,15 @@ namespace Syntactik.DOM
             return OnProcessComment?.Invoke(commentType, commentInterval);
         }
 
-        public Pair ProcessBrackets(Pair currentPair, int bracket, Interval endInterval)
+        public Pair ProcessBrackets(Pair pair, int bracket, Interval interval)
         {
-            return currentPair;
+            if (bracket == '{' || bracket == '[')
+            {
+                var newPair = new Mapped.Element(((char)bracket).ToString(), nameInterval: interval); 
+                AppendChild(pair, newPair);
+                return newPair;
+            }
+            return pair;
         }
     }
 }

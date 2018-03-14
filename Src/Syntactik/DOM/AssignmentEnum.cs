@@ -38,8 +38,8 @@ namespace Syntactik.DOM
         /// </summary>
         ECC, // =::
         /// <summary>
-        /// The <see cref="Pair"/> has a pair value delimeter <c>:=</c>
+        /// The <see cref="Pair"/> has a pair value delimiter <c>:=</c>
         /// </summary>
-        CE, // :=
+        CE // :=
     }
 }

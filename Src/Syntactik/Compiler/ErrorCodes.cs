@@ -40,7 +40,6 @@ namespace Syntactik.Compiler
         public const string SCE0019 = "Array item is expected.";
         public const string SCE0020 = "Array item is not expected.";
         public const string SCE0021 = "Default parameter must be the only parameter.";
-        public const string SCE0022 = "Argument can be defined only in an alias' block.";
         public const string SCE0023 = "Default block argument is missing.";
         public const string SCE0024 = "Unexpected argument.";
         public const string SCE0025 = "Unexpected default block argument.";

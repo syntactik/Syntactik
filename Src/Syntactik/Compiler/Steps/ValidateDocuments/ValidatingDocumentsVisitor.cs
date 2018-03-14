@@ -236,11 +236,9 @@ namespace Syntactik.Compiler.Steps
             if (aliasDef == null || aliasDef.HasCircularReference) return;
 
             CheckBlockIntegrityForValueAlias(alias);
-            CheckBlockIntegrityForEmptyJsonAlias(alias);
             CheckPairValue(alias);
 
-
-            AliasContext.Push((Alias) alias);
+            AliasContext.Push(new AliasContextInfo((Alias) alias, CurrentModuleMember));
             CheckForUnexpectedArguments((Alias)alias, aliasDef, _currentModule.FileName);
             CheckInterpolation((Alias)alias);
             if (CheckStartOfChoiceContainer((Alias) alias, aliasDef.Entities, aliasDef))
@@ -263,20 +261,7 @@ namespace Syntactik.Compiler.Steps
             AliasContext.Pop();
         }
 
-        private void CheckBlockIntegrityForEmptyJsonAlias(DOM.Alias alias)
-        {
-            if (_currentModule.TargetFormat == Module.TargetFormats.Xml) return;
 
-            if (_blockStateUnknown) return;
-
-            var mp = (IMappedPair)((Alias)alias).AliasDefinition;
-            if (mp.BlockType == BlockType.Default) return;
-
-            if (mp.BlockType == BlockType.JsonArray && _blockState.Peek() == JsonGenerator.BlockStateEnum.Object)
-            {
-                Context.AddError(CompilerErrorFactory.PropertyIsExpected((IMappedPair)alias, _currentModule.FileName));
-            }
-        }
 
         private void CheckAliasIsDefined(DOM.Alias alias)
         {
@@ -302,8 +287,8 @@ namespace Syntactik.Compiler.Steps
         {
             if (((Alias) alias).AliasDefinition == null) return;
             if (!((Alias)alias).AliasDefinition.IsValueNode) return;
-            if (alias?.Parent.Assignment == AssignmentEnum.CE) return;
-            if (_currentModule.TargetFormat == Module.TargetFormats.Xml && alias?.Parent is Document)
+            if (alias.Parent.Assignment == AssignmentEnum.CE) return;
+            if (_currentModule.TargetFormat == Module.TargetFormats.Xml && alias.Parent is Document)
                 Context.AddError(CompilerErrorFactory.InvalidUsageOfValueAlias((Alias) alias, _currentModule.FileName));
 
             if (_currentModule.TargetFormat == Module.TargetFormats.Xml) return;
@@ -314,8 +299,8 @@ namespace Syntactik.Compiler.Steps
                 if (blockState != JsonGenerator.BlockStateEnum.Object) return;
 
                 ReportErrorForEachNodeInAliasContext(
-                    n => CompilerErrorFactory.PropertyIsExpected((IMappedPair)n, _currentModule.FileName));
-                Context.AddError(CompilerErrorFactory.PropertyIsExpected((IMappedPair)alias, _currentModule.FileName));
+                    n => CompilerErrorFactory.PropertyIsExpected(((IMappedPair)n).NameInterval, _currentModule.FileName));
+                Context.AddError(CompilerErrorFactory.PropertyIsExpected(((IMappedPair)alias).NameInterval, _currentModule.FileName));
                 return;
             }
 
@@ -364,6 +349,7 @@ namespace Syntactik.Compiler.Steps
 
         public override void Visit(DOM.Element element)
         {
+            
             if (!((Element) element).IsChoice)
             {
                 CheckBlockIntegrity(element);
@@ -371,8 +357,10 @@ namespace Syntactik.Compiler.Steps
                 CheckArrayItem((Element) element);
                 CheckInterpolation((Element)element);
             }
-            _blockStateUnknown = true;
             var prevBlockStateCount = _blockState.Count;
+            var isBlockElement = string.IsNullOrEmpty(element.Name) && element.Assignment == AssignmentEnum.None;
+            if (!isBlockElement) _blockStateUnknown = true;
+            
             EnterChoiceNode(element);
             if (((Element) element).IsChoice)
             {
@@ -501,7 +489,7 @@ namespace Syntactik.Compiler.Steps
                 {
                     var aliasContext = AliasContext.Peek();
                     if (aliasContext != null)
-                        ValidateParameter((Parameter) param, aliasContext, _currentModule.FileName);
+                        ValidateParameter((Parameter) param, aliasContext.Alias, _currentModule.FileName);
                 }
             }
         }
@@ -561,7 +549,7 @@ namespace Syntactik.Compiler.Steps
             {
                 var aliasContext = AliasContext.Peek();
                 if (aliasContext != null)
-                    ValidateParameter((Parameter)pair.PairValue, aliasContext, _currentModule.FileName);
+                    ValidateParameter((Parameter)pair.PairValue, aliasContext.Alias, _currentModule.FileName);
             }
             else if (pair.PairValue is DOM.Alias)
             {
@@ -572,7 +560,7 @@ namespace Syntactik.Compiler.Steps
                 //Do not resolve alias without AliasDef or having circular reference
                 if (aliasDef == null || aliasDef.HasCircularReference) return;
 
-                AliasContext.Push(alias);
+                AliasContext.Push(new AliasContextInfo(alias, CurrentModuleMember));
                 CheckForUnexpectedArguments(alias, aliasDef, _currentModule.FileName);
                 CheckInterpolation(aliasDef);
                 CheckPairValue(aliasDef);
@@ -608,7 +596,6 @@ namespace Syntactik.Compiler.Steps
 
         public override void Visit(DOM.Argument argument)
         {
-            CheckArgumentIntegrity((Argument) argument);
             CheckPairValue(argument);
             base.Visit(argument);
         }
@@ -618,7 +605,7 @@ namespace Syntactik.Compiler.Steps
             CheckPairValue(parameter);
             var aliasContext = AliasContext.Peek();
             if (aliasContext != null)
-                ValidateParameter((Parameter) parameter, aliasContext, _currentModule.FileName);
+                ValidateParameter((Parameter) parameter, aliasContext.Alias, _currentModule.FileName);
             base.Visit(parameter);
         }
 
@@ -629,7 +616,7 @@ namespace Syntactik.Compiler.Steps
             {
                 if (!parameter.IsValueNode)
                 {
-                    if (alias.Entities.All(e => e is Comment) && alias.ValueType != ValueType.Object)
+                    if (alias.Entities.All(e => e is Comment) && !alias.Assignment.IsObjectAssignment())
                         ReportErrorInsideChoice(() => CompilerErrorFactory.DefaultBlockArgumentIsMissing(alias,
                             moduleFileName));
                 }
@@ -651,7 +638,7 @@ namespace Syntactik.Compiler.Steps
             if (argument == null)
             {
                 //Report Error if argument is missing and there is no default value for the parameter
-                if (parameter.Value == null && parameter.Entities.Count == 0 && parameter.ValueType != ValueType.Object)
+                if (parameter.Value == null && parameter.Entities.Count == 0 && !parameter.Assignment.IsObjectAssignment())
                     ReportErrorInsideChoice(() => CompilerErrorFactory.ArgumentIsMissing(alias, parameter.Name,
                         moduleFileName));
                 return;
@@ -687,12 +674,6 @@ namespace Syntactik.Compiler.Steps
             base.Visit(pair);
         }
 
-        private void CheckArgumentIntegrity(Argument argument)
-        {
-            if (! (argument.Parent is Alias))
-                Context.AddError(CompilerErrorFactory.ArgumentMustBeDefinedInAlias(argument, _currentModule.FileName));
-        }
-
         /// <summary>
         /// Sets state of the current block and checks its integrity
         /// </summary>
@@ -705,29 +686,54 @@ namespace Syntactik.Compiler.Steps
                 var blockState = _blockState.Peek();
                 if (blockState == JsonGenerator.BlockStateEnum.Array)
                 {
+                    //Starting new block
+                    if (string.IsNullOrEmpty(pair.Name) && pair.Assignment == AssignmentEnum.None)
+                    {
+                        _blockState.Push(((IMappedPair)pair).BlockType == BlockType.JsonArray
+                            ? JsonGenerator.BlockStateEnum.Array
+                            : JsonGenerator.BlockStateEnum.Object);
+                    }
+
                     if (string.IsNullOrEmpty(pair.Name) || pair.Assignment == AssignmentEnum.None) return;
                     ReportErrorForEachNodeInAliasContext(
-                        n => CompilerErrorFactory.ArrayItemIsExpected((IMappedPair) n, _currentModule.FileName));
-                    Context.AddError(CompilerErrorFactory.ArrayItemIsExpected((IMappedPair) pair, _currentModule.FileName));
+                        n => CompilerErrorFactory.ArrayItemIsExpected(((IMappedPair) n).NameInterval, _currentModule.FileName));
+                    Context.AddError(CompilerErrorFactory.ArrayItemIsExpected(((IMappedPair) pair).NameInterval, _currentModule.FileName));
                 }
                 else if (blockState == JsonGenerator.BlockStateEnum.Object)
                 {
+                    if (string.IsNullOrEmpty(pair.Name) && pair.Assignment == AssignmentEnum.None)
+                    {
+                        if (((IMappedPair) pair).BlockType == BlockType.JsonArray)
+                        {
+                            _blockState.Push(JsonGenerator.BlockStateEnum.Array);
+                            ReportErrorForEachNodeInAliasContext(
+                                n => CompilerErrorFactory.PropertyIsExpected(((IMappedPair)n).NameInterval, _currentModule.FileName));
+                            Context.AddError(CompilerErrorFactory.PropertyIsExpected(((IMappedPair)pair).AssignmentInterval, _currentModule.FileName));
+                        }
+                        return;
+                    }
                     if (!string.IsNullOrEmpty(pair.Name) && pair.Assignment != AssignmentEnum.None) return;
 
                     //if(_currentModule.TargetFormat == Module.TargetFormats.Xml && ((IMappedPair)pair).IsValueNode ) return;  
 
                     ReportErrorForEachNodeInAliasContext(
-                        n => CompilerErrorFactory.PropertyIsExpected((IMappedPair) n, _currentModule.FileName));
-                    Context.AddError(CompilerErrorFactory.PropertyIsExpected((IMappedPair) pair, _currentModule.FileName));
+                        n => CompilerErrorFactory.PropertyIsExpected(((IMappedPair) n).NameInterval, _currentModule.FileName));
+                    Context.AddError(CompilerErrorFactory.PropertyIsExpected(((IMappedPair) pair).NameInterval, _currentModule.FileName));
                 }
-
                 return;
             }
 
-            //This element is the first element of the block. It decides if the block is array or object
-            _blockState.Push(string.IsNullOrEmpty(pair.Name) || pair.Assignment == AssignmentEnum.None
-                ? JsonGenerator.BlockStateEnum.Array
-                : JsonGenerator.BlockStateEnum.Object);
+            if (string.IsNullOrEmpty(pair.Name) && pair.Assignment == AssignmentEnum.None)
+            {
+                _blockState.Push(((IMappedPair)pair).BlockType == BlockType.JsonArray
+                    ? JsonGenerator.BlockStateEnum.Array
+                    : JsonGenerator.BlockStateEnum.Object);
+            }
+            else
+                //This element is the first element of the block. It decides if the block is array or object
+                _blockState.Push(string.IsNullOrEmpty(pair.Name) || pair.Assignment == AssignmentEnum.None
+                    ? JsonGenerator.BlockStateEnum.Array
+                    : JsonGenerator.BlockStateEnum.Object);
             _blockStateUnknown = false;
         }
 
@@ -737,11 +743,10 @@ namespace Syntactik.Compiler.Steps
             {
                 if (item != null)
                 {
-                    Context.AddError(func(item));
+                    Context.AddError(func(item.Alias));
                 }
             }
         }
-
 
         private void CheckForUnexpectedArguments(Alias alias, AliasDefinition aliasDef, string fileName)
         {
@@ -752,10 +757,14 @@ namespace Syntactik.Compiler.Steps
                         fileName));
             }
 
-            if (!aliasDef.HasDefaultBlockParameter && alias.Entities.Any(e => !(e is DOM.Comment)))
+            if (!aliasDef.HasDefaultBlockParameter)
             {
-                Context.AddError(CompilerErrorFactory.UnexpectedDefaultBlockArgument((IMappedPair)alias.Entities[0],
-                    fileName));
+                if (alias.Entities.Any(e =>!(e is Comment) && e is IMappedPair mp 
+                    && (mp.BlockType == BlockType.Default || mp.BlockType == BlockType.JsonArray)))
+                {
+                    Context.AddError(
+                        CompilerErrorFactory.UnexpectedDefaultBlockArgument((IMappedPair) alias.Entities[0], fileName));
+                }
             }
 
             if (!aliasDef.HasDefaultValueParameter && alias.HasValue())

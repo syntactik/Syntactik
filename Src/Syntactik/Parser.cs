@@ -79,8 +79,7 @@ namespace Syntactik
         }
 
         /// <summary>
-        /// Parses one line.
-        /// WSA region is treated as one line.
+        /// Parses one line. WSA region is treated as one line.
         /// </summary>
         private void ParseLine()
         {
@@ -790,7 +789,7 @@ namespace Syntactik
                             Indent = _lineState.Indent,
                             BlockIndent = _pairStack.Peek().BlockIndent
                         });
-                    _wsaStack.Push(new WsaInfo(bracketPair, c));
+                    _wsaStack.Push(new WsaInfo(pair, c));
                 }
                 else if (c == ')' || _processJsonBrackets && (c == '}' || c == ']'))
                 {
@@ -834,7 +833,7 @@ namespace Syntactik
                         var commaEndsEmptyPair = _lineState.CurrentPair == MappedPair.EmptyPair;
                         ExitPair();
                         if (!commaEndsEmptyPair && _wsaStack.Count > 0
-                            && _wsaStack.Peek().Bracket == '{' && _pairStack.Count > 1)
+                            && _wsaStack.Peek().Bracket == '{' && _pairStack.Count > 1 && ((IMappedPair)_pairStack.Peek().Pair).BlockType != BlockType.JsonObject)
                         {
                             EndPair(new Interval(_input)); //comma ends current block in {}. Needed for JSON
                         }

@@ -191,4 +191,18 @@ namespace Syntactik.DOM
             return "";
         }
     }
+
+    internal static class PairHelper{
+        public static bool IsObjectAssignment(this AssignmentEnum assignment)
+        {
+            switch (assignment)
+            {
+                case AssignmentEnum.C:
+                case AssignmentEnum.CC:
+                case AssignmentEnum.CCC:
+                    return true;
+            }
+            return false;
+        }
+    }
 }

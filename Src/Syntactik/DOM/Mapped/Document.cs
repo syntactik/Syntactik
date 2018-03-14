@@ -49,7 +49,7 @@ namespace Syntactik.DOM.Mapped
         public BlockType BlockType { get; set; }
 
         /// <inheritdoc />
-        public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
+        public virtual bool IsValueNode => ValueType != ValueType.None;
 
         /// <summary>
         /// List of interpolation objects.

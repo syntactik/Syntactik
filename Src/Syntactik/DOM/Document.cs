@@ -59,7 +59,7 @@ namespace Syntactik.DOM
                 return;
             }
 
-            if (child is Entity entity)
+            if (child is Entity entity && !(child is Argument))
             {
                 DocumentElement = entity;
                 Entities.Add(entity);

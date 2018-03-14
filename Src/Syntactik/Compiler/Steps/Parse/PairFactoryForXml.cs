@@ -332,7 +332,7 @@ namespace Syntactik.Compiler.Steps
                 case AssignmentEnum.C:
                 case AssignmentEnum.CC:
                 case AssignmentEnum.CCC:
-                    return ValueType.Object;
+                    return ValueType.None;
             }
             if (value == null) return ValueType.None;
 

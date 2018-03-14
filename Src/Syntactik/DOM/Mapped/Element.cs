@@ -42,14 +42,15 @@ namespace Syntactik.DOM.Mapped
         public Interval AssignmentInterval { get; }
 
         /// <inheritdoc />
-        public ValueType ValueType { get; internal set; }
+        public ValueType ValueType { get; }
+
+        //internal set; }
 
         /// <inheritdoc />
         public BlockType BlockType { get; set; }
 
         /// <inheritdoc />
-        public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object || 
-            (ValueType == ValueType.Object && BlockType == BlockType.Default && Parent is IMappedPair mp && mp.BlockType == BlockType.JsonObject);
+        public virtual bool IsValueNode => ValueType != ValueType.None;
 
         /// <summary>
         /// List of interpolation objects.
@@ -136,6 +137,10 @@ namespace Syntactik.DOM.Mapped
                PairValue = child;
                child.InitializeParent(this);
             }
+            //else if (child is Argument && Assignment == AssignmentEnum.None && NameInterval == Interval.Empty && BlockType == BlockType.JsonObject)
+            //{
+            //    Parent.AppendChild(child);
+            //}
             else
                 base.AppendChild(child);
         }

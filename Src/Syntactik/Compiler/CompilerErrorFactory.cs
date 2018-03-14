@@ -179,24 +179,19 @@ namespace Syntactik.Compiler
             return Instantiate("SCE0018", new LexicalInfo(location.FileName, location.Line, location.Column, 0), false, ex.Message);
         }
 
-        internal static CompilerError ArrayItemIsExpected(IMappedPair node, string fileName)
+        internal static CompilerError ArrayItemIsExpected(Interval interval, string fileName)
         {
-            return Instantiate("SCE0019", new LexicalInfo(fileName, node.NameInterval.Begin.Line, node.NameInterval.Begin.Column, node.NameInterval.Begin.Index), false);
+            return Instantiate("SCE0019", new LexicalInfo(fileName, interval.Begin.Line, interval.Begin.Column, interval.Begin.Index), false);
         }
 
-        internal static CompilerError PropertyIsExpected(IMappedPair node, string fileName)
+        internal static CompilerError PropertyIsExpected(Interval interval, string fileName)
         {
-            return Instantiate("SCE0020", new LexicalInfo(fileName, node.NameInterval.Begin.Line, node.NameInterval.Begin.Column, node.NameInterval.Begin.Index), false);
+            return Instantiate("SCE0020", new LexicalInfo(fileName, interval.Begin.Line, interval.Begin.Column, interval.Begin.Index), false);
         }
 
         internal static CompilerError DefaultParameterMustBeOnly(Parameter node, string fileName)
         {
             return Instantiate("SCE0021", new LexicalInfo(fileName, node.NameInterval.Begin.Line, node.NameInterval.Begin.Column, node.NameInterval.Begin.Index), false);
-        }
-
-        internal static CompilerError ArgumentMustBeDefinedInAlias(Argument node, string fileName)
-        {
-            return Instantiate("SCE0022", new LexicalInfo(fileName, node.NameInterval.Begin.Line, node.NameInterval.Begin.Column, node.NameInterval.Begin.Index), false);
         }
 
         internal static CompilerError DefaultBlockArgumentIsMissing(Alias alias, string fileName)

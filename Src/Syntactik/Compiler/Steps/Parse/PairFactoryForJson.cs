@@ -16,7 +16,6 @@
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 using System;
-using System.Diagnostics.PerformanceData;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Syntactik.DOM;
@@ -231,7 +230,7 @@ namespace Syntactik.Compiler.Steps
                 case AssignmentEnum.C:
                 case AssignmentEnum.CC:
                 case AssignmentEnum.CCC:
-                    return ValueType.Object;
+                    return ValueType.None;
             }
             if (value == null) return ValueType.None;
 
@@ -284,7 +283,15 @@ namespace Syntactik.Compiler.Steps
         {
             try
             {
-                parent.AppendChild(child);
+                var mp = (IMappedPair) parent;
+                if (child is DOM.Argument && parent is Element && parent.Assignment == AssignmentEnum.None 
+                        && mp.NameInterval == null && mp.BlockType == BlockType.JsonObject)
+                {
+                    child.InitializeParent(parent);
+                    parent.Parent.AppendChild(child); //Argument in JSON block
+                }
+                else
+                    parent.AppendChild(child);
             }
             catch (Exception e)
             {
@@ -308,28 +315,13 @@ namespace Syntactik.Compiler.Steps
         {
             if (bracket == '{' || bracket == '[')
             {
-                var mp = (IMappedPair) pair;
-                var count = (pair is IContainer container) ? container.Entities.Count : 100000;
-                if (pair is Module module)
-                {
-                    count = 0;
-                    if (module.ModuleDocument != null)
-                        count = module.ModuleDocument.Entities.Count;
-                }
-                if (mp.BlockType != BlockType.Default || count > 0 )
-                {
-                    if (count == 0 && !(mp.BlockType == BlockType.JsonObject && bracket == '[') )
-                    {
-                        var newPair = new Element
-                        (
-                            String.Empty, nameInterval:interval
-                        ) {BlockType = bracket == '{' ? BlockType.JsonObject : BlockType.JsonArray};
-                        AppendChild(pair, newPair);
-                        return newPair;
-                    }
+                if (!(pair is IContainer) && !(pair is Module)) {
                     _context.Errors.Add(CompilerErrorFactory.InvalidInlineJsonDeclaration(interval, _module.FileName));
+                    return pair;
                 }
-                mp.BlockType = bracket == '{' ? BlockType.JsonObject : BlockType.JsonArray;
+                var newPair = new Element(assignmentInterval: interval) { BlockType = bracket == '{' ? BlockType.JsonObject : BlockType.JsonArray};
+                AppendChild(pair, newPair);
+                return newPair;
             }
             return pair;
         }
