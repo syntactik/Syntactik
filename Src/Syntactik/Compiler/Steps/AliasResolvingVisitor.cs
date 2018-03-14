@@ -40,7 +40,7 @@ namespace Syntactik.Compiler.Steps
     /// </summary>
     public abstract class AliasResolvingVisitor : SyntactikDepthFirstVisitor
     {
-        private Stack<Alias> _aliasContext;
+        private Stack<AliasContextInfo> _aliasContext;
         private Stack<Scope> _scopeContext;
 
         /// <summary>
@@ -53,6 +53,12 @@ namespace Syntactik.Compiler.Steps
         /// </summary>
         protected Document CurrentDocument { get; set; }
 
+
+        /// <summary>
+        /// Current <see cref="ModuleMember"/> (<see cref="Document"/> or <see cref="DOM.AliasDefinition"/>).
+        /// </summary>
+        protected ModuleMember CurrentModuleMember;
+
         /// <summary>
         /// Provides access to services of <see cref="NamespaceResolver"/>.
         /// </summary>
@@ -61,13 +67,13 @@ namespace Syntactik.Compiler.Steps
         /// <summary>
         /// Keeps track of nested <see cref="Alias">aliases</see>.
         /// </summary>
-        protected Stack<Alias> AliasContext
+        protected Stack<AliasContextInfo> AliasContext
         {
             get
             {
                 if (_aliasContext != null) return _aliasContext;
 
-                _aliasContext = new Stack<Alias>();
+                _aliasContext = new Stack<AliasContextInfo>();
                 _aliasContext.Push(null);
                 return _aliasContext;
             }
@@ -114,7 +120,7 @@ namespace Syntactik.Compiler.Steps
                     return ResolvePairValue(((Pair) pair).PairValue, out valueType);
                 }
 
-                if (pair.ValueType == ValueType.Object && pair.IsValueNode) //JSONObject block type. Value is defined by the first child
+                if (((Pair)pair).Assignment.IsObjectAssignment() && pair.IsValueNode) //JSONObject block type. Value is defined by the first child
                 {
                     return ResolveValue((IMappedPair) ((IContainer)pair).Entities.First(), out valueType);
                 }
@@ -248,8 +254,9 @@ namespace Syntactik.Compiler.Steps
         protected string ResolveValueAlias(Alias alias, out ValueType valueType)
         {
             var aliasDef = alias.AliasDefinition;
-
-            AliasContext.Push(alias);
+            AliasContext.Push(new AliasContextInfo(alias, CurrentModuleMember));
+            CurrentModuleMember = aliasDef;
+            
             string result;
 
             if (aliasDef.ValueType == ValueType.LiteralChoice)
@@ -261,7 +268,8 @@ namespace Syntactik.Compiler.Steps
                     ? ResolveValue(aliasDef, out valueType)
                     : ResolvePairValue(aliasDef.PairValue, out valueType);
 
-            AliasContext.Pop();
+            
+            CurrentModuleMember = AliasContext.Pop().ModuleMember;
 
             return result;
         }
@@ -328,7 +336,7 @@ namespace Syntactik.Compiler.Steps
             var typeInfo = attribute.Value?.Split(':');
             if (!(typeInfo?.Length > 1)) return;
             var nsPrefix = typeInfo[0];
-            NamespaceResolver.GetPrefixAndNs(nsPrefix, attribute, CurrentDocument, out var prefix, out var _);
+            NamespaceResolver.GetPrefixAndNs(nsPrefix, attribute, CurrentDocument, CurrentModuleMember, out var prefix, out var _);
             OnValue($"{prefix}:{typeInfo[1]}", ValueType.FreeOpenString);
         }
 
@@ -385,7 +393,7 @@ namespace Syntactik.Compiler.Steps
         /// <returns>Literal value of parameter.</returns>
         protected string ResolveValueParameter(Parameter parameter, out ValueType valueType)
         {
-            var aliasContext = GetAliasContextForParameter(parameter);
+            var aliasContext = GetAliasContextForParameter(parameter).Alias;
 
             if (parameter.Name == "_")
             {
@@ -404,6 +412,12 @@ namespace Syntactik.Compiler.Steps
                 if (argument.PairValue != null)
                 {
                     return ResolvePairValue(argument.PairValue, out valueType);
+                }
+                if (((IMappedPair) argument?.Parent).BlockType == BlockType.JsonObject && argument.Entities.Count > 0)
+                {
+                    var ent = argument.Entities.First(e => e != null);
+                    valueType = ((IMappedPair) ent).ValueType;
+                    return ent.Value??ent.Name;
                 }
                 valueType = ((IMappedPair) argument).ValueType;
                 return argument.Value;
@@ -456,16 +470,16 @@ namespace Syntactik.Compiler.Steps
 
             if (aliasContext == null) return;
 
-            var argument = aliasContext.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
+            var argument = aliasContext.Alias.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
             ResolveAttributes(argument != null ? argument.Entities : parameter.Entities);
         }
 
-        private Alias GetAliasContextForParameter(Parameter parameter)
+        private AliasContextInfo GetAliasContextForParameter(Parameter parameter)
         {
             foreach (var context in AliasContext)
             {
                 if (context == null) return null;
-                if (context.AliasDefinition == parameter.AliasDefinition) return context;
+                if (context.Alias.AliasDefinition == parameter.AliasDefinition) return context;
             }
             return null;
         }
@@ -477,13 +491,13 @@ namespace Syntactik.Compiler.Steps
         protected void ResolveAttributesInAlias(Alias alias)
         {
             var aliasDef = alias.AliasDefinition;
-
             //Do not resolve alias without AliasDef or having circular reference
             if (aliasDef == null || aliasDef.HasCircularReference) return;
 
-            AliasContext.Push(alias);
+            AliasContext.Push(new AliasContextInfo(alias, CurrentModuleMember));
+            CurrentModuleMember = aliasDef;
             ResolveAttributes(aliasDef.Entities);
-            AliasContext.Pop();
+            CurrentModuleMember = AliasContext.Pop().ModuleMember;
         }
 
 
@@ -542,13 +556,12 @@ namespace Syntactik.Compiler.Steps
         public override void Visit(DOM.Alias alias)
         {
             var aliasDef = ((Alias) alias).AliasDefinition;
-
             //Do not resolve alias without AliasDef or having circular reference
             if (aliasDef == null || aliasDef.HasCircularReference) return;
-
-            AliasContext.Push((Alias) alias);
+            AliasContext.Push(new AliasContextInfo((Alias)alias, CurrentModuleMember));
+            CurrentModuleMember = aliasDef;
             Visit(aliasDef.Entities.Where(e => !(e is Attribute)));
-            AliasContext.Pop();
+            CurrentModuleMember = AliasContext.Pop().ModuleMember;
         }
 
         /// <inheritdoc />
@@ -557,23 +570,67 @@ namespace Syntactik.Compiler.Steps
             var aliasContext = GetAliasContextForParameter((Parameter) parameter);
 
             if (aliasContext == null) return;
-
+            var oldModuleMember = CurrentModuleMember;
+            CurrentModuleMember = aliasContext.Alias.AliasDefinition;
             if (parameter.Name == "_") //Default parameter. Value is passed in the body of the alias
             {
-                Visit(aliasContext.Entities.Where(e => !(e is Attribute) && !(e is DOM.Comment)));
+                Visit(aliasContext.Alias.Entities.Where(e => !(e is Attribute) && !(e is DOM.Comment)));
+                CurrentModuleMember = oldModuleMember;
                 return;
             }
 
-            var argument = aliasContext.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
+            var argument = aliasContext.Alias.Arguments.FirstOrDefault(a => a.Name == parameter.Name);
+            if (argument != null)
+                CurrentModuleMember = aliasContext.ModuleMember;
 
             Visit(argument?.Entities.Where(e => !(e is DOM.Attribute)) ??
                   parameter.Entities.Where(e => !(e is DOM.Attribute)));
+            CurrentModuleMember = oldModuleMember;
         }
 
         /// <inheritdoc />
         public override void Visit(DOM.AliasDefinition aliasDefinition)
         {
-            //Doing nothing for Alias Definition        
+            //base.Visit(aliasDefinition);
+        }
+
+        /// <inheritdoc />
+        public override void Visit(DOM.Document document)
+        {
+            CurrentModuleMember = document;
+            base.Visit(document);
+        }
+
+        /// <inheritdoc />
+        public override void Visit(DOM.Module module)
+        {
+            CurrentModuleMember = null;
+            base.Visit(module);
+        }
+    }
+    /// <summary>
+    /// Alias context info.
+    /// </summary>
+    public class AliasContextInfo
+    {
+        /// <summary>
+        /// Current alias.
+        /// </summary>
+        public readonly Alias Alias;
+        /// <summary>
+        /// Current module member.
+        /// </summary>
+        public readonly ModuleMember ModuleMember;
+
+        /// <summary>
+        /// Creates instance of the class.
+        /// </summary>
+        /// <param name="alias">Current alias.</param>
+        /// <param name="currentModuleMember">Current module member.</param>
+        public AliasContextInfo(Alias alias, ModuleMember currentModuleMember)
+        {
+            Alias = alias;
+            ModuleMember = currentModuleMember;
         }
     }
 }

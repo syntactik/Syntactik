@@ -46,10 +46,6 @@
         /// </summary>
         Boolean,
         /// <summary>
-        /// Empty block
-        /// </summary>
-        Object,
-        /// <summary>
         /// Concatenation
         /// </summary>
         Concatenation,

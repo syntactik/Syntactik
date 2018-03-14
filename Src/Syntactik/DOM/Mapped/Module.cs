@@ -47,7 +47,7 @@ namespace Syntactik.DOM.Mapped
         public BlockType BlockType { get; set; }
 
         /// <inheritdoc />
-        public virtual bool IsValueNode => ValueType != ValueType.None && ValueType != ValueType.Object;
+        public virtual bool IsValueNode => ValueType != ValueType.None;
 
         /// <inheritdoc />
         public int ValueIndent => 0;

@@ -25,6 +25,7 @@ using Syntactik.Compiler.Steps;
 using Syntactik.DOM;
 using Syntactik.DOM.Mapped;
 using Alias = Syntactik.DOM.Alias;
+using AliasDefinition = Syntactik.DOM.Mapped.AliasDefinition;
 using Comment = Syntactik.DOM.Comment;
 using Document = Syntactik.DOM.Mapped.Document;
 using Element = Syntactik.DOM.Element;
@@ -60,11 +61,6 @@ namespace Syntactik.Compiler.Generator
         /// Stack of <see cref="ChoiceInfo"/>.
         /// </summary>
         protected readonly Stack<ChoiceInfo> ChoiceStack = new Stack<ChoiceInfo>();
-
-        /// <summary>
-        /// Current <see cref="ModuleMember"/> (<see cref="Document"/> or <see cref="DOM.AliasDefinition"/>).
-        /// </summary>
-        protected ModuleMember CurrentModuleMember;
 
         private readonly bool _generateComments;
 
@@ -232,7 +228,7 @@ namespace Syntactik.Compiler.Generator
         public override void Visit(Element element)
         {
             //Getting namespace and prefix
-            NamespaceResolver.GetPrefixAndNs(element, CurrentDocument,
+            NamespaceResolver.GetPrefixAndNs(element, CurrentDocument, CurrentModuleMember,
                 ScopeContext.Peek(),
                 out var prefix, out var ns);
 
@@ -301,17 +297,17 @@ namespace Syntactik.Compiler.Generator
         public override void Visit(Alias alias)
         {
             var aliasDef = ((DOM.Mapped.Alias)alias).AliasDefinition;
-            var prevCurrentModuleMember = CurrentModuleMember;
+            AliasContext.Push(new AliasContextInfo((DOM.Mapped.Alias)alias, CurrentModuleMember));
             CurrentModuleMember = aliasDef;
             if (aliasDef.IsValueNode)
             {
                 OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out var valueType), valueType);
             }
-            AliasContext.Push((DOM.Mapped.Alias) alias);
+            
             if (!EnterChoiceContainer((DOM.Mapped.Alias) alias, aliasDef.Entities, aliasDef))
                 Visit(aliasDef.Entities.Where(e => !(e is DOM.Attribute)));
-            AliasContext.Pop();
-            CurrentModuleMember = prevCurrentModuleMember;
+
+            CurrentModuleMember = AliasContext.Pop().ModuleMember;
         }
 
         /// <inheritdoc />
@@ -353,7 +349,7 @@ namespace Syntactik.Compiler.Generator
             string prefix = string.Empty, ns = string.Empty;
             if (!string.IsNullOrEmpty(attribute.NsPrefix))
             {
-                NamespaceResolver.GetPrefixAndNs(attribute, CurrentDocument,
+                NamespaceResolver.GetPrefixAndNs(attribute, CurrentDocument, CurrentModuleMember,
                     ScopeContext.Peek(),
                     out prefix, out ns);
             }

@@ -254,30 +254,20 @@ namespace Syntactik.Compiler.Generator
             if (!string.IsNullOrEmpty(element.Name)&& element.Assignment != AssignmentEnum.None)
                 JsonWriter.WritePropertyName((element.NsPrefix != null ? element.NsPrefix + "." : "") + element.Name);
 
-            if (ResolveValue(element)) return; //Block has value therefore it has no block.
+            if (ResolveValue(element)) return; //Element has value therefore it has no block.
 
             //Working with node's block
             
             var prevBlockStateCount = BlockState.Count;
-            var mp = (IMappedPair) element;
-            if (mp.BlockType != BlockType.Default)
+            var mp = (IMappedPair)element;
+            if (BlockState.Peek() == BlockStateEnum.Array && mp.BlockType == BlockType.JsonObject)
             {
                 BlockIsStarting = false;
-                if (mp.BlockType == BlockType.JsonArray)
-                {
-                    JsonWriter.WriteStartArray(); //start array
-                    BlockState.Push(BlockStateEnum.Array);
-                }
-                else
-                {
-                    JsonWriter.WriteStartObject(); //start array
-                    BlockState.Push(BlockStateEnum.Object);
-                }
+                JsonWriter.WriteStartObject(); //start array
+                BlockState.Push(BlockStateEnum.Object);
             }
-            else
-            {
+            else if (!string.IsNullOrEmpty(element.Name) || element.Assignment != AssignmentEnum.None)
                 BlockIsStarting = true;
-            }
 
             base.Visit(element);
 
@@ -294,7 +284,7 @@ namespace Syntactik.Compiler.Generator
             }
 
             //Element has no block and no value. Writing an empty object as a value.
-            if (!string.IsNullOrEmpty(element.Name) || ((DOM.Mapped.Element)element).ValueType == ValueType.Object)
+            if (!string.IsNullOrEmpty(element.Name) || ((DOM.Mapped.Element)element).Assignment.IsObjectAssignment())
             {
                 if (element.Assignment == AssignmentEnum.CC || ((IMappedPair)element).BlockType == BlockType.JsonArray)
                 {
@@ -319,7 +309,7 @@ namespace Syntactik.Compiler.Generator
                 OnValue(ResolveValueAlias((DOM.Mapped.Alias)alias, out var valueType), valueType);
             }
 
-            AliasContext.Push((DOM.Mapped.Alias) alias);
+            AliasContext.Push(new AliasContextInfo((DOM.Mapped.Alias) alias, CurrentModuleMember));
             if (!EnterChoiceContainer((DOM.Mapped.Alias) alias, aliasDef.Entities, aliasDef))
             {
                 if (BlockState.Count > 0 && BlockState.Peek() == BlockStateEnum.Array && aliasDef.BlockType == BlockType.JsonObject)
@@ -337,7 +327,6 @@ namespace Syntactik.Compiler.Generator
                 else
                     Visit(aliasDef.Entities.Where(e => !(e is Attribute)));
             }
-                
             AliasContext.Pop();
         }
 
@@ -356,9 +345,23 @@ namespace Syntactik.Compiler.Generator
         {
             if (!BlockIsStarting) return;
 
-            if ((node.Parent as IMappedPair)?.BlockType == BlockType.Default && (node.Parent?.Parent as IMappedPair)?.BlockType == BlockType.JsonObject)
+            if (!string.IsNullOrEmpty(node.Name) && (node.Parent as IMappedPair)?.BlockType == BlockType.Default && (node.Parent?.Parent as IMappedPair)?.BlockType == BlockType.JsonObject)
             {
                 BlockState.Push(BlockStateEnum.Value);
+            }
+            //Processing BlockTypeElement
+            else if (string.IsNullOrEmpty(node.Name) && node.Assignment == AssignmentEnum.None)
+            {
+                if (((IMappedPair) node).BlockType == BlockType.JsonArray)
+                {
+                    JsonWriter.WriteStartArray(); //start array
+                    BlockState.Push(BlockStateEnum.Array);
+                }
+                else
+                {
+                    JsonWriter.WriteStartObject(); //start object
+                    BlockState.Push(BlockStateEnum.Object);
+                }
             }
             //This element is the first element of the block. It decides if the block is array or object
             else if (string.IsNullOrEmpty(node.Name) || node.Assignment == AssignmentEnum.None)
@@ -368,7 +371,7 @@ namespace Syntactik.Compiler.Generator
             }
             else
             {
-                JsonWriter.WriteStartObject(); //start array
+                JsonWriter.WriteStartObject(); //start object
                 BlockState.Push(BlockStateEnum.Object);
             }
             BlockIsStarting = false;
