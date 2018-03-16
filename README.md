@@ -16,6 +16,7 @@ The purpose of the language is:
 - creating new use cases by introducing the data-oriented markup language with people-friendly syntax and code reuse features.
  
 # Table of contents
+- [Command line tool](#command-line-tool)
 - [Language design objectives](#language-design-objectives)
 - [Language design principles](#language-design-principles)
 - [Example](#example)
@@ -52,9 +53,20 @@ The purpose of the language is:
 - [Comma](#comma)
 - [XML mixed content](#xml-mixed-content)
 - [Name literal](#name-literal)
-- [Command line tool](#command-line-tool)
 
 
+# Command line tool
+The executable file `slc.exe` is a command line tool that compiles specified files, stores results in the output directory and validate output XML against XML schema if XSD files are listed in the options.
+The command line format is:
+
+`slc [options] [inputFiles]`
+
+Options:
++ `-i=DIR`             Input directory with mlx, mlj and xsd files
++ `-o=DIR`             Output directory
++ `-r`                 Turns on recursive search of files in the input directories
+
+You can specify one or many input directories or files of type .s4x, .s4j and xsd. If neither directories nor files are given, then compiler takes them from the current directory. If s4x files are found, then s4j files are ignored.
 # Language design objectives
 - Must be people friendly
 - Minimal number of syntax rules
@@ -1451,17 +1463,3 @@ The same data structure in JSON:
   ]
 }
 ```
-
-
-# Command line tool
-The executable file `slc.exe` is a command line tool that compiles specified files, stores results in the output directory and validate output XML against XML schema if XSD files are listed in the options.
-The command line format is:
-
-`slc [options] [inputFiles]`
-
-Options:
-+ `-i=DIR`             Input directory with mlx, mlj and xsd files
-+ `-o=DIR`             Output directory
-+ `-r`                 Turns on recursive search of files in the input directories
-
-You can specify one or many input directories or files of type .s4x, .s4j and xsd. If neither directories nor files are given, then compiler takes them from the current directory. If s4x files are found, then s4j files are ignored.
