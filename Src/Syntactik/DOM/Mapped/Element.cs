@@ -137,10 +137,6 @@ namespace Syntactik.DOM.Mapped
                PairValue = child;
                child.InitializeParent(this);
             }
-            //else if (child is Argument && Assignment == AssignmentEnum.None && NameInterval == Interval.Empty && BlockType == BlockType.JsonObject)
-            //{
-            //    Parent.AppendChild(child);
-            //}
             else
                 base.AppendChild(child);
         }
