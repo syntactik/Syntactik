@@ -32,12 +32,13 @@ namespace slc
             public const string OutputDirectory = "Output directory is already specified.";
         }
 
-        public static void Parse(string[] args, out List<string> files, out bool recursive, out string outputDirectory )
+        public static void Parse(string[] args, out List<string> files, out bool convert, out bool recursive, out string outputDirectory )
         {
             recursive = false;
+            convert = false;
             outputDirectory = string.Empty;
             files = new List<string>();
-
+            var inputDirSpecified = false;
             foreach (var arg in args)
             {
                 if (!IsFlag(arg))
@@ -68,10 +69,11 @@ namespace slc
                     {
                         if (arg[2] == '=')
                         {
+                            inputDirSpecified = true;
                             var dir = arg.Substring(3);
                             if (Directory.Exists(dir))
                             {
-                                AddFilesFromDir(dir, files, recursive);
+                                AddFilesFromDir(dir, files, recursive, convert);
                             }
                             else InvalidOption(arg, ParameterErrors.InvalidDirectory);
                         }
@@ -85,6 +87,14 @@ namespace slc
 
                         break;
                     }
+                    case 'c': //convert
+                    {
+                        if (arg == "-c") convert = true;
+                        else InvalidOption(arg);
+
+                        break;
+                    }
+
                     default:
                     {
                         InvalidOption(arg);
@@ -93,16 +103,17 @@ namespace slc
                 }
             }
 
-            if (files.Count == 0) AddFilesFromDir(Directory.GetCurrentDirectory(), files, recursive);
+            if (!inputDirSpecified) AddFilesFromDir(Directory.GetCurrentDirectory(), files, recursive, convert);
 
             if (files.Count == 0) throw new ArgumentsParserException(ParameterErrors.NoInput);
         }
 
-        private static void AddFilesFromDir(string dir, ICollection<string> files, bool recursive)
+        private static void AddFilesFromDir(string dir, ICollection<string> files, bool recursive, bool convert)
         {
             foreach (var fileName in Directory.EnumerateFiles(dir, "*", recursive?SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
             {
-                if (fileName.EndsWith(".s4x") || fileName.EndsWith(".s4j") || fileName.EndsWith(".xsd"))
+                if (!convert &&(fileName.EndsWith(".s4x") || fileName.EndsWith(".s4j") || fileName.EndsWith(".xsd"))||
+                    convert && (fileName.EndsWith(".xml") || fileName.EndsWith(".json")))
                 {
                     files.Add(fileName);
                 }
@@ -119,6 +130,7 @@ namespace slc
             Console.WriteLine(
                     "Usage:\n\n\tslc [options] [inputFiles] ...\n\n" +
                     "Options:\n" +
+                    " -c               Converts XML or JSON files into Syntactik.\n" +
                     " -i=DIR           Input directory with s4x, s4j and xsd files\n" +
                     " -o=DIR           Output directory\n" +
                     " -r               Turns on recursive search of files in the input directories.\n" +

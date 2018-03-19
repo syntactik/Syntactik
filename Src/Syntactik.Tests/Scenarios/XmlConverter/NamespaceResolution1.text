@@ -1,0 +1,8 @@
+﻿<ipo:purchaseOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ipo="http://www.example.com/IPO" orderDate="1999-12-01">
+  <shipTo export-code="1" xsi:type="ipo:EU-Address" xmlns:ipo2="http://www.example.com/IPO">
+    <ipo:name>Helen Zoe</ipo:name>
+    <ipo:street>47 Eden Street</ipo:street>
+    <ipo2:city>Cambridge</ipo2:city>
+    <ipo:postcode>126</ipo:postcode>
+  </shipTo>
+</ipo:purchaseOrder>

@@ -1,0 +1,54 @@
+purchaseOrder:
+	orderDate = 1999-12-01
+	shipTo:
+		export-code = 1
+		name = Helen Zoe
+		street = 47 Eden Street
+		city = Cambridge
+		postcode = 126
+	billTo:
+		name = Robert Smith
+		street = 8 Oak Avenue
+		city = Old Town
+		state = AK
+		zip = 95819
+	Items:
+		:
+			partNum = 833-AA
+			productName = Lapis necklace
+			quantity = 3
+			price = 99.95
+			comment = Need this for the holidays!
+			shipDate = 1999-12-05
+		:
+			partNum = 748-OT
+			productName = Diamond heart
+			quantity = 1
+			price = 248.9
+			comment = Valentine's day packaging.
+			shipDate = 2000-02-14
+		:
+			partNum = 783-KL
+			productName = Uncut diamond
+			quantity = 7
+			price = 79.9
+			shipDate = 2000-01-07
+		:
+			partNum = 238-KK
+			productName = Amber ring
+			quantity = 3
+			price = 89.9
+			comment = With no inclusions, please.
+			shipDate = 2000-01-07
+		:
+			partNum = 229-OB
+			productName = Pearl necklace
+			quantity = 1
+			price = 4879
+			shipDate = 1999-12-05
+		:
+			partNum = 128-UL
+			productName = Jade earring
+			quantity = 5
+			price = 179.9
+			shipDate = 2000-02-14

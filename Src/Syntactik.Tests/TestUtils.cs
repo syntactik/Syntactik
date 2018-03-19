@@ -15,7 +15,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Syntactik.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
+
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -23,6 +26,7 @@ using System.Reflection;
 using System.Text;
 using Syntactik.IO;
 using NUnit.Framework;
+using Syntactik.Converter;
 using Syntactik.DOM;
 using Module = Syntactik.DOM.Mapped.Module;
 
@@ -77,6 +81,108 @@ namespace Syntactik.Tests
 
                 Assert.AreEqual(false, errorListener.Errors.Count > 0, "ParserErrorListener has errors");
             }
+        }
+
+        public static void DoXmlConverterTest(ListDictionary declaredNamespaces = null, int indent = 0, char indentChar = '\t', int indentMultiplicity = 1, bool insertNewLine = false)
+        {
+
+            if (declaredNamespaces == null) declaredNamespaces = new ListDictionary();
+            var input = PrintTestScenario(".text");
+            string s = ConvertXml(input, declaredNamespaces, indent, indentChar, indentMultiplicity, insertNewLine);
+            if (IsRecordedTest() || IsRecordTest())
+                CompareResultAndRecordedFiles(s, IsRecordTest(), "cxml");
+        }
+
+        public static void DoJsonConverterTest(int indent = 0, char indentChar = '\t', int indentMultiplicity = 1, bool insertNewLine = false)
+        {
+            var input = PrintTestScenario(".json");
+            string s = ConvertJson(input, indent, indentChar, indentMultiplicity, insertNewLine);
+            if (IsRecordedTest() || IsRecordTest())
+                CompareResultAndRecordedFiles(s, IsRecordTest(), "cjson");
+        }
+
+        private static string PrintTestScenario(string extension = ".s4x")
+        {
+            var testCaseName = GetTestCaseName();
+
+            var fileName = new StringBuilder(AssemblyDirectory + @"\Scenarios\").Append(testCaseName).Append(extension).ToString();
+
+            Console.WriteLine();
+            Console.WriteLine(Path.GetFileName(fileName));
+            var code = File.ReadAllText(fileName);
+            PrintCode(code);
+            return code.TrimEnd('~');
+        }
+
+        private static string ConvertXml(string text, ListDictionary declaredNamespaces, int indent = 0, char indentChar = '\t', int indentMultiplicity = 1, bool insertNewLine = false)
+        {
+            var converter = new XmlToSyntactikConverter(text);
+            converter.Convert(indent, indentChar, indentMultiplicity, insertNewLine, declaredNamespaces, out var output);
+            return output;
+        }
+
+        public static bool IsRecordedTest()
+        {
+            return TestHasAttribute<RecordedTestAttribute>();
+        }
+
+        public static bool IsRecordTest()
+        {
+            return TestHasAttribute<RecordTestAttribute>();
+        }
+
+        private static void CompareResultAndRecordedFiles(string result, bool record, string extension)
+        {
+            var recordedDir = AssemblyDirectory + @"\Scenarios\" + @"\Recorded\";
+            var recordedFileName = recordedDir + GetTestCaseName() + "." + extension;
+
+            Console.WriteLine();
+            Console.WriteLine(@"Completion info:");
+
+            if (record)
+            {
+
+                SaveTest(result, extension);
+                Console.WriteLine(result);
+            }
+            else
+            {
+                Assert.IsTrue(Directory.Exists(recordedDir), "Directory {0} doesn't exist", recordedDir);
+
+                result = result.Replace("\r\n", "\n");
+                var recorded = File.ReadAllText(recordedFileName).Replace("\r\n", "\n");
+
+                Console.WriteLine(result);
+                Assert.AreEqual(recorded, result);
+            }
+        }
+
+        public static void SaveTest(string result, string extension)
+        {
+            var recordedDir = AssemblyDirectory + @"\..\..\Scenarios\" + @"\Recorded\";
+            var fileName = recordedDir + GetTestCaseName() + "." + extension;
+            Directory.CreateDirectory(recordedDir);
+            File.WriteAllText(fileName, result);
+        }
+
+        private static string ConvertJson(string text, int indent = 0, char indentChar = '\t', int indentMultiplicity = 1, bool insertNewLine = false)
+        {
+            var converter = new JsonToSyntactikConverter(text);
+            string output;
+            converter.Convert(indent, indentChar, indentMultiplicity, insertNewLine, out output);
+            return output;
+        }
+
+        private static string GetTestClassName()
+        {
+            var trace = new StackTrace();
+            var method =
+                trace.GetFrames()
+                    .Select(f => f.GetMethod())
+                    .First(m => m.CustomAttributes.Any(a => a.AttributeType.FullName == "NUnit.Framework.TestAttribute"));
+            var name = method.DeclaringType.Name;
+            var result = name.Substring(0, name.Length - "Tests".Length);
+            return result;
         }
 
         private static void PrintErrors(IEnumerable<string> errors, string title)

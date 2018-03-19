@@ -17,12 +17,14 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Syntactik.Compiler;
 using Syntactik.Compiler.IO;
 using Syntactik.Compiler.Pipelines;
+using Syntactik.Converter;
 
 namespace slc
 {
@@ -34,21 +36,34 @@ namespace slc
             var result = 1;
             try
             {
-                bool recursive;
-                List<string> files;
-                string outputDirectory;
-                ArgumentsParser.Parse(args, out files, out recursive, out outputDirectory);
+                ArgumentsParser.Parse(args, out var files, out var convert, out bool _, out var outputDirectory);
 
-                var compilerParameters = GetCompilerParameters(files, outputDirectory);
-
-                var compiler = new SyntactikCompiler(compilerParameters);
-
-                var context = compiler.Run();
-
-                if (context.Errors.Count > 0)
+                if (!convert)
                 {
-                    PrintCompilerErrors(context.Errors);
-                    return 1;
+                    var compilerParameters = GetCompilerParameters(files, outputDirectory);
+                    var compiler = new SyntactikCompiler(compilerParameters);
+                    var context = compiler.Run();
+                    if (context.Errors.Count > 0)
+                    {
+                        PrintCompilerErrors(context.Errors);
+                        return 1;
+                    }
+                }
+                else
+                {
+                    foreach (var file in files)
+                    {
+                        if (file.EndsWith(".xml"))
+                        {
+                            string s = ConvertXml(File.ReadAllText(file), 0, ' ', 2);
+                            File.WriteAllText(Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(file) + ".s4x"), s);
+                        }
+                        else if (file.EndsWith(".json"))
+                        {
+                            string s = ConvertJson(File.ReadAllText(file), 0, ' ', 2);
+                            File.WriteAllText(Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(file) + ".s4j"), s);
+                        }
+                    }
                 }
 
                 result = 0;
@@ -66,6 +81,20 @@ namespace slc
                 Console.WriteLine(e.StackTrace);
             }
             return result;
+        }
+
+        private static string ConvertXml(string text, int indent = 0, char indentChar = '\t', int indentMultiplicity = 1, bool insertNewLine = false)
+        {
+            var converter = new XmlToSyntactikConverter(text);
+            converter.Convert(indent, indentChar, indentMultiplicity, insertNewLine, new ListDictionary(), out var output);
+            return output;
+        }
+
+        private static string ConvertJson(string text, int indent = 0, char indentChar = '\t', int indentMultiplicity = 1, bool insertNewLine = false)
+        {
+            var converter = new JsonToSyntactikConverter(text);
+            converter.Convert(indent, indentChar, indentMultiplicity, insertNewLine, out var output);
+            return output;
         }
 
         private static CompilerParameters GetCompilerParameters(IEnumerable<string> files, string outputDirectory)

@@ -1,0 +1,8 @@
+root:
+	el
+	= '
+		  text
+		  '
+	el
+	= 
+		  text2

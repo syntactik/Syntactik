@@ -15,4 +15,10 @@ namespace Syntactik.Tests
     class ParserErrorRecordAttribute : Attribute
     {
     }
+    class RecordedTestAttribute : Attribute
+    {
+    }
+    class RecordTestAttribute : Attribute
+    {
+    }
 }

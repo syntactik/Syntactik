@@ -1,0 +1,20 @@
+﻿<root>
+	<element1/>
+  <!-- Comment1 -->
+	<element2 attr1="" attr2 ="" />
+  <!-- Comment2 -->
+  <element3 attr1="" attr2 ="">
+    <!-- Comment3 -->
+  </element3>
+
+  <element4 attr1="" attr2 ="">
+    <element5></element5>
+    <!-- Comment4 -->
+  </element4>
+  
+  <element5 attr1="" attr2 ="">
+    <element6/>
+    <!-- Comment5 -->
+  </element5>
+
+</root>

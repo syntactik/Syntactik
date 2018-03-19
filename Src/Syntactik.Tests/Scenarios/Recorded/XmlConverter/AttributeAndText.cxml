@@ -1,0 +1,25 @@
+root:
+	member:
+		@name = M:Syntactik.Compiler.CompilerContext.AddError(Syntactik.Compiler.CompilerError)
+		summary:
+			= '
+				      Adds ':
+			see:
+				@cref = T:Syntactik.Compiler.CompilerError
+			= ' to the '
+			see:
+				@cref = T:Syntactik.Compiler.CompilerContext
+			= '.
+				    '
+		param:
+			@name = error
+	member:
+		@name = P:Syntactik.Compiler.CompilerContext.CompileUnit
+		summary:
+			= '
+				      Root DOM object of the compilation session. Stores list of all compiled ':
+			see:
+				@cref = T:Syntactik.DOM.Module
+				= modules
+			= '.
+				    '

@@ -45,11 +45,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DomPrinter.cs" />
+    <Compile Include="JsonConverterTests.cs" />
     <Compile Include="PairParserTests.cs" />
     <Compile Include="ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordedTestAttributes.cs" />
     <Compile Include="TestUtils.cs" />
+    <Compile Include="XmlConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scenarios\PairParser\ArrayAssignment.s4x" />
@@ -173,6 +175,14 @@
     <None Include="Scenarios\Parser\ValueAliasDefinition.s4x" />
     <None Include="Scenarios\Parser\wsa1.s4x" />
     <None Include="Scenarios\Parser\Wsa2.s4x" />
+    <None Include="Scenarios\XmlConverter\AttributeAndText.text" />
+    <None Include="Scenarios\XmlConverter\Comment1.text" />
+    <None Include="Scenarios\XmlConverter\NamespaceResolution1.text" />
+    <None Include="Scenarios\XmlConverter\NamespaceResolution2.text" />
+    <None Include="Scenarios\XmlConverter\NamespaceResolution3.text" />
+    <None Include="Scenarios\XmlConverter\NamespaceResolution4.text" />
+    <None Include="Scenarios\XmlConverter\ProcessingInstruction.text" />
+    <None Include="Scenarios\XmlConverter\TextNode1.text" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Syntactik\Syntactik.csproj">
@@ -194,6 +204,9 @@
   <ItemGroup>
     <Content Include="Scenarios\PairParser\InlineJsonErrors.s4j" />
     <Content Include="Scenarios\PairParser\InlineJson.s4j" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scenarios\JsonConverter\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
